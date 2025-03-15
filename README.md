@@ -1,59 +1,85 @@
-# ClickNcookFront
+# Click & Cook – Фронтенд
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.3.
+## Описание проекта
+**Click & Cook** – это браузерный кликер, в котором игроку предстоит создать свою кулинарную империю. Начав с уличной торговли, он сможет развивать бизнес, улучшать оборудование, открывать новые блюда и автоматизировать процессы.
 
-## Development server
+Этот репозиторий содержит фронтенд-приложение, разработанное на **Angular 18**.
 
-To start a local development server, run:
+---
 
+## Стек технологий
+- **Фреймворк:** Angular
+- **Язык программирования:** TypeScript
+- **Стили:** Tailwind CSS + SCSS
+- **Связь с сервером:** REST API, WebSockets
+- **Хранение данных:** LocalStorage / IndexedDB (для кеширования)
+
+---
+
+## Функционал
+### Основные механики:
+- Клики для приготовления еды и заработка денег.
+- Улучшения (персонал, оборудование, декор, реклама).
+- Автоматизация прибыли с помощью персонала.
+- Разработка рецептов новых блюд с уникальными бонусами.
+- Престиж-система для сброса прогресса с бонусами.
+- События и временные бонусы (час пик, визиты критиков).
+
+### Взаимодействие с бэкендом:
+- Получение и сохранение прогресса игрока.
+- Авторизация и учет данных пользователя.
+- Реализация глобальных событий.
+- Обновление статистики и реалтайм-обновления через WebSockets.
+
+---
+
+## Развертывание проекта
+### Установка зависимостей
 ```bash
-ng serve
+npm install
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+### Запуск в режиме разработки
 ```bash
-ng generate component component-name
+npm run start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+### Сборка для продакшена
 ```bash
-ng generate --help
+npm run build
 ```
 
-## Building
+---
 
-To build the project run:
-
-```bash
-ng build
+## Структура проекта (FSD – Feature-Sliced Design)
+```plaintext
+/src
+ ├── app/                   # Главный модуль приложения и конфигурация
+ │   ├── shared/                # Переиспользуемые утилиты, компоненты и стили
+ │   │   ├── ui/                # UI-компоненты (кнопки, карточки, формы)
+ │   │   ├── lib/               # Хелперы, утилиты, API-клиенты
+ │   ├── entities/              # Сущности (игрок, бизнес, еда и т. д.)
+ │   ├── features/              # Фичи (улучшения, события, покупка предметов)
+ │   ├── widgets/               # Крупные блоки интерфейса (меню, панель улучшений)
+ │   ├── pages/                 # Страницы приложения
+ │   ├── processes/             # Процессы, объединяющие несколько фич и виджетов
+ ├── public/                # Изображения, шрифты и статические ресурсы
+ ├── environments/          # Конфигурации для dev/prod
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+---
 
-## Running unit tests
+## Участие в разработке
+### Стандартный процесс работы:
+1. Создать новую ветку от `master`.
+2. Внести изменения и сделать коммит в соответствии с соглашением [Conventional Commits](https://www.conventionalcommits.org/ru/v1.0.0/).
+3. Открыть pull request в `master`.
+4. Дождаться кода-ревью и исправить замечания.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Кодстайл
+- Используется [Prettier](https://prettier.io/).
 
-```bash
-ng test
-```
+---
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Обратная связь
+- **Bug Reports & Feature Requests**: создавайте issues в репозитории.
