@@ -1,10 +1,11 @@
-<div class="flex flex-col gap-[3dvh] items-center text-primary">
+<form (ngSubmit)="submitForm()" [formGroup]="authForm" class="flex flex-col gap-[3dvh] items-center text-primary">
   <h1
     class="bg-primary/45 border-primary border rounded-xxl text-center text-primary text-2xl font-bold px-[3dvw] py-[0.625dvh] mb-[4dvh] my-[2dvh] shadow-black">
     Авторизация</h1>
-  <app-auth-input [id]="'email'" [name]="'email'" [placeholder]="'Почта'" [required]="true"
+  <app-auth-input [control]="emailControl" [id]="'email'" [name]="'email'" [placeholder]="'Почта'" [required]="true"
                   [type]="'email'"></app-auth-input>
-  <app-auth-input [id]="'password'" [name]="'password'" [placeholder]="'Пароль'" [required]="true"
+  <app-auth-input [control]="passwordControl" [id]="'password'" [name]="'password'" [placeholder]="'Пароль'"
+                  [required]="true"
                   [type]="'password'"></app-auth-input>
   <button class="bg-primary/45 border-primary border rounded-xxl w-16 h-14 px-3.5 py-1.5 mt-[5.375dvh] drop-shadow-lg"
           type="submit"><img
@@ -12,4 +13,4 @@
   <a class="bg-primary/45 border-primary border rounded-xxl px-[1.5dvw] py-[0.625dvh] text-center align-middle"
      href="/reg">у меня еще нет
     аккаунта</a>
-</div>
+</form>
