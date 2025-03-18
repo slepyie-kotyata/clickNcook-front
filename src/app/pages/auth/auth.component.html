@@ -2,30 +2,14 @@
   <h1
     class="bg-primary/45 border-primary border rounded-xxl text-center text-primary text-2xl font-bold px-[3dvw] py-[0.625dvh] mb-[4dvh] my-[2dvh] shadow-black">
     Авторизация</h1>
-  <input
-    class="bg-primary/45 rounded-xxl w-full min-w-[20dvw] h-[4dvh] py-2.5 px-5 shadow-black text-white drop-shadow-lg placeholder-primary focus:outline-none"
-    id="email"
-    name="email"
-    placeholder="Email"
-    required
-    type="email">
-  <section
-    class="bg-primary/45 rounded-xxl w-full flex flex-row gap-[0.5dvw] px-5 min-w-[20dvw] h-[4dvh] shadow-black text-white drop-shadow-lg">
-    <input
-      [type]="showPassword ? 'text' : 'password'"
-      class="bg-primary/0 rounded-xxl w-full py-2.5 placeholder-primary focus:outline-none text-white"
-      id="password"
-      name="password"
-      placeholder="Пароль"
-      required>
-    <button (click)="togglePasswordVisibility()"><img
-      [ngSrc]="this.showPassword ? '/icons/hide.png' : '/icons/view.png'" class="showHideIcon" height="24" width="24">
-    </button>
-  </section>
+  <app-auth-input [id]="'email'" [name]="'email'" [placeholder]="'Почта'" [required]="true"
+                  [type]="'email'"></app-auth-input>
+  <app-auth-input [id]="'password'" [name]="'password'" [placeholder]="'Пароль'" [required]="true"
+                  [type]="'password'"></app-auth-input>
   <button class="bg-primary/45 border-primary border rounded-xxl w-16 h-14 px-3.5 py-1.5 mt-[5.375dvh] drop-shadow-lg"
           type="submit"><img
     src="/icons/Arrow%20right-circle.svg"></button>
   <a class="bg-primary/45 border-primary border rounded-xxl px-[1.5dvw] py-[0.625dvh] text-center align-middle"
-     href="/reg">у меня уже есть
-    аккаунт</a>
+     href="/reg">у меня еще нет
+    аккаунта</a>
 </div>
