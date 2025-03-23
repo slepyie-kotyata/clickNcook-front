@@ -57,6 +57,11 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "allowedHosts": [
+              "clicker.enjine.ru"
+            ]
+          },
           "configurations": {
             "production": {
               "buildTarget": "clickNcook-front:build:production"
