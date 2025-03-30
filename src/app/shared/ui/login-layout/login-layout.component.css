@@ -1,5 +1,10 @@
 .background {
-  background-image: url("/backgrounds/auth.png")
+  background-image: url("/backgrounds/auth.png");
+  background-repeat: repeat-y;
+  background-size: 100% auto;
+  background-position: center;
+  width: 100vw;
+  height: 100vh;
 }
 
 .logo {
