@@ -8,6 +8,8 @@ import {
 } from '@angular/forms';
 import { AuthInputComponent } from '../../shared/ui/auth-input/auth-input.component';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../shared/lib/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reg',
@@ -19,6 +21,8 @@ import { ToastrService } from 'ngx-toastr';
 export class RegComponent {
   regForm: FormGroup;
   toastrService = inject(ToastrService);
+  authService = inject(AuthService);
+  router = inject(Router);
   protected readonly FormControl = FormControl;
 
   constructor(private fb: FormBuilder) {
@@ -59,7 +63,30 @@ export class RegComponent {
 
   submitForm() {
     if (this.regForm.valid) {
-      console.log('✅ Форма валидна:', this.regForm.value);
+      const formData = new FormData();
+      formData.append('email', this.regForm.value.email);
+      formData.append('password', this.regForm.value.password);
+      this.authService.register(formData).subscribe({
+        next: (response) => {
+          this.toastrService.success('Регистрация успешна');
+          this.regForm.reset();
+
+          localStorage.setItem('accessToken', response.tokens.access_token);
+          localStorage.setItem('refreshToken', response.tokens.refresh_token);
+          this.router.navigate(['']);
+        },
+        error: (error) => {
+          if (error.status === 409) {
+            this.toastrService.error(
+              'Пользователь с таким именем или почтой уже существует',
+              'Ошибка регистрации',
+            );
+          } else {
+            this.toastrService.error(error.message, 'Ошибка регистрации');
+            console.error(error);
+          }
+        },
+      });
       return;
     }
 
