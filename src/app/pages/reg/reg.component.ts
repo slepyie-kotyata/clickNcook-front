@@ -71,8 +71,6 @@ export class RegComponent {
           this.toastrService.success('Регистрация успешна');
           this.regForm.reset();
 
-          console.log(response);
-
           localStorage.setItem('accessToken', response.tokens.access_token);
           localStorage.setItem('refreshToken', response.tokens.refresh_token);
           this.router.navigate(['']);
