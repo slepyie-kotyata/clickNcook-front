@@ -8,16 +8,15 @@ export const routes: Routes = [
   {
     path: '',
     component: LoginLayoutComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: '',
+    component: LoginLayoutComponent,
     canDeactivate: [authGuard],
     children: [
-      {
-        path: 'auth',
-        component: AuthComponent,
-      },
-      {
-        path: 'reg',
-        component: RegComponent,
-      },
+      { path: 'auth', component: AuthComponent },
+      { path: 'reg', component: RegComponent },
     ],
   },
 ];
