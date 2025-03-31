@@ -58,6 +58,7 @@ export class AuthComponent {
           this.authForm.reset();
           localStorage.setItem('accessToken', user.tokens.access_token);
           localStorage.setItem('refreshToken', user.tokens.refresh_token);
+          this.toastrService.success('Авторизация успешна');
           this.router.navigate(['/']);
         },
         error: (error) => {
