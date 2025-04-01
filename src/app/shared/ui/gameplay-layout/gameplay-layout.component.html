@@ -1,0 +1,18 @@
+<section class="flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
+  <button
+    class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary w-[0.75dwv] h-[0.74dwv]">
+    <img src="/icons/star.svg">
+    <p
+      class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ getPrestigeLvl() }}</p>
+  </button>
+  <div class="relative w-[330px] h-[35px]">
+    <progress
+      [value]="getPlayerLvlPercentage()"
+      class="w-full h-full rounded-full overflow-hidden border border-black bg-secondary appearance-none"
+      max="100">
+    </progress>
+    <p class="absolute right-3 top-1/2 transform -translate-y-1/2 text-black font-bold text-xl">
+      {{ getPlayerLvlPercentage() }}%
+    </p>
+  </div>
+</section>
