@@ -1,8 +1,12 @@
-<button class="bg-primary/45 absolute right-[1.5dvw] top-[1.5dvh] block 2xl:hidden rounded-xxl w-14 h-14">===
+<button (click)="toggleMenu()"
+        class="bg-primary/45 absolute right-[1.5dvw] top-[1.5dvh] block 2xl:hidden rounded-xxl w-14 h-14">===
 </button>
-<div class="bg-primary/45 absolute right-0 top-0 hidden 2xl:block w-[30dvw] h-full">
+<div *ngIf="isOpen || window.innerWidth > 1536"
+     class="bg-primary/45 z-50 absolute right-0 top-0 2xl:w-[30dvw] w-full h-full">
   <section class="bg-primary h-20 border-b-2 border-black flex flex-row items-center px-4 gap-4">
-    <button class="w-12 h-12 bg-blue-300 rounded-xxl items-center text-center"><img src="/icons/back.svg"></button>
+    <button (click)="toggleMenu()" *ngIf="window.innerWidth <= 1536"
+            class="w-12 h-12 bg-blue-300 rounded-xxl items-center text-center"><img
+      src="/icons/back.svg"></button>
     <span class="flex-1"></span>
     <p class="text-2xl">{{ getDishCount() }}</p>
     <span class="bg-secondary rounded-xxl w-16 h-14 justify-end flex items-center justify-center"><img
