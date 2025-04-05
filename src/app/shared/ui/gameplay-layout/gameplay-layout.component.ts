@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import formatNumber from '../../lib/formatNumber';
+import {MenuComponent} from '../../../features/menu/menu.component';
 
 @Component({
   selector: 'app-gameplay-layout',
   standalone: true,
-  imports: [],
+  imports: [MenuComponent],
   templateUrl: './gameplay-layout.component.html',
   styleUrl: './gameplay-layout.component.css',
 })
