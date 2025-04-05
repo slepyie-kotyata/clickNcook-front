@@ -26,6 +26,18 @@ export class AuthService {
     );
   }
 
+  refreshToken(): Observable<{ status: string; tokens: ITokens }> {
+    return this.httpClient.post<{ status: string; tokens: ITokens }>(
+      this.api + 'refresh',
+      {},
+      {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('refreshToken'),
+        },
+      },
+    );
+  }
+
   isAuthenticated(): boolean {
     return !!localStorage.getItem('accessToken');
   }
