@@ -8,6 +8,7 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
+import { httpInterceptorProviders } from './shared/lib/api.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,5 +17,6 @@ export const appConfig: ApplicationConfig = {
     provideToastr(),
     provideAnimations(),
     provideHttpClient(withInterceptorsFromDi()),
+    httpInterceptorProviders,
   ],
 };
