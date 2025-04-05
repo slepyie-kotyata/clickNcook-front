@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { AuthInputComponent } from '../../shared/ui/auth-input/auth-input.component';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from '../../shared/lib/auth.service';
+import { AuthService } from '../../shared/lib/services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
