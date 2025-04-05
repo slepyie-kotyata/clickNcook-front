@@ -15,7 +15,6 @@ export class GameComponent {
 
   dishesCount: number = 0; //TODO: get from api
   moneyCount: number = 0; //TODO: get from api
-
   private cookClickCount = 0;
   private sellClickCount = 0;
 
@@ -41,6 +40,10 @@ export class GameComponent {
       this.sellClickCount = 0;
       return;
     }
+  }
+
+  logout() {
+    console.log('logout');
   }
 
   protected getPrestigeLvl(): string {
