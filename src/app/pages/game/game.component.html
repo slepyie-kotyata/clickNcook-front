@@ -1,10 +1,10 @@
 <div class="z-30">
   <section class="flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
-    <button (click)="logout()"
+    <button (click)="setLogoutWindow(true)"
             class="w-[2.75dvw] h-[2.75dvw] rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
       <img
         src="/icons/logout.svg"></button>
-    <button (click)="openPrestigeWindow()"
+    <button (click)="setPrestigeWindow(true)"
             class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary w-[0.75dwv] h-[0.74dwv]">
       <img src="/icons/star.svg">
       <p
@@ -44,8 +44,26 @@
   <!--background-->
 </div>
 
+<app-modal (close)="setLogoutWindow(false)"
+           [closeOnBackdrop]="false"
+           [show]="logoutWindowToggle">
+  <div class="flex flex-col items-center">
+    <h2 class="text-white text-center md:text-4xl">Вы уверены что хотите выйти?</h2>
+    <section class="flex flex-row gap-5">
+      <button (click)="logout()"
+              class="bg-green-600 border-2 border-black mt-[2.5dvh] rounded-2xl px-[4.5dvw] py-[1.25dvh] font-bold text-2xl text-white">
+        Да
+      </button>
+      <button (click)="setLogoutWindow(false)"
+              class="bg-red border-2 border-black mt-[2.5dvh] rounded-2xl px-[4.5dvw] py-[1.25dvh] font-bold text-2xl text-white">
+        Нет
+      </button>
+    </section>
+  </div>
+</app-modal>
+
 <app-modal
-  (close)="handlePrestigeWindowClose()"
+  (close)="setPrestigeWindow(false)"
   [closeOnBackdrop]="true"
   [show]="prestigeWindowToggle">
   <div class="flex flex-col items-center">

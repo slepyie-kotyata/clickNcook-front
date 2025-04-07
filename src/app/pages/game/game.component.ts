@@ -18,7 +18,10 @@ export class GameComponent {
   dishesCount: number = 0; //TODO: get from api
   moneyCount: number = 0; //TODO: get from api
   authService = inject(AuthService);
+
+  logoutWindowToggle: boolean = false;
   prestigeWindowToggle: boolean = false;
+
   prestigeProgressCount: number = 0;
   private cookClickCount = 0;
   private sellClickCount = 0;
@@ -27,14 +30,13 @@ export class GameComponent {
     return 1 + this.prestigeProgressCount * 0.5;
   }
 
-  openPrestigeWindow() {
-    this.prestigeWindowToggle = true;
+  setPrestigeWindow(value: boolean) {
+    this.prestigeWindowToggle = value;
   }
 
-  handlePrestigeWindowClose() {
-    this.prestigeWindowToggle = false;
+  setLogoutWindow(value: boolean) {
+    this.logoutWindowToggle = value;
   }
-
 
   handleCook(): void {
     this.cookClickCount++;
