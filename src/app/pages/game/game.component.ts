@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { MenuComponent } from '../../features/menu/menu.component';
 import formatNumber from '../../shared/lib/formatNumber';
+import {PrestigeWindowComponent} from '../../features/prestige-window/prestige-window.component';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [MenuComponent],
+  imports: [MenuComponent, PrestigeWindowComponent, NgIf],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',
 })
@@ -17,6 +19,8 @@ export class GameComponent {
   moneyCount: number = 0; //TODO: get from api
   private cookClickCount = 0;
   private sellClickCount = 0;
+
+  prestigeWindowToggle: boolean = false;
 
   handleCook(): void {
     this.cookClickCount++;
@@ -40,6 +44,10 @@ export class GameComponent {
       this.sellClickCount = 0;
       return;
     }
+  }
+
+  togglePrestigeWindow(){
+    this.prestigeWindowToggle = !this.prestigeWindowToggle;
   }
 
   logout() {

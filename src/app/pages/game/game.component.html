@@ -2,8 +2,8 @@
   <section class="flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
     <button (click)="logout()" class="w-[0.75dwv] h-[0.74dwv] rounded-xxl items-center text-center"><img
       src="/icons/back.svg"></button>
-    <button
-      class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary w-[0.75dwv] h-[0.74dwv]">
+    <button (click)="togglePrestigeWindow()"
+            class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary w-[0.75dwv] h-[0.74dwv]">
       <img src="/icons/star.svg">
       <p
         class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ getPrestigeLvl() }}</p>
@@ -37,7 +37,9 @@
   </section>
   <app-menu [cashCount]="moneyCount" [dishesCount]="dishesCount"></app-menu>
 </div>
+<div *ngIf="prestigeWindowToggle" class="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+  <app-prestige-window (closeEvent)="togglePrestigeWindow()"></app-prestige-window>
+</div>
 <div class="-z-10 fixed top-0 left-0">
   <!--background-->
 </div>
-

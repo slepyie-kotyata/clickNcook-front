@@ -1,0 +1,27 @@
+<div (click)="handleClose()" class="h-[100dvh] w-[100dvw] px-[25dvw] bg-black/60">
+  <div (click)="$event.stopPropagation()"
+       class="relative top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary border-2 border-black rounded-2xl py-[3.5dvh] px-[8.5dvw] flex flex-col items-center">
+    <button (click)="handleClose()"
+            class="absolute right-[1.25dvh] top-[1.25dvh] w-[5.5dvh] h-[5.5dvh] bg-red rounded-2xl border-2 border-black place-self-end">
+      X
+    </button>
+    <h2 class="text-white text-4xl">Кулинарные звезды</h2>
+    <section
+      class="relative flex items-center justify-center w-[12.5dvw] h-[12.5dvw]">
+      <img class="w-full" src="/icons/star.svg">
+      <p
+        class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ prestigeLVL }}</p>
+    </section>
+    <p class="text-white text-2xl whitespace-nowrap">Сейчас накоплено <span
+      class="font-bold">{{ prestigeProgressCount }}</span> Кулинарных звезд</p>
+    <p class="text-white text-2xl whitespace-nowrap">Сбросив сейчас вы получите бонус
+      <span class="font-bold">x{{ getPrestigeMultiplier() }}</span> к
+      пассивному доходу</p>
+    <button [disabled]="prestigeProgressCount<1"
+            class="bg-secondary disabled:bg-secondary/45 border-2 border-black mt-[2.5dvh] rounded-2xl px-[8.5dvw] py-[1.25dvh]">
+      Сбросить
+    </button>
+  </div>
+</div>
+
+<!--TODO: универсальное модальное окно-->
