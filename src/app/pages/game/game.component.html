@@ -4,7 +4,7 @@
             class="w-[2.75dvw] h-[2.75dvw] rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
       <img
         src="/icons/logout.svg"></button>
-   <button (click)="togglePrestigeWindow()"
+    <button (click)="openPrestigeWindow()"
             class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary w-[0.75dwv] h-[0.74dwv]">
       <img src="/icons/star.svg">
       <p
@@ -39,10 +39,32 @@
   </section>
   <app-menu [cashCount]="moneyCount" [dishesCount]="dishesCount"></app-menu>
 </div>
-<div *ngIf="prestigeWindowToggle" class="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-  <app-prestige-window (closeEvent)="togglePrestigeWindow()"></app-prestige-window>
-</div>
+
 <div class="-z-10 fixed top-0 left-0">
   <!--background-->
 </div>
+
+<app-modal
+  (close)="handlePrestigeWindowClose()"
+  [closeOnBackdrop]="true"
+  [show]="prestigeWindowToggle">
+  <div class="flex flex-col items-center">
+    <h2 class="text-white text-4xl">Кулинарные звезды</h2>
+    <section
+      class="relative flex items-center justify-center w-[12.5dvw] h-[12.5dvw]">
+      <img class="w-full" src="/icons/star.svg">
+      <p
+        class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ prestigeLvl }}</p>
+    </section>
+    <p class="text-white text-2xl whitespace-nowrap">Сейчас накоплено <span
+      class="font-bold">{{ prestigeProgressCount }}</span> Кулинарных звезд</p>
+    <p class="text-white text-2xl whitespace-nowrap">Сбросив сейчас вы получите бонус
+      <span class="font-bold">x{{ getPrestigeMultiplier() }}</span> к
+      пассивному доходу</p>
+    <button [disabled]="prestigeProgressCount<1"
+            class="bg-secondary disabled:bg-secondary/45 border-2 border-black mt-[2.5dvh] rounded-2xl px-[8.5dvw] py-[1.25dvh]">
+      Сбросить
+    </button>
+  </div>
+</app-modal>
 

@@ -1,13 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import formatNumber from '../../shared/lib/formatNumber';
-import { MenuButtonComponent } from '../../shared/ui/menu-button/menu-button.component';
-import { NgIf } from '@angular/common';
-import {PrestigeWindowComponent} from '../prestige-window/prestige-window.component';
+import {MenuButtonComponent} from '../../shared/ui/menu-button/menu-button.component';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [MenuButtonComponent, NgIf, PrestigeWindowComponent],
+  imports: [MenuButtonComponent, NgIf],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css',
 })

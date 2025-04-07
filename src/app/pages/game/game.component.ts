@@ -1,14 +1,13 @@
 import {Component, inject} from '@angular/core';
 import {MenuComponent} from '../../features/menu/menu.component';
 import formatNumber from '../../shared/lib/formatNumber';
-import {PrestigeWindowComponent} from '../../features/prestige-window/prestige-window.component';
-import {NgIf} from '@angular/common';
 import {AuthService} from '../../shared/lib/services/auth.service';
+import {ModalComponent} from '../../shared/ui/modal/modal.component';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [MenuComponent, PrestigeWindowComponent, NgIf],
+  imports: [MenuComponent, ModalComponent],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',
 })
@@ -19,10 +18,23 @@ export class GameComponent {
   dishesCount: number = 0; //TODO: get from api
   moneyCount: number = 0; //TODO: get from api
   authService = inject(AuthService);
+  prestigeWindowToggle: boolean = false;
+  prestigeProgressCount: number = 0;
   private cookClickCount = 0;
   private sellClickCount = 0;
 
-  prestigeWindowToggle: boolean = false;
+  getPrestigeMultiplier(): number {
+    return 1 + this.prestigeProgressCount * 0.5;
+  }
+
+  openPrestigeWindow() {
+    this.prestigeWindowToggle = true;
+  }
+
+  handlePrestigeWindowClose() {
+    this.prestigeWindowToggle = false;
+  }
+
 
   handleCook(): void {
     this.cookClickCount++;
@@ -46,10 +58,6 @@ export class GameComponent {
       this.sellClickCount = 0;
       return;
     }
-  }
-
-  togglePrestigeWindow(){
-    this.prestigeWindowToggle = !this.prestigeWindowToggle;
   }
 
   logout() {
