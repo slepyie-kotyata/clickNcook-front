@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { MenuComponent } from '../../features/menu/menu.component';
+import {Component, inject} from '@angular/core';
+import {MenuComponent} from '../../features/menu/menu.component';
 import formatNumber from '../../shared/lib/formatNumber';
+import {AuthService} from '../../shared/lib/services/auth.service';
 
 @Component({
   selector: 'app-game',
@@ -15,6 +16,7 @@ export class GameComponent {
 
   dishesCount: number = 0; //TODO: get from api
   moneyCount: number = 0; //TODO: get from api
+  authService = inject(AuthService);
   private cookClickCount = 0;
   private sellClickCount = 0;
 
@@ -43,7 +45,7 @@ export class GameComponent {
   }
 
   logout() {
-    console.log('logout');
+    this.authService.logout();
   }
 
   protected getPrestigeLvl(): string {
