@@ -2,11 +2,12 @@ import {Component, inject} from '@angular/core';
 import {MenuComponent} from '../../features/menu/menu.component';
 import formatNumber from '../../shared/lib/formatNumber';
 import {AuthService} from '../../shared/lib/services/auth.service';
+import {ModalComponent} from '../../shared/ui/modal/modal.component';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [MenuComponent],
+  imports: [MenuComponent, ModalComponent],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',
 })
@@ -17,8 +18,25 @@ export class GameComponent {
   dishesCount: number = 0; //TODO: get from api
   moneyCount: number = 0; //TODO: get from api
   authService = inject(AuthService);
+
+  logoutWindowToggle: boolean = false;
+  prestigeWindowToggle: boolean = false;
+
+  prestigeProgressCount: number = 0;
   private cookClickCount = 0;
   private sellClickCount = 0;
+
+  getPrestigeMultiplier(): number {
+    return 1 + this.prestigeProgressCount * 0.5;
+  }
+
+  setPrestigeWindow(value: boolean) {
+    this.prestigeWindowToggle = value;
+  }
+
+  setLogoutWindow(value: boolean) {
+    this.logoutWindowToggle = value;
+  }
 
   handleCook(): void {
     this.cookClickCount++;

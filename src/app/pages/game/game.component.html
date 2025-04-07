@@ -1,11 +1,11 @@
 <div class="z-30">
   <section class="flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
-    <button (click)="logout()"
+    <button (click)="setLogoutWindow(true)"
             class="w-[2.75dvw] h-[2.75dvw] rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
       <img
         src="/icons/logout.svg"></button>
-    <button
-      class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary w-[2.75dvw] h-[2.75dvw]">
+    <button (click)="setPrestigeWindow(true)"
+            class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary w-[0.75dwv] h-[0.74dwv]">
       <img src="/icons/star.svg">
       <p
         class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ getPrestigeLvl() }}</p>
@@ -39,7 +39,50 @@
   </section>
   <app-menu [cashCount]="moneyCount" [dishesCount]="dishesCount"></app-menu>
 </div>
+
 <div class="-z-10 fixed top-0 left-0">
   <!--background-->
 </div>
+
+<app-modal (close)="setLogoutWindow(false)"
+           [closeOnBackdrop]="false"
+           [show]="logoutWindowToggle">
+  <div class="flex flex-col items-center">
+    <h2 class="text-white text-center md:text-4xl">Вы уверены что хотите выйти?</h2>
+    <section class="flex flex-row gap-5">
+      <button (click)="logout()"
+              class="bg-green-600 border-2 border-black mt-[2.5dvh] rounded-2xl px-[4.5dvw] py-[1.25dvh] font-bold text-2xl text-white">
+        Да
+      </button>
+      <button (click)="setLogoutWindow(false)"
+              class="bg-red border-2 border-black mt-[2.5dvh] rounded-2xl px-[4.5dvw] py-[1.25dvh] font-bold text-2xl text-white">
+        Нет
+      </button>
+    </section>
+  </div>
+</app-modal>
+
+<app-modal
+  (close)="setPrestigeWindow(false)"
+  [closeOnBackdrop]="true"
+  [show]="prestigeWindowToggle">
+  <div class="flex flex-col items-center">
+    <h2 class="text-white text-4xl">Кулинарные звезды</h2>
+    <section
+      class="relative flex items-center justify-center w-[12.5dvw] h-[12.5dvw]">
+      <img class="w-full" src="/icons/star.svg">
+      <p
+        class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ prestigeLvl }}</p>
+    </section>
+    <p class="text-white text-2xl whitespace-nowrap">Сейчас накоплено <span
+      class="font-bold">{{ prestigeProgressCount }}</span> Кулинарных звезд</p>
+    <p class="text-white text-2xl whitespace-nowrap">Сбросив сейчас вы получите бонус
+      <span class="font-bold">x{{ getPrestigeMultiplier() }}</span> к
+      пассивному доходу</p>
+    <button [disabled]="prestigeProgressCount<1"
+            class="bg-secondary disabled:bg-secondary/45 border-2 border-black mt-[2.5dvh] rounded-2xl px-[8.5dvw] py-[1.25dvh]">
+      Сбросить
+    </button>
+  </div>
+</app-modal>
 

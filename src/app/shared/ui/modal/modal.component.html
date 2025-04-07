@@ -1,8 +1,9 @@
-<div (click)="onBackdropClick()" class="h-[100dvh] w-[100dvw] px-[25dvw] bg-black/60">
+<div (click)="onBackdropClick()" *ngIf="show"
+     class="z-max absolute top-0 left-0 inset-0 h-[100dvh] w-[100dvw] px-[15dvw] xl:px-[25dvw] bg-black/60">
   <div (click)="stopPropagation($event)"
        class="relative top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary border-2 border-black rounded-2xl py-[3.5dvh] px-[8.5dvw]">
     <button (click)="handleClose()"
-            class="absolute right-[1.25dvh] top-[1.25dvh] w-[5.5dvh] h-[5.5dvh] bg-red rounded-2xl border-2 border-black place-self-end">
+            class="absolute hidden xl:block right-[1.25dvh] top-[1.25dvh] w-[5.5dvh] h-[5.5dvh] bg-red rounded-2xl border-2 border-black place-self-end">
       X
     </button>
     <ng-content></ng-content>

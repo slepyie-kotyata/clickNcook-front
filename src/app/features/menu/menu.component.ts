@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import formatNumber from '../../shared/lib/formatNumber';
-import { MenuButtonComponent } from '../../shared/ui/menu-button/menu-button.component';
-import { NgIf } from '@angular/common';
+import {MenuButtonComponent} from '../../shared/ui/menu-button/menu-button.component';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-menu',
