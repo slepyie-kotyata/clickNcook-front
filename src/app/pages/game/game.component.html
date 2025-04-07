@@ -1,9 +1,11 @@
 <div class="z-30">
   <section class="flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
-    <button (click)="logout()" class="w-[0.75dwv] h-[0.74dwv] rounded-xxl items-center text-center"><img
-      src="/icons/back.svg"></button>
+    <button (click)="logout()"
+            class="w-[2.75dvw] h-[2.75dvw] rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
+      <img
+        src="/icons/logout.svg"></button>
     <button
-      class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary w-[0.75dwv] h-[0.74dwv]">
+      class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary w-[2.75dvw] h-[2.75dvw]">
       <img src="/icons/star.svg">
       <p
         class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ getPrestigeLvl() }}</p>
