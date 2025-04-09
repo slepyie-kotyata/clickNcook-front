@@ -9,7 +9,7 @@
     [required]="required"
     [type]="type !== 'password' ? type : showPassword ? 'text' : 'password'"
     class="bg-primary/0 md:rounded-xxl rounded-3xl w-full py-2.5 text-white placeholder-primary focus:outline-none">
-  <button (click)="togglePasswordVisibility()" *ngIf="type==='password'"><img
+  <button (click)="togglePasswordVisibility()" *ngIf="type==='password'" type="button"><img
     [ngSrc]="this.showPassword ? '/icons/hide.png' : '/icons/view.png'" class="showHideIcon md:h-[24px] md:w-[24px]"
     height="36" width="36">
   </button>
