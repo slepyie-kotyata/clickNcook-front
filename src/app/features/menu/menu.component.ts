@@ -2,11 +2,12 @@ import {Component, Input, OnInit} from '@angular/core';
 import formatNumber from '../../shared/lib/formatNumber';
 import {MenuButtonComponent} from '../../shared/ui/menu-button/menu-button.component';
 import {NgIf} from '@angular/common';
+import { UpgrateButtonComponent } from "../../shared/ui/upgrate-button/upgrate-button.component";
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [MenuButtonComponent, NgIf],
+  imports: [MenuButtonComponent, NgIf, UpgrateButtonComponent],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css',
 })
