@@ -1,13 +1,13 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import formatNumber from '../../shared/lib/formatNumber';
-import {MenuButtonComponent} from '../../shared/ui/menu-button/menu-button.component';
-import {NgIf} from '@angular/common';
-import { UpgrateButtonComponent } from "../../shared/ui/upgrate-button/upgrate-button.component";
+import { MenuButtonComponent } from '../../shared/ui/menu-button/menu-button.component';
+import { NgIf } from '@angular/common';
+import { UpgradeButtonComponent } from '../../shared/ui/upgrate-button/upgrade-button.component';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [MenuButtonComponent, NgIf, UpgrateButtonComponent],
+  imports: [MenuButtonComponent, NgIf, UpgradeButtonComponent],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css',
 })
