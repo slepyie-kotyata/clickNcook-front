@@ -12,8 +12,8 @@ import formatNumber from '../../lib/formatNumber';
 export class UpgradeButtonComponent {
   @Input({ required: true }) blocked: boolean = false;
   @Input({ required: true }) price: number = 0;
-  @Input() nameUpgrade: string = 'cook';
-  @Input() valueUpgrade: string = '';
+  @Input() upgradeName: string = 'cook';
+  @Input() upgradeValue: string = '';
 
   priceString(): string {
     return formatNumber(this.price);
