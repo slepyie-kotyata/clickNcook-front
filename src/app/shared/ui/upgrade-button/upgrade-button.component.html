@@ -7,12 +7,12 @@
   class="bg-black/25 disabled:bg-black/70 rounded-2xl flex flex-row gap-2.5 w-full px-4 py-2.5 items-center justify-between"
 >
   <img
+    [src]="icon()"
     alt=""
-    class="bg-primary w-16 h-16 rounded-2xl"
-    src="/icons/waiter-with-dishes.svg"
+    class="bg-primary w-16 h-16 rounded-2xl flex-none"
   />
-  <p class="text-secondary">
-    {{ upgradeName }} {{ upgradeValue }}
+  <p class="text-secondary break-words leading-tight max-w-[5.5dvw]">
+    {{ upgrade.name }}
   </p>
   <span class="flex-1"></span>
   <p class="text-secondary">{{ priceString() }} $</p>
@@ -22,7 +22,7 @@
       'bg-primary': !blocked,
       }"
     alt=""
-    class="w-16 h-16 rounded-2xl border-2 border-secondary group-hover:bg-secondary group-active:bg-secondary"
+    class="w-16 h-16 rounded-2xl border-2 border-secondary group-hover:bg-secondary group-active:bg-secondary flex-none"
     src="/icons/sell.svg"
   />
 </button>

@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { UpgradeButtonComponent } from '../upgrade-button/upgrade-button.component';
 import { IUpgrade } from '../../../entities/upgrade';
 import { NgForOf } from '@angular/common';
 import { GameService } from '../../lib/services/game.service';
+import { upgrades } from '../../../entities/types';
 
 @Component({
   selector: 'app-upgrade-window',
@@ -11,8 +12,10 @@ import { GameService } from '../../lib/services/game.service';
   templateUrl: './upgrade-window.component.html',
   styleUrl: './upgrade-window.component.css',
 })
-export class UpgradeWindowComponent {
+export class UpgradeWindowComponent implements OnInit {
   gameService = inject(GameService);
+  selectedType: upgrades = 'menu';
+  upgrades: IUpgrade[] = [];
   availableUpgrades: IUpgrade[] = [];
 
   constructor() {
@@ -26,32 +29,134 @@ export class UpgradeWindowComponent {
 
     if (price) {
       this.gameService.decreaseMoney(price);
-      this.availableUpgrades = this.availableUpgrades.filter((x) => x.id != id);
+      this.availableUpgrades = this.upgrades.filter((x) => x.id != id);
     }
   }
 
   getAvailableUpgrades() {
     //TODO: get from api
 
-    this.availableUpgrades = [
+    this.upgrades = [
       {
-        id: 1,
-        upgrade_type: 'dish',
+        id: 0,
+        icon_name: 'hamburger',
+        upgrade_type: 'menu',
         name: 'Гамбургер',
         price: 100,
       },
       {
+        id: 1,
+        icon_name: 'hotdog',
+        upgrade_type: 'menu',
+        name: 'Хот-дог',
+        price: 250,
+      },
+      {
         id: 2,
-        upgrade_type: 'dish',
-        name: 'Хот-Дог',
-        price: 500,
+        icon_name: 'pizza',
+        upgrade_type: 'menu',
+        name: 'Пицца',
+        price: 700,
       },
       {
         id: 3,
-        upgrade_type: 'dish',
-        name: 'Хот-Дог',
+        icon_name: 'burrito',
+        upgrade_type: 'menu',
+        name: 'Буррито',
+        price: 2000,
+      },
+      {
+        id: 4,
+        icon_name: 'stovetop',
+        upgrade_type: 'equipment',
+        name: 'Новая плита',
         price: 500,
       },
+      {
+        id: 5,
+        icon_name: 'gas-burner',
+        upgrade_type: 'equipment',
+        name: 'Газовая горелка',
+        price: 1000,
+      },
+      {
+        id: 6,
+        icon_name: 'cooker',
+        upgrade_type: 'equipment',
+        name: 'Профессиональная духовка',
+        price: 3000,
+      },
+      {
+        id: 7,
+        icon_name: 'dishes',
+        upgrade_type: 'upgrade',
+        name: 'Продвижение новых блюд',
+        price: 1500,
+      },
+      {
+        id: 8,
+        icon_name: 'price',
+        upgrade_type: 'upgrade',
+        name: 'Повышение цен',
+        price: 3000,
+      },
+      {
+        id: 9,
+        icon_name: 'waiter',
+        upgrade_type: 'person',
+        name: 'Официант',
+        price: 2000,
+      },
+      {
+        id: 10,
+        icon_name: 'chef',
+        upgrade_type: 'person',
+        name: 'Шеф-повар',
+        price: 5000,
+      },
+      {
+        id: 11,
+        icon_name: 'track',
+        upgrade_type: 'map',
+        name: 'Фуд-трак',
+        price: 5000,
+      },
+      {
+        id: 12,
+        icon_name: 'cafe',
+        upgrade_type: 'map',
+        name: 'Маленькое кафе',
+        price: 15000,
+      },
+      {
+        id: 13,
+        icon_name: 'restaurant',
+        upgrade_type: 'map',
+        name: 'Семейный ресторан',
+        price: 50000,
+      },
+      {
+        id: 14,
+        icon_name: 'big-restaurant',
+        upgrade_type: 'map',
+        name: 'Гастраномический ресторан',
+        price: 150000,
+      },
     ];
+
+    this.refreshUpgradesList();
+  }
+
+  refreshUpgradesList() {
+    this.availableUpgrades = this.upgrades.filter(
+      (u) => u.upgrade_type == this.selectedType,
+    );
+  }
+
+  ngOnInit(): void {
+    this.gameService.selectedMenuType.subscribe((type) => {
+      this.selectedType = type;
+      this.refreshUpgradesList();
+    });
   }
 }

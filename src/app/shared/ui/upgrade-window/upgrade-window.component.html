@@ -3,9 +3,7 @@
     <app-upgrade-button (buyEvent)="handleBuy($event)"
                         *ngFor="let upgrade of availableUpgrades"
                         [blocked]="upgrade.price > this.gameService.moneyCount"
-                        [id]="upgrade.id"
-                        [price]="upgrade.price"
-                        [upgradeName]="upgrade.name"></app-upgrade-button>
+                        [upgrade]="upgrade"></app-upgrade-button>
   </div>
 </div>
 
@@ -18,3 +16,4 @@
     class="w-0 h-0 border-l-[15px] border-r-[15px] border-t-[50px] border-b-0 border-l-transparent border-r-transparent border-t-primary my-32"
   ></button>
 </div>
+

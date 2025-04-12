@@ -1,6 +1,9 @@
+import { upgrades } from './types';
+
 export interface IUpgrade {
   id: number;
-  upgrade_type: string;
+  icon_name: string;
+  upgrade_type: upgrades;
   name: string;
   price: number;
 }

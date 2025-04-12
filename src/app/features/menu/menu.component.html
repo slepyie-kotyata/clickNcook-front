@@ -39,14 +39,21 @@
   <div
     class="absolute bottom-0 w-full h-[8dvh] flex flex-row items-center justify-center px-1 gap-1"
   >
-    <app-menu-button [iconSource]="'/icons/fondue.svg'"></app-menu-button>
-    <app-menu-button [iconSource]="'/icons/table.svg'"></app-menu-button>
-    <app-menu-button [iconSource]="'/icons/upgrades.svg'"></app-menu-button>
-    <app-menu-button [iconSource]="'/icons/person.svg'"></app-menu-button>
-    <app-menu-button
-      [disabled]="true"
-      [iconSource]="'/icons/menu.svg'"
-    ></app-menu-button>
-    <app-menu-button [iconSource]="'/icons/map.svg'"></app-menu-button>
+    <app-menu-button (onClick)="selectMenu($event)" [iconSource]="'/icons/fondue.svg'" [selected]="selected == 'menu'"
+                     [type]="'menu'"></app-menu-button>
+    <app-menu-button (onClick)="selectMenu($event)" [iconSource]="'/icons/table.svg'"
+                     [selected]="selected == 'equipment'"
+                     [type]="'equipment'"></app-menu-button>
+    <app-menu-button (onClick)="selectMenu($event)" [iconSource]="'/icons/upgrades.svg'"
+                     [selected]="selected == 'upgrade'"
+                     [type]="'upgrade'"></app-menu-button>
+    <app-menu-button (onClick)="selectMenu($event)" [iconSource]="'/icons/person.svg'" [selected]="selected == 'person'"
+                     [type]="'person'"></app-menu-button>
+    <app-menu-button [disabled]="true"
+                     [iconSource]="'/icons/menu.svg'"
+                     [selected]="false"
+                     [type]="'recipe'"></app-menu-button>
+    <app-menu-button (onClick)="selectMenu($event)" [iconSource]="'/icons/map.svg'" [selected]="selected == 'map'"
+                     [type]="'map'"></app-menu-button>
   </div>
 </div>
