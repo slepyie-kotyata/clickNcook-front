@@ -2,13 +2,12 @@ import { Component, Input, OnInit } from '@angular/core';
 import formatNumber from '../../shared/lib/formatNumber';
 import { MenuButtonComponent } from '../../shared/ui/menu-button/menu-button.component';
 import { NgIf } from '@angular/common';
-import { UpgradeButtonComponent } from '../../shared/ui/upgrade-button/upgrade-button.component';
-import { UpgradeWindowComponent } from "../../shared/ui/upgrade-window/upgrade-window.component";
+import { UpgradeWindowComponent } from '../../shared/ui/upgrade-window/upgrade-window.component';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [MenuButtonComponent, NgIf, UpgradeButtonComponent, UpgradeWindowComponent],
+  imports: [MenuButtonComponent, NgIf, UpgradeWindowComponent],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css',
 })
