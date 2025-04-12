@@ -1,0 +1,9 @@
+<button (click)="handleClick()" [disabled]="disabled"
+        [ngClass]="{
+          'bg-primary':!selected,
+          'bg-secondary':selected
+        }"
+        class="w-[15dvw] h-[15dvw] md:w-[8dvh] md:h-[8dvh] bg-primary items-center text-center disabled:bg-black/45 flex align-middle justify-center">
+  <img
+    [src]="iconSource">
+</button>
