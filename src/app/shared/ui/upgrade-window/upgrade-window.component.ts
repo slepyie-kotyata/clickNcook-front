@@ -1,4 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { UpgradeButtonComponent } from '../upgrade-button/upgrade-button.component';
 import { IUpgrade } from '../../../entities/upgrade';
 import { NgForOf } from '@angular/common';
@@ -12,11 +19,17 @@ import { upgrades } from '../../../entities/types';
   templateUrl: './upgrade-window.component.html',
   styleUrl: './upgrade-window.component.css',
 })
-export class UpgradeWindowComponent implements OnInit {
+export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   gameService = inject(GameService);
   selectedType: upgrades = 'menu';
   upgrades: IUpgrade[] = [];
   availableUpgrades: IUpgrade[] = [];
+
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+  isAtTop = true;
+  isAtBottom = false;
+  scrollItemHeight = 115;
+  disableAllScrollButtons = false;
 
   constructor() {
     this.getAvailableUpgrades();
@@ -142,6 +155,34 @@ export class UpgradeWindowComponent implements OnInit {
         name: 'Гастраномический ресторан',
         price: 150000,
       },
+      {
+        id: 15,
+        icon_name: 'desert',
+        upgrade_type: 'menu',
+        name: 'Сет десертов',
+        price: 150000,
+      },
+      {
+        id: 16,
+        icon_name: 'steak',
+        upgrade_type: 'menu',
+        name: 'Стейк',
+        price: 150000,
+      },
+      {
+        id: 17,
+        icon_name: 'ramen',
+        upgrade_type: 'menu',
+        name: 'Рамен',
+        price: 150000,
+      },
+      {
+        id: 18,
+        icon_name: 'lobster',
+        upgrade_type: 'menu',
+        name: 'Лобстер',
+        price: 150000,
+      },
     ];
 
     this.refreshUpgradesList();
@@ -151,6 +192,45 @@ export class UpgradeWindowComponent implements OnInit {
     this.availableUpgrades = this.upgrades.filter(
       (u) => u.upgrade_type == this.selectedType,
     );
+
+    setTimeout(() => this.updateScrollButtons());
+  }
+
+  scrollUp(): void {
+    this.scrollContainer.nativeElement.scrollBy({
+      top: -this.scrollItemHeight,
+      behavior: 'smooth',
+    });
+    setTimeout(() => this.updateScrollButtons(), 300);
+  }
+
+  scrollDown(): void {
+    this.scrollContainer.nativeElement.scrollBy({
+      top: this.scrollItemHeight,
+      behavior: 'smooth',
+    });
+    setTimeout(() => this.updateScrollButtons(), 300);
+  }
+
+  updateScrollButtons(): void {
+    const el = this.scrollContainer.nativeElement;
+
+    const scrollTop = el.scrollTop;
+    const scrollHeight = el.scrollHeight;
+    const clientHeight = el.clientHeight;
+
+    const canScroll = scrollHeight > clientHeight;
+
+    this.disableAllScrollButtons = !canScroll;
+
+    if (!canScroll) {
+      this.isAtTop = true;
+      this.isAtBottom = true;
+      return;
+    }
+
+    this.isAtTop = scrollTop <= 1;
+    this.isAtBottom = scrollHeight - scrollTop - clientHeight <= 1;
   }
 
   ngOnInit(): void {
@@ -158,5 +238,19 @@ export class UpgradeWindowComponent implements OnInit {
       this.selectedType = type;
       this.refreshUpgradesList();
     });
+  }
+
+  ngAfterViewInit(): void {
+    const item =
+      this.scrollContainer.nativeElement.querySelector('app-upgrade-button');
+    if (item) {
+      this.scrollItemHeight = item.getBoundingClientRect().height + 20;
+    }
+
+    this.scrollContainer.nativeElement.addEventListener('scroll', () => {
+      this.updateScrollButtons();
+    });
+
+    setTimeout(() => this.updateScrollButtons());
   }
 }
