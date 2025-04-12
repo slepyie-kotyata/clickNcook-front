@@ -48,8 +48,8 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
 
   getAvailableUpgrades() {
     //TODO: get from api
-
     this.upgrades = [
+      //заглушка
       {
         id: 0,
         icon_name: 'hamburger',
