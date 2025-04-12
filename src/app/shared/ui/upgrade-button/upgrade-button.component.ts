@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { NgIf } from '@angular/common';
+import {NgClass, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-upgrade-button',
   standalone: true,
-  imports: [NgIf],
+  imports: [NgIf, NgClass],
   templateUrl: './upgrade-button.component.html',
   styleUrl: './upgrade-button.component.css',
 })
