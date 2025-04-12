@@ -7,7 +7,8 @@ import { upgrades } from '../../../entities/types';
   providedIn: 'root',
 })
 export class GameService {
-  public playerLvl: number = 0;
+  public playerXP: number = 0;
+  public playerLvl: number = 5;
   public moneyCount: number = 1000;
   public dishesCount: number = 0;
   public prestigeLvl: number = 0;
