@@ -1,5 +1,8 @@
 <button
   [disabled]="blocked"
+  [ngClass]="{
+  'group':!blocked
+  }"
   class="bg-black/25 disabled:bg-black/70 rounded-2xl m-5 ml-6 flex flex-row gap-2.5 w-11/12 px-4 py-2.5 items-center justify-between"
 >
   <img
@@ -15,11 +18,10 @@
   <img
     [ngClass]="{
       'opacity-70': blocked,
-      'bg-primary': !blocked && !buy,
-      'bg-secondary': !blocked && buy
+      'bg-primary': !blocked,
       }"
     alt=""
-    class="w-16 h-16 rounded-2xl border-2 border-secondary"
+    class="w-16 h-16 rounded-2xl border-2 border-secondary group-hover:bg-secondary group-active:bg-secondary"
     src="/icons/sell.svg"
   />
 </button>

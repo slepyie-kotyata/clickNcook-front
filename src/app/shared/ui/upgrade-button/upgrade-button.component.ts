@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import {NgClass, NgIf} from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-upgrade-button',
@@ -9,7 +9,6 @@ import {NgClass, NgIf} from '@angular/common';
   styleUrl: './upgrade-button.component.css',
 })
 export class UpgradeButtonComponent {
-  @Input() buy: boolean = false;
   @Input() blocked: boolean = false;
   @Input() price: string = '1';
   @Input() nameUpgrade: string = 'cook';
