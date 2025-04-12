@@ -12,9 +12,14 @@
   <div class="place-content-center text-secondary basis-2/6">1000 $</div>
   <!-- переменная -->
   <div class="my-2.5 mr-4 flex flex-row-reverse basis-1/6">
-    <img
+    <img *ngIf="!buy"
       alt=""
       class="bg-primary w-16 h-16 rounded-2xl border-2 border-secondary"
+      src="/icons/sell.svg"
+    />
+    <img *ngIf="buy"
+      alt=""
+      class="bg-secondary w-16 h-16 rounded-2xl border-2 border-secondary"
       src="/icons/sell.svg"
     />
     <!-- ngIf || ngClass // + переменная -->
