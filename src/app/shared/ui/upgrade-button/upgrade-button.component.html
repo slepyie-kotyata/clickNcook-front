@@ -1,29 +1,25 @@
 <button
   [disabled]="blocked"
-  class="bg-black/25 disabled:bg-black/70 rounded-2xl m-5 ml-6 flex flex-row w-11/12"
+  class="bg-black/25 disabled:bg-black/70 rounded-2xl m-5 ml-6 flex flex-row gap-2.5 w-11/12 px-4 py-2.5 items-center justify-between"
 >
-  <!-- flex flex-col // отступы между / занимаемая ширина для отдельных элементов -->
-  <div class="my-2.5 ml-4 flex basis-1/6">
-    <img
-      alt=""
-      class="bg-primary w-16 h-16 rounded-2xl"
-      src="/icons/waiter-with-dishes.svg"
-    />
-  </div>
-  <div class="place-content-center text-secondary basis-2/6">
+  <img
+    alt=""
+    class="bg-primary w-16 h-16 rounded-2xl"
+    src="/icons/waiter-with-dishes.svg"
+  />
+  <p class="text-secondary">
     {{ nameUpgrade }} {{ valueUpgrade }}
-  </div>
-  <div class="place-content-center text-secondary basis-2/6">{{ price }} $</div>
-  <div class="my-2.5 mr-4 flex flex-row-reverse basis-1/6">
-    <img
-      [ngClass]="{
+  </p>
+  <span class="flex-1"></span>
+  <p class="text-secondary">{{ price }} $</p>
+  <img
+    [ngClass]="{
       'opacity-70': blocked,
       'bg-primary': !blocked && !buy,
       'bg-secondary': !blocked && buy
       }"
-      alt=""
-      class="w-16 h-16 rounded-2xl border-2 border-secondary"
-      src="/icons/sell.svg"
-    />
-  </div>
+    alt=""
+    class="w-16 h-16 rounded-2xl border-2 border-secondary"
+    src="/icons/sell.svg"
+  />
 </button>
