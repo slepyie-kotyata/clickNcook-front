@@ -9,6 +9,9 @@ import { NgIf } from '@angular/common';
   styleUrl: './upgrade-button.component.css',
 })
 export class UpgradeButtonComponent {
-@Input() buy: boolean = false;
-
+  @Input() buy: boolean = false;
+  @Input() blocked: boolean = false;
+  @Input() price: string = '';
+  @Input() nameUpgrade: string = 'cook';
+  @Input() valueUpgrade: string = '';
 }
