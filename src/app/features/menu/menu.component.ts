@@ -1,8 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import formatNumber from '../../shared/lib/formatNumber';
 import { MenuButtonComponent } from '../../shared/ui/menu-button/menu-button.component';
 import { NgIf } from '@angular/common';
 import { UpgradeWindowComponent } from '../../shared/ui/upgrade-window/upgrade-window.component';
+import { GameService } from '../../shared/lib/services/game.service';
 
 @Component({
   selector: 'app-menu',
@@ -11,27 +12,20 @@ import { UpgradeWindowComponent } from '../../shared/ui/upgrade-window/upgrade-w
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css',
 })
-export class MenuComponent implements OnInit {
-  @Input() dishesCount: number = 0; //TODO: get from api
-  @Input() cashCount: number = 0; //TODO: get from api
-
+export class MenuComponent {
+  gameService = inject(GameService);
   isOpen: boolean = false;
   protected readonly window = window;
 
   getDishCount(): string {
-    return formatNumber(this.dishesCount);
+    return formatNumber(this.gameService.dishesCount);
   }
 
   getCashCount(): string {
-    return formatNumber(this.cashCount);
+    return formatNumber(this.gameService.moneyCount);
   }
 
   toggleMenu(): void {
     this.isOpen = !this.isOpen;
-    console.log('toggle');
-  }
-
-  ngOnInit(): void {
-    console.log(window.innerWidth);
   }
 }

@@ -1,8 +1,9 @@
-import {Component, inject} from '@angular/core';
-import {MenuComponent} from '../../features/menu/menu.component';
+import { Component, inject, OnInit } from '@angular/core';
+import { MenuComponent } from '../../features/menu/menu.component';
 import formatNumber from '../../shared/lib/formatNumber';
-import {AuthService} from '../../shared/lib/services/auth.service';
-import {ModalComponent} from '../../shared/ui/modal/modal.component';
+import { AuthService } from '../../shared/lib/services/auth.service';
+import { ModalComponent } from '../../shared/ui/modal/modal.component';
+import { GameService } from '../../shared/lib/services/game.service';
 
 @Component({
   selector: 'app-game',
@@ -11,13 +12,9 @@ import {ModalComponent} from '../../shared/ui/modal/modal.component';
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',
 })
-export class GameComponent {
-  prestigeLvl: number = 0; //TODO: get from api
-  playerLvl: number = 15; //TODO: get from api
-
-  dishesCount: number = 0; //TODO: get from api
-  moneyCount: number = 0; //TODO: get from api
+export class GameComponent implements OnInit {
   authService = inject(AuthService);
+  gameService = inject(GameService);
 
   logoutWindowToggle: boolean = false;
   prestigeWindowToggle: boolean = false;
@@ -40,7 +37,7 @@ export class GameComponent {
 
   handleCook(): void {
     this.cookClickCount++;
-    this.dishesCount++;
+    this.gameService.dishesCount++;
 
     if (this.cookClickCount > 5) {
       //TODO: api post/cook
@@ -50,11 +47,11 @@ export class GameComponent {
   }
 
   handleSell(): void {
-    if (this.dishesCount <= 0) return;
+    if (this.gameService.dishesCount <= 0) return;
 
     this.sellClickCount++;
-    this.dishesCount--;
-    this.moneyCount++; //заглушка
+    this.gameService.dishesCount--;
+    this.gameService.moneyCount++; //заглушка
     if (this.sellClickCount > 5) {
       //TODO: api post/cook
       this.sellClickCount = 0;
@@ -66,12 +63,16 @@ export class GameComponent {
     this.authService.logout();
   }
 
+  ngOnInit(): void {
+    this.gameService.loadData();
+  }
+
   protected getPrestigeLvl(): string {
-    return formatNumber(this.prestigeLvl);
+    return formatNumber(this.gameService.prestigeLvl);
   }
 
   protected getPlayerLvlPercentage(): number {
     let nextLvl = 100; //TODO: get from api
-    return (this.playerLvl / nextLvl) * 100;
+    return (this.gameService.playerLvl / nextLvl) * 100;
   }
 }

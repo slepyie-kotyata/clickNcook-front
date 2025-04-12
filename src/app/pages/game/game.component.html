@@ -37,7 +37,7 @@
       </button>
     </div>
   </section>
-  <app-menu [cashCount]="moneyCount" [dishesCount]="dishesCount"></app-menu>
+  <app-menu></app-menu>
 </div>
 
 <div class="-z-10 fixed top-0 left-0">
@@ -72,7 +72,7 @@
       class="relative flex items-center justify-center w-[12.5dvw] h-[12.5dvw]">
       <img class="w-full" src="/icons/star.svg">
       <p
-        class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ prestigeLvl }}</p>
+        class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ this.gameService.prestigeLvl }}</p>
     </section>
     <p class="text-white text-2xl whitespace-nowrap">Сейчас накоплено <span
       class="font-bold">{{ prestigeProgressCount }}</span> Кулинарных звезд</p>
