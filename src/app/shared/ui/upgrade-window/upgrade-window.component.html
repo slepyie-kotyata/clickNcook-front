@@ -1,0 +1,21 @@
+<div class="px-5 py-5 pr-16 h-[75dvh]">
+  <div
+    #scrollContainer
+    class="bg-primary rounded-2xl border-2 border-black px-5 py-5 flex flex-col gap-5 h-full overflow-y-scroll scrollbar-hide">
+    <app-upgrade-button (buyEvent)="handleBuy($event)"
+                        *ngFor="let upgrade of availableUpgrades"
+                        [blocked]="upgrade.price > this.gameService.moneyCount"
+                        [upgrade]="upgrade"></app-upgrade-button>
+  </div>
+</div>
+
+<div class="absolute top-1/2 -translate-y-1/2 right-1.5 flex flex-col px-2">
+  <button (click)="scrollUp()" [disabled]="disableAllScrollButtons || isAtTop"
+          class="w-0 h-0 border-l-[15px] border-r-[15px] border-t-0 border-b-[50px] border-l-transparent border-r-transparent border-b-primary disabled:border-b-primary/45 my-32 border-black border-2"
+  ></button>
+
+  <button (click)="scrollDown()" [disabled]="disableAllScrollButtons || isAtBottom"
+          class="w-0 h-0 border-l-[15px] border-r-[15px] border-t-[50px] border-b-0 border-l-transparent border-r-transparent border-t-primary disabled:border-t-primary/45 my-32"
+  ></button>
+</div>
+

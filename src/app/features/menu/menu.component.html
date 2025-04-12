@@ -1,0 +1,67 @@
+<button
+  (click)="toggleMenu()"
+  class="bg-primary/45 absolute right-[1.5dvw] top-[1.5dvh] block 2xl:hidden rounded-xxl w-14 h-14 p-2 border-black border"
+>
+  <img src="/icons/menu-btn.png">
+</button>
+
+<div
+  *ngIf="isOpen || window.innerWidth > 1536"
+  class="z-50 bg-primary/45 absolute right-0 top-0 2xl:w-[30dvw] w-full h-full"
+>
+  <section
+    class="bg-primary h-14 sm:h-20 border-b-2 border-black flex flex-row items-center px-4 gap-4"
+  >
+    <button
+      (click)="toggleMenu()"
+      *ngIf="window.innerWidth <= 1536"
+      class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-300 rounded-xxl items-center text-center"
+    >
+      <img src="/icons/back.svg"/>
+    </button>
+    <span class="flex-1"></span>
+    <p class="text-xl sm:text-2xl">{{ getDishCount() }}</p>
+    <span
+      class="bg-secondary rounded-xxl w-12 h-10 sm:w-16 sm:h-14 flex items-center justify-center"
+    ><img class="w-full h-full" src="/icons/dishes.svg"
+    /></span>
+  </section>
+  <section
+    class="bg-primary h-14 sm:h-20 border-b-2 border-black flex flex-row items-center px-4 gap-4 justify-end"
+  >
+    <p class="text-xl sm:text-2xl">{{ getCashCount() }}</p>
+    <span
+      class="bg-secondary rounded-xxl w-12 h-10 sm:w-16 sm:h-14 flex items-center justify-center"
+    ><img class="w-full h-full" src="/icons/money.svg"
+    /></span>
+  </section>
+  <app-upgrade-window></app-upgrade-window>
+  <div
+    class="absolute bottom-0 w-full h-[8dvh] flex flex-row items-center justify-center px-1 gap-1"
+  >
+    <app-menu-button (onClick)="selectMenu($event)"
+                     [iconSource]="'/icons/fondue.svg'"
+                     [selected]="selected == 'menu'"
+                     [type]="'menu'"></app-menu-button>
+    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl < 5"
+                     [iconSource]="'/icons/table.svg'"
+                     [selected]="selected == 'equipment'"
+                     [type]="'equipment'"></app-menu-button>
+    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl < 25"
+                     [iconSource]="'/icons/upgrades.svg'"
+                     [selected]="selected == 'upgrade'"
+                     [type]="'upgrade'"></app-menu-button>
+    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl < 50"
+                     [iconSource]="'/icons/person.svg'"
+                     [selected]="selected == 'person'"
+                     [type]="'person'"></app-menu-button>
+    <app-menu-button [disabled]="true"
+                     [iconSource]="'/icons/menu.svg'"
+                     [selected]="false"
+                     [type]="'recipe'"></app-menu-button>
+    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl < 100"
+                     [iconSource]="'/icons/map.svg'"
+                     [selected]="selected == 'map'"
+                     [type]="'map'"></app-menu-button>
+  </div>
+</div>

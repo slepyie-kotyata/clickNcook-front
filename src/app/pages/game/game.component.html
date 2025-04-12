@@ -1,0 +1,88 @@
+<div class="z-30">
+  <section class="flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
+    <button (click)="setLogoutWindow(true)"
+            class="max-w-14 max-h-14 rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
+      <img
+        src="/icons/logout.svg"></button>
+    <button (click)="setPrestigeWindow(true)"
+            class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary max-w-14 max-h-14">
+      <img src="/icons/star.svg">
+      <p
+        class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ getPrestigeLvl() }}</p>
+    </button>
+    <div class="relative w-[200px] sm:w-[330px] h-[35px] hidden sm:block">
+      <progress
+        [value]="getPlayerLvlPercentage()"
+        class="w-full h-full rounded-full overflow-hidden border border-black bg-secondary appearance-none"
+        max="100">
+      </progress>
+      <p class="absolute right-3 top-1/2 transform -translate-y-1/2 text-black font-bold text-xl">
+        {{ getPlayerLvlPercentage() }}%
+      </p>
+    </div>
+  </section>
+  <section
+    class="bg-secondary rounded-t-xxl border border-black px-[5.5dvw] py-[5.5dvh] left-[12dvw] 2xl:left-[7dvw] absolute bottom-0 w-[75dvw] 2xl:w-[50dvw] h-[29dvh]">
+    <div class="w-full h-full flex flex-col md:flex-row gap-6 justify-end items-center">
+      <button (click)="handleCook()"
+              class="bg-primary rounded-xxl w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
+        <img
+          class="h-full"
+          src="/icons/cook.svg"></button>
+      <button (click)="handleSell()"
+              class="bg-primary rounded-xxl w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
+        <img
+          class="h-full"
+          src="/icons/sell.svg">
+      </button>
+    </div>
+  </section>
+  <app-menu></app-menu>
+</div>
+
+<div class="-z-10 fixed top-0 left-0">
+  <!--background-->
+</div>
+
+<app-modal (close)="setLogoutWindow(false)"
+           [closeOnBackdrop]="false"
+           [show]="logoutWindowToggle">
+  <div class="flex flex-col items-center">
+    <h2 class="text-white text-center md:text-4xl">Вы уверены что хотите выйти?</h2>
+    <section class="flex flex-row gap-5">
+      <button (click)="logout()"
+              class="bg-green-600 border-2 border-black mt-[2.5dvh] rounded-2xl px-[4.5dvw] py-[1.25dvh] font-bold text-2xl text-white">
+        Да
+      </button>
+      <button (click)="setLogoutWindow(false)"
+              class="bg-red border-2 border-black mt-[2.5dvh] rounded-2xl px-[4.5dvw] py-[1.25dvh] font-bold text-2xl text-white">
+        Нет
+      </button>
+    </section>
+  </div>
+</app-modal>
+
+<app-modal
+  (close)="setPrestigeWindow(false)"
+  [closeOnBackdrop]="true"
+  [show]="prestigeWindowToggle">
+  <div class="flex flex-col items-center">
+    <h2 class="text-white text-4xl">Кулинарные звезды</h2>
+    <section
+      class="relative flex items-center justify-center w-[12.5dvw] h-[12.5dvw]">
+      <img class="w-full" src="/icons/star.svg">
+      <p
+        class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ this.gameService.prestigeLvl }}</p>
+    </section>
+    <p class="text-white text-2xl whitespace-nowrap">Сейчас накоплено <span
+      class="font-bold">{{ prestigeProgressCount }}</span> Кулинарных звезд</p>
+    <p class="text-white text-2xl whitespace-nowrap">Сбросив сейчас вы получите бонус
+      <span class="font-bold">x{{ getPrestigeMultiplier() }}</span> к
+      пассивному доходу</p>
+    <button [disabled]="prestigeProgressCount<1"
+            class="bg-secondary disabled:bg-secondary/45 border-2 border-black mt-[2.5dvh] rounded-2xl px-[8.5dvw] py-[1.25dvh]">
+      Сбросить
+    </button>
+  </div>
+</app-modal>
+
