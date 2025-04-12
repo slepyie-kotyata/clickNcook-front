@@ -1,7 +1,7 @@
 <div class="z-30">
   <section class="flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
     <button (click)="setLogoutWindow(true)"
-            class="w-[2.75dvw] h-[2.75dvw] rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
+            class="max-w-14 max-h-14 rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
       <img
         src="/icons/logout.svg"></button>
     <button (click)="setPrestigeWindow(true)"
@@ -10,7 +10,7 @@
       <p
         class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ getPrestigeLvl() }}</p>
     </button>
-    <div class="relative w-[200px] sm:w-[330px] h-[35px]">
+    <div class="relative w-[200px] sm:w-[330px] h-[35px] hidden sm:block">
       <progress
         [value]="getPlayerLvlPercentage()"
         class="w-full h-full rounded-full overflow-hidden border border-black bg-secondary appearance-none"

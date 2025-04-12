@@ -9,7 +9,7 @@ import { GameApiService } from './game-api.service';
 })
 export class GameService {
   public playerXP: number = 0;
-  public playerLvl: number = 0;
+  public playerLvl: number = 120;
   public moneyCount: number = 0;
   public dishesCount: number = 0;
   public prestigeLvl: number = 0;

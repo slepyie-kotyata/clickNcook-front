@@ -1,8 +1,8 @@
 <button
   (click)="toggleMenu()"
-  class="bg-primary/45 absolute right-[1.5dvw] top-[1.5dvh] block 2xl:hidden rounded-xxl w-14 h-14"
+  class="bg-primary/45 absolute right-[1.5dvw] top-[1.5dvh] block 2xl:hidden rounded-xxl w-14 h-14 p-2 border-black border"
 >
-  ===
+  <img src="/icons/menu-btn.png">
 </button>
 
 <div
@@ -10,29 +10,29 @@
   class="z-50 bg-primary/45 absolute right-0 top-0 2xl:w-[30dvw] w-full h-full"
 >
   <section
-    class="bg-primary h-20 border-b-2 border-black flex flex-row items-center px-4 gap-4"
+    class="bg-primary h-14 sm:h-20 border-b-2 border-black flex flex-row items-center px-4 gap-4"
   >
     <button
       (click)="toggleMenu()"
       *ngIf="window.innerWidth <= 1536"
-      class="w-12 h-12 bg-blue-300 rounded-xxl items-center text-center"
+      class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-300 rounded-xxl items-center text-center"
     >
       <img src="/icons/back.svg"/>
     </button>
     <span class="flex-1"></span>
-    <p class="text-2xl">{{ getDishCount() }}</p>
+    <p class="text-xl sm:text-2xl">{{ getDishCount() }}</p>
     <span
-      class="bg-secondary rounded-xxl w-16 h-14 flex items-center justify-center"
-    ><img src="/icons/dishes.svg"
+      class="bg-secondary rounded-xxl w-12 h-10 sm:w-16 sm:h-14 flex items-center justify-center"
+    ><img class="w-full h-full" src="/icons/dishes.svg"
     /></span>
   </section>
   <section
-    class="bg-primary h-20 border-b-2 border-black flex flex-row items-center px-4 gap-4 justify-end"
+    class="bg-primary h-14 sm:h-20 border-b-2 border-black flex flex-row items-center px-4 gap-4 justify-end"
   >
-    <p class="text-2xl">{{ getCashCount() }}</p>
+    <p class="text-xl sm:text-2xl">{{ getCashCount() }}</p>
     <span
-      class="bg-secondary rounded-xxl w-16 h-14 flex items-center justify-center"
-    ><img src="/icons/money.svg"
+      class="bg-secondary rounded-xxl w-12 h-10 sm:w-16 sm:h-14flex items-center justify-center"
+    ><img class="w-full h-full" src="/icons/money.svg"
     /></span>
   </section>
   <app-upgrade-window></app-upgrade-window>
