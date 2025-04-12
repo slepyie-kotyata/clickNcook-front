@@ -1,20 +1,22 @@
-<button class="bg-black/25 rounded-2xl m-5 flex grid grid-cols-2">
+<button class="bg-black/25 rounded-2xl m-5 ml-8 flex flex-row w-11/12">
   <!-- flex flex-col // отступы между / занимаемая ширина для отдельных элементов -->
-  <div class="my-2.5 ml-4 flex">
+  <div class="my-2.5 ml-4 flex basis-1/6">
     <img
       alt=""
       class="bg-primary w-16 h-16 rounded-2xl"
       src="/icons/waiter-with-dishes.svg"
     />
-    <div class="mx-2.5 place-content-center text-secondary">cook 2x speed</div> <!-- переменная -->
   </div>
-  <div class="my-2.5 mr-4 flex flex-row-reverse">
+  <div class="place-content-center text-secondary basis-2/6">cook 2x speed</div>
+  <!-- переменная -->
+  <div class="place-content-center text-secondary basis-2/6">1000 $</div>
+  <!-- переменная -->
+  <div class="my-2.5 mr-4 flex flex-row-reverse basis-1/6">
     <img
       alt=""
       class="bg-primary w-16 h-16 rounded-2xl border-2 border-secondary"
       src="/icons/sell.svg"
     />
     <!-- ngIf || ngClass // + переменная -->
-    <div class="ml-2.5 place-content-center mx-2.5 text-secondary">1000 $</div>  <!-- переменная -->
   </div>
 </button>
