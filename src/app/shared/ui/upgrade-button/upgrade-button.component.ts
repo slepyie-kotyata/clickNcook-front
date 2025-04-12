@@ -11,7 +11,7 @@ import { NgIf } from '@angular/common';
 export class UpgradeButtonComponent {
   @Input() buy: boolean = false;
   @Input() blocked: boolean = false;
-  @Input() price: string = '';
+  @Input() price: string = '1';
   @Input() nameUpgrade: string = 'cook';
   @Input() valueUpgrade: string = '';
 }
