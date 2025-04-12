@@ -1,32 +1,52 @@
-<button (click)="toggleMenu()"
-        class="bg-primary/45 absolute right-[1.5dvw] top-[1.5dvh] block 2xl:hidden rounded-xxl w-14 h-14">===
+<button
+  (click)="toggleMenu()"
+  class="bg-primary/45 absolute right-[1.5dvw] top-[1.5dvh] block 2xl:hidden rounded-xxl w-14 h-14"
+>
+  ===
 </button>
 
-<div *ngIf="isOpen || window.innerWidth > 1536"
-     class="z-50 bg-primary/45 absolute right-0 top-0 2xl:w-[30dvw] w-full h-full">
-  <section class="bg-primary h-20 border-b-2 border-black flex flex-row items-center px-4 gap-4">
-    <button (click)="toggleMenu()" *ngIf="window.innerWidth <= 1536"
-            class="w-12 h-12 bg-blue-300 rounded-xxl items-center text-center"><img
-      src="/icons/back.svg"></button>
+<div
+  *ngIf="isOpen || window.innerWidth > 1536"
+  class="z-50 bg-primary/45 absolute right-0 top-0 2xl:w-[30dvw] w-full h-full"
+>
+  <section
+    class="bg-primary h-20 border-b-2 border-black flex flex-row items-center px-4 gap-4"
+  >
+    <button
+      (click)="toggleMenu()"
+      *ngIf="window.innerWidth <= 1536"
+      class="w-12 h-12 bg-blue-300 rounded-xxl items-center text-center"
+    >
+      <img src="/icons/back.svg"/>
+    </button>
     <span class="flex-1"></span>
     <p class="text-2xl">{{ getDishCount() }}</p>
-    <span class="bg-secondary rounded-xxl w-16 h-14 justify-end flex items-center justify-center"><img
-      src="/icons/dishes.svg"></span>
+    <span
+      class="bg-secondary rounded-xxl w-16 h-14 justify-end flex items-center justify-center"
+    ><img src="/icons/dishes.svg"
+    /></span>
   </section>
-  <section class="bg-primary h-20 border-b-2 border-black flex flex-row items-center px-4 gap-4 justify-end">
+  <section
+    class="bg-primary h-20 border-b-2 border-black flex flex-row items-center px-4 gap-4 justify-end"
+  >
     <p class="text-2xl">{{ getCashCount() }}</p>
-    <span class="bg-secondary rounded-xxl w-16 h-14 justify-end flex items-center justify-center"><img
-      src="/icons/money.svg"></span>
+    <span
+      class="bg-secondary rounded-xxl w-16 h-14 justify-end flex items-center justify-center"
+    ><img src="/icons/money.svg"
+    /></span>
   </section>
-  <div>
-    <!-- Your restaurant menu items will go here -->
-  </div>
-  <div class="absolute bottom-0 w-full h-[8dvh] flex flex-row items-center justify-center px-1 gap-1">
+  <app-upgrade-window></app-upgrade-window>
+  <div
+    class="absolute bottom-0 w-full h-[8dvh] flex flex-row items-center justify-center px-1 gap-1"
+  >
     <app-menu-button [iconSource]="'/icons/fondue.svg'"></app-menu-button>
     <app-menu-button [iconSource]="'/icons/table.svg'"></app-menu-button>
     <app-menu-button [iconSource]="'/icons/upgrades.svg'"></app-menu-button>
     <app-menu-button [iconSource]="'/icons/person.svg'"></app-menu-button>
-    <app-menu-button [disabled]="true" [iconSource]="'/icons/menu.svg'"></app-menu-button>
+    <app-menu-button
+      [disabled]="true"
+      [iconSource]="'/icons/menu.svg'"
+    ></app-menu-button>
     <app-menu-button [iconSource]="'/icons/map.svg'"></app-menu-button>
   </div>
 </div>
