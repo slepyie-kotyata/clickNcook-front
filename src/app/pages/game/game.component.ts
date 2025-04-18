@@ -23,6 +23,7 @@ export class GameComponent implements OnInit {
 
   prestigeProgressCount: number = 0;
   showResolutionWarning: boolean = false;
+  private cookClickCount = 0;
   private sellClickCount = 0;
 
   getPrestigeMultiplier(): number {
