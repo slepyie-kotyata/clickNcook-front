@@ -14,7 +14,7 @@ export class GameService {
   public prestigeLvl: number = 0;
 
   selectedMenuType: BehaviorSubject<upgrades> = new BehaviorSubject<upgrades>(
-    'menu',
+    'dish',
   );
 
   private apiService = inject(GameApiService);

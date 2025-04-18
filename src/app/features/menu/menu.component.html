@@ -24,8 +24,8 @@
   >
     <app-menu-button (onClick)="selectMenu($event)"
                      [iconSource]="'/icons/fondue.svg'"
-                     [selected]="selected == 'menu'"
-                     [type]="'menu'"></app-menu-button>
+                     [selected]="selected == 'dish'"
+                     [type]="'dish'"></app-menu-button>
     <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl < 5"
                      [iconSource]="'/icons/table.svg'"
                      [selected]="selected == 'equipment'"

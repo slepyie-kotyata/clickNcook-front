@@ -21,7 +21,7 @@ import { upgrades } from '../../../entities/types';
 })
 export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   gameService = inject(GameService);
-  selectedType: upgrades = 'menu';
+  selectedType: upgrades = 'dish';
   upgrades: IUpgrade[] = [];
   availableUpgrades: IUpgrade[] = [];
 
@@ -49,139 +49,47 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   getAvailableUpgrades() {
     //TODO: get from api
     this.upgrades = [
-      //заглушка
-      {
-        id: 0,
-        icon_name: 'hamburger',
-        upgrade_type: 'menu',
-        name: 'Гамбургер',
-        price: 100,
-      },
       {
         id: 1,
-        icon_name: 'hotdog',
-        upgrade_type: 'menu',
-        name: 'Хот-дог',
-        price: 250,
+        name: 'Гамбургер',
+        icon_name: 'hamburger',
+        upgrade_type: 'dish',
+        price: 10,
+        access_level: 0,
+        boost: {
+          id: 1,
+          boost_type: 'dishes per click',
+          value: 2,
+          upgrade_id: 1,
+        },
       },
       {
         id: 2,
-        icon_name: 'pizza',
-        upgrade_type: 'menu',
-        name: 'Пицца',
-        price: 700,
+        name: 'Хот-дог',
+        icon_name: 'hotdog',
+        upgrade_type: 'dish',
+        price: 25,
+        access_level: 1,
+        boost: {
+          id: 1,
+          boost_type: 'dishes per click',
+          value: 3,
+          upgrade_id: 2,
+        },
       },
       {
         id: 3,
-        icon_name: 'burrito',
-        upgrade_type: 'menu',
-        name: 'Буррито',
-        price: 2000,
-      },
-      {
-        id: 4,
-        icon_name: 'stovetop',
-        upgrade_type: 'equipment',
-        name: 'Новая плита',
-        price: 500,
-      },
-      {
-        id: 5,
-        icon_name: 'gas-burner',
-        upgrade_type: 'equipment',
-        name: 'Газовая горелка',
-        price: 1000,
-      },
-      {
-        id: 6,
-        icon_name: 'cooker',
-        upgrade_type: 'equipment',
-        name: 'Профессиональная духовка',
-        price: 3000,
-      },
-      {
-        id: 7,
-        icon_name: 'dishes',
-        upgrade_type: 'upgrade',
-        name: 'Продвижение новых блюд',
-        price: 1500,
-      },
-      {
-        id: 8,
-        icon_name: 'price',
-        upgrade_type: 'upgrade',
-        name: 'Повышение цен',
-        price: 3000,
-      },
-      {
-        id: 9,
-        icon_name: 'waiter',
-        upgrade_type: 'person',
-        name: 'Официант',
-        price: 2000,
-      },
-      {
-        id: 10,
-        icon_name: 'chef',
-        upgrade_type: 'person',
-        name: 'Шеф-повар',
-        price: 5000,
-      },
-      {
-        id: 11,
-        icon_name: 'track',
-        upgrade_type: 'map',
-        name: 'Фуд-трак',
-        price: 5000,
-      },
-      {
-        id: 12,
-        icon_name: 'cafe',
-        upgrade_type: 'map',
-        name: 'Маленькое кафе',
-        price: 15000,
-      },
-      {
-        id: 13,
-        icon_name: 'restaurant',
-        upgrade_type: 'map',
-        name: 'Семейный ресторан',
-        price: 50000,
-      },
-      {
-        id: 14,
-        icon_name: 'big-restaurant',
-        upgrade_type: 'map',
-        name: 'Гастраномический ресторан',
-        price: 150000,
-      },
-      {
-        id: 15,
-        icon_name: 'desert',
-        upgrade_type: 'menu',
-        name: 'Сет десертов',
-        price: 150000,
-      },
-      {
-        id: 16,
-        icon_name: 'steak',
-        upgrade_type: 'menu',
-        name: 'Стейк',
-        price: 150000,
-      },
-      {
-        id: 17,
-        icon_name: 'ramen',
-        upgrade_type: 'menu',
-        name: 'Рамен',
-        price: 150000,
-      },
-      {
-        id: 18,
-        icon_name: 'lobster',
-        upgrade_type: 'menu',
-        name: 'Лобстер',
-        price: 150000,
+        name: 'Пицца',
+        icon_name: 'pizza',
+        upgrade_type: 'dish',
+        price: 100,
+        access_level: 2,
+        boost: {
+          id: 1,
+          boost_type: 'dishes per click',
+          value: 5,
+          upgrade_id: 3,
+        },
       },
     ];
 

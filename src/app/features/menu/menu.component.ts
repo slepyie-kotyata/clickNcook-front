@@ -16,7 +16,7 @@ import { upgrades } from '../../entities/types';
 export class MenuComponent implements OnInit {
   gameService = inject(GameService);
   isOpen: boolean = false;
-  selected: upgrades = 'menu';
+  selected: upgrades = 'dish';
   protected readonly window = window;
 
   getDishCount(): string {

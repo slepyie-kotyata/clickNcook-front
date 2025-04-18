@@ -1,5 +1,5 @@
 export type upgrades =
-  | 'menu'
+  | 'dish'
   | 'equipment'
   | 'upgrade'
   | 'recipe'
