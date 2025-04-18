@@ -17,14 +17,26 @@ export class GameApiService {
   } | null>(null);
 
   getGameInit(): Observable<{
-    session: { ID: number; Money: number; Dishes: []; UserID: number };
+    session: {
+      id: number;
+      money: number;
+      dishes: number;
+      upgrades: [];
+      user_id: number;
+    };
     status: number;
   }> {
     return this.tokenSubject.pipe(
       take(1),
       switchMap((token) => {
         return this.httpClient.get<{
-          session: { ID: number; Money: number; Dishes: []; UserID: number };
+          session: {
+            id: number;
+            money: number;
+            dishes: number;
+            upgrades: [];
+            user_id: number;
+          };
           status: number;
         }>(this.api + 'game/init', {
           headers: {

@@ -1,5 +1,4 @@
 import { inject, Injectable } from '@angular/core';
-import { IUser } from '../../../entities/user';
 import { BehaviorSubject } from 'rxjs';
 import { upgrades } from '../../../entities/types';
 import { GameApiService } from './game-api.service';
@@ -22,11 +21,19 @@ export class GameService {
 
   loadData() {
     this.apiService.getGameInit().subscribe((response) => {
-      this.moneyCount = response.session.Money;
+      this.moneyCount = response.session.money;
+      let user = {
+        id: response.session.id,
+        user_id: response.session.user_id,
+        lvl: this.playerLvl,
+        money: this.moneyCount,
+        dishes: this.dishesCount,
+        prestige: this.prestigeLvl,
+      };
+      let userJSON = JSON.stringify(user);
+      localStorage.setItem('user', userJSON);
       console.log(response.session);
     });
-
-    this.localSave();
   }
 
   decreaseMoney(value: number) {
@@ -37,16 +44,5 @@ export class GameService {
 
   selectMenuType(type: upgrades) {
     this.selectedMenuType.next(type);
-  }
-
-  private localSave() {
-    let userData: IUser = {
-      lvl: this.playerLvl,
-      money: this.moneyCount,
-      dishes: this.dishesCount,
-      prestige: this.prestigeLvl,
-    };
-    let userDataJson = JSON.stringify(userData);
-    localStorage.setItem('user', userDataJson);
   }
 }
