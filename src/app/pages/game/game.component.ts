@@ -4,11 +4,12 @@ import formatNumber from '../../shared/lib/formatNumber';
 import { AuthService } from '../../shared/lib/services/auth.service';
 import { ModalComponent } from '../../shared/ui/modal/modal.component';
 import { GameService } from '../../shared/lib/services/game.service';
+import {TrackComponent} from '../../shared/ui/locations/track/track.component';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [MenuComponent, ModalComponent],
+  imports: [MenuComponent, ModalComponent, TrackComponent],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',
 })
