@@ -1,24 +1,7 @@
-<button
-  (click)="toggleMenu()"
-  class="bg-primary/45 absolute right-[1.5dvw] top-[1.5dvh] block 2xl:hidden rounded-xxl w-14 h-14 p-2 border-black border"
->
-  <img src="/icons/menu-btn.png">
-</button>
-
-<div
-  *ngIf="isOpen || window.innerWidth > 1536"
-  class="z-50 bg-primary/45 absolute right-0 top-0 2xl:w-[30dvw] w-full h-full"
->
+<div class="z-10 bg-primary/45 absolute right-0 top-0 w-[30dvw] h-full">
   <section
     class="bg-primary h-14 sm:h-20 border-b-2 border-black flex flex-row items-center px-4 gap-4"
   >
-    <button
-      (click)="toggleMenu()"
-      *ngIf="window.innerWidth <= 1536"
-      class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-300 rounded-xxl items-center text-center"
-    >
-      <img src="/icons/back.svg"/>
-    </button>
     <span class="flex-1"></span>
     <p class="text-xl sm:text-2xl">{{ getDishCount() }}</p>
     <span

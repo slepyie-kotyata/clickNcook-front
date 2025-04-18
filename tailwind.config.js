@@ -7,6 +7,7 @@ module.exports = {
         primary: "#6F56FF",
         secondary: "#FFEB9C",
         red: "#CB3D3D",
+        sky: "#89E4FF",
       },
       borderRadius: {
         xxl: "50px",
