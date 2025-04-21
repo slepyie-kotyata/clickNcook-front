@@ -36,15 +36,15 @@
                      [type]="'upgrade'"></app-menu-button>
     <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl < 50"
                      [iconSource]="'/icons/person.svg'"
-                     [selected]="selected == 'person'"
-                     [type]="'person'"></app-menu-button>
+                     [selected]="selected == 'employee'"
+                     [type]="'employee'"></app-menu-button>
     <app-menu-button [disabled]="true"
                      [iconSource]="'/icons/menu.svg'"
                      [selected]="false"
                      [type]="'recipe'"></app-menu-button>
     <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl < 100"
                      [iconSource]="'/icons/map.svg'"
-                     [selected]="selected == 'map'"
-                     [type]="'map'"></app-menu-button>
+                     [selected]="selected == 'point'"
+                     [type]="'point'"></app-menu-button>
   </div>
 </div>

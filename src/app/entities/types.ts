@@ -1,7 +1,7 @@
-export type upgrades =
+export type Upgrade =
   | 'dish'
   | 'equipment'
   | 'upgrade'
   | 'recipe'
-  | 'person'
-  | 'map';
+  | 'employee'
+  | 'point';

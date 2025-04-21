@@ -1,21 +1,22 @@
-import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { upgrades } from '../../../entities/types';
-import { GameApiService } from './game-api.service';
+import {inject, Injectable} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
+import {Upgrade} from '../../../entities/types';
+import {GameApiService} from './game-api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameService {
   public playerXP: number = 0;
-  public playerLvl: number = 120;
   public moneyCount: number = 0;
   public dishesCount: number = 0;
   public prestigeLvl: number = 0;
 
-  selectedMenuType: BehaviorSubject<upgrades> = new BehaviorSubject<upgrades>(
+  selectedMenuType: BehaviorSubject<Upgrade> = new BehaviorSubject<Upgrade>(
     'dish',
   );
+
+  playerLvl: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   private apiService = inject(GameApiService);
 
@@ -32,7 +33,6 @@ export class GameService {
       };
       let userJSON = JSON.stringify(user);
       localStorage.setItem('user', userJSON);
-      console.log(response.session);
     });
   }
 
@@ -42,7 +42,12 @@ export class GameService {
     this.moneyCount -= value;
   }
 
-  selectMenuType(type: upgrades) {
+  selectMenuType(type: Upgrade) {
     this.selectedMenuType.next(type);
+  }
+
+  levelUp() {
+    //TODO: get from API
+    this.playerLvl.next(this.playerLvl.getValue() + 1);
   }
 }

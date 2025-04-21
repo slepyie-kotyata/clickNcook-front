@@ -1,20 +1,20 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgClass, NgIf } from '@angular/common';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {NgClass} from '@angular/common';
 import formatNumber from '../../lib/formatNumber';
 import getIcon from '../../lib/icons';
-import { IUpgrade } from '../../../entities/upgrade';
-import { upgrades } from '../../../entities/types';
+import {IUpgrade} from '../../../entities/upgrade';
+import {Upgrade} from '../../../entities/types';
 
 @Component({
   selector: 'app-upgrade-button',
   standalone: true,
-  imports: [NgIf, NgClass],
+  imports: [NgClass],
   templateUrl: './upgrade-button.component.html',
   styleUrl: './upgrade-button.component.css',
 })
 export class UpgradeButtonComponent {
-  @Input({ required: true }) upgrade: IUpgrade;
-  @Input({ required: true }) blocked: boolean;
+  @Input({required: true}) upgrade: IUpgrade;
+  @Input({required: true}) blocked: boolean;
 
   @Output() buyEvent: EventEmitter<number> = new EventEmitter();
 
@@ -28,7 +28,7 @@ export class UpgradeButtonComponent {
 
   icon(): string {
     return getIcon(
-      this.upgrade.upgrade_type as upgrades,
+      this.upgrade.upgrade_type as Upgrade,
       this.upgrade.icon_name,
     );
   }

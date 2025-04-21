@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgClass } from '@angular/common';
-import { upgrades } from '../../../entities/types';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {NgClass} from '@angular/common';
+import {Upgrade} from '../../../entities/types';
 
 @Component({
   selector: 'app-menu-button',
@@ -10,11 +10,11 @@ import { upgrades } from '../../../entities/types';
   styleUrl: './menu-button.component.css',
 })
 export class MenuButtonComponent {
-  @Input({ required: true }) iconSource: string = '';
-  @Input({ required: true }) selected: boolean = false;
-  @Input({ required: true }) type: upgrades;
+  @Input({required: true}) iconSource: string = '';
+  @Input({required: true}) selected: boolean = false;
+  @Input({required: true}) type: Upgrade;
   @Input() disabled: boolean = false;
-  @Output() onClick: EventEmitter<upgrades> = new EventEmitter<upgrades>();
+  @Output() onClick: EventEmitter<Upgrade> = new EventEmitter<Upgrade>();
 
   handleClick() {
     if (!this.disabled) {
