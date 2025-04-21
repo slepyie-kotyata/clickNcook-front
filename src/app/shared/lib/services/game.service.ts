@@ -32,7 +32,6 @@ export class GameService {
       };
       let userJSON = JSON.stringify(user);
       localStorage.setItem('user', userJSON);
-      console.log(response.session);
     });
   }
 
