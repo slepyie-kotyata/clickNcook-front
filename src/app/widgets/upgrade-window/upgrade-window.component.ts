@@ -16,7 +16,9 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   gameService = inject(GameService);
   selectedType: Upgrade = 'dish';
   upgrades: IUpgrade[] = [];
+  currentUpgrades: IUpgrade[] = [];
   availableUpgrades: IUpgrade[] = [];
+
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   isAtTop = true;
@@ -35,12 +37,29 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
 
     if (price) {
       this.gameService.decreaseMoney(price);
-      this.availableUpgrades = this.upgrades.filter((x) => x.id != id);
+      this.currentUpgrades.push(this.upgrades.find(x => x.id == id) as IUpgrade);
+      this.refreshUpgradesList();
     }
   }
 
   getAvailableUpgrades() {
     //TODO: get from api
+    this.currentUpgrades = [
+      {
+        id: 1,
+        name: 'Гамбургер',
+        icon_name: 'hamburger',
+        upgrade_type: 'dish',
+        price: 10,
+        access_level: 0,
+        boost: {
+          id: 1,
+          boost_type: 'dishes per click',
+          value: 2,
+        },
+      },
+    ]
+
     this.upgrades = [
       {
         id: 1,
@@ -87,11 +106,11 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   }
 
   refreshUpgradesList() {
-    this.availableUpgrades = this.upgrades.filter(
-      (u) => u.upgrade_type == this.selectedType,
-    );
+    this.availableUpgrades = this.upgrades.filter(u =>
+      !this.currentUpgrades.some(c => c.id === u.id) &&
+      u.upgrade_type === this.selectedType);
 
-    setTimeout(() => this.updateScrollButtons());
+    setTimeout(() => this.updateScrollButtons(), 10);
   }
 
   scrollUp(): void {
