@@ -3,5 +3,5 @@ export type Upgrade =
   | 'equipment'
   | 'upgrade'
   | 'recipe'
-  | 'person'
-  | 'map';
+  | 'employee'
+  | 'point';
