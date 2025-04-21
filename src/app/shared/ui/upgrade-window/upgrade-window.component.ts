@@ -1,16 +1,9 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { UpgradeButtonComponent } from '../upgrade-button/upgrade-button.component';
-import { IUpgrade } from '../../../entities/upgrade';
-import { NgForOf } from '@angular/common';
-import { GameService } from '../../lib/services/game.service';
-import { upgrades } from '../../../entities/types';
+import {AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild,} from '@angular/core';
+import {UpgradeButtonComponent} from '../upgrade-button/upgrade-button.component';
+import {IUpgrade} from '../../../entities/upgrade';
+import {NgForOf} from '@angular/common';
+import {GameService} from '../../lib/services/game.service';
+import {Upgrade} from '../../../entities/types';
 
 @Component({
   selector: 'app-upgrade-window',
@@ -21,7 +14,7 @@ import { upgrades } from '../../../entities/types';
 })
 export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   gameService = inject(GameService);
-  selectedType: upgrades = 'dish';
+  selectedType: Upgrade = 'dish';
   upgrades: IUpgrade[] = [];
   availableUpgrades: IUpgrade[] = [];
 

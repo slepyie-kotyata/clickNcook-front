@@ -1,4 +1,4 @@
-export type upgrades =
+export type Upgrade =
   | 'dish'
   | 'equipment'
   | 'upgrade'
