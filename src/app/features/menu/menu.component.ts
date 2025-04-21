@@ -1,7 +1,7 @@
 import {Component, inject, OnInit} from '@angular/core';
 import formatNumber from '../../shared/lib/formatNumber';
 import {MenuButtonComponent} from '../../shared/ui/menu-button/menu-button.component';
-import {UpgradeWindowComponent} from '../../shared/ui/upgrade-window/upgrade-window.component';
+import {UpgradeWindowComponent} from '../../widgets/upgrade-window/upgrade-window.component';
 import {GameService} from '../../shared/lib/services/game.service';
 import {Upgrade} from '../../entities/types';
 

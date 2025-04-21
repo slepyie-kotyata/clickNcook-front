@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild,} from '@angular/core';
-import {UpgradeButtonComponent} from '../upgrade-button/upgrade-button.component';
-import {IUpgrade} from '../../../entities/upgrade';
+import {UpgradeButtonComponent} from '../../shared/ui/upgrade-button/upgrade-button.component';
+import {IUpgrade} from '../../entities/upgrade';
 import {NgForOf} from '@angular/common';
-import {GameService} from '../../lib/services/game.service';
-import {Upgrade} from '../../../entities/types';
+import {GameService} from '../../shared/lib/services/game.service';
+import {Upgrade} from '../../entities/types';
 
 @Component({
   selector: 'app-upgrade-window',
@@ -53,7 +53,6 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
           id: 1,
           boost_type: 'dishes per click',
           value: 2,
-          upgrade_id: 1,
         },
       },
       {
@@ -67,7 +66,6 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
           id: 1,
           boost_type: 'dishes per click',
           value: 3,
-          upgrade_id: 2,
         },
       },
       {
@@ -81,7 +79,6 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
           id: 1,
           boost_type: 'dishes per click',
           value: 5,
-          upgrade_id: 3,
         },
       },
     ];
