@@ -45,19 +45,19 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   getAvailableUpgrades() {
     //TODO: get from api
     this.currentUpgrades = [
-      {
-        id: 1,
-        name: 'Гамбургер',
-        icon_name: 'hamburger',
-        upgrade_type: 'dish',
-        price: 10,
-        access_level: 0,
-        boost: {
-          id: 1,
-          boost_type: 'dishes per click',
-          value: 2,
-        },
-      },
+      // {
+      //   id: 1,
+      //   name: 'Гамбургер',
+      //   icon_name: 'hamburger',
+      //   upgrade_type: 'dish',
+      //   price: 10,
+      //   access_level: 0,
+      //   boost: {
+      //     id: 1,
+      //     boost_type: 'dishes per click',
+      //     value: 2,
+      //   },
+      // },
     ]
 
     this.upgrades = [
@@ -108,7 +108,8 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   refreshUpgradesList() {
     this.availableUpgrades = this.upgrades.filter(u =>
       !this.currentUpgrades.some(c => c.id === u.id) &&
-      u.upgrade_type === this.selectedType);
+      u.upgrade_type === this.selectedType &&
+      u.access_level <= this.gameService.playerLvl.getValue());
 
     setTimeout(() => this.updateScrollButtons(), 10);
   }
@@ -155,6 +156,10 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
       this.selectedType = type;
       this.refreshUpgradesList();
     });
+
+    this.gameService.playerLvl.subscribe(() => {
+      this.refreshUpgradesList();
+    })
   }
 
   ngAfterViewInit(): void {

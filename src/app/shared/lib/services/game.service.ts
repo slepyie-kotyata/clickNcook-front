@@ -8,7 +8,6 @@ import {GameApiService} from './game-api.service';
 })
 export class GameService {
   public playerXP: number = 0;
-  public playerLvl: number = 120;
   public moneyCount: number = 0;
   public dishesCount: number = 0;
   public prestigeLvl: number = 0;
@@ -16,6 +15,8 @@ export class GameService {
   selectedMenuType: BehaviorSubject<Upgrade> = new BehaviorSubject<Upgrade>(
     'dish',
   );
+
+  playerLvl: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   private apiService = inject(GameApiService);
 
@@ -43,5 +44,10 @@ export class GameService {
 
   selectMenuType(type: Upgrade) {
     this.selectedMenuType.next(type);
+  }
+
+  levelUp() {
+    //TODO: get from API
+    this.playerLvl.next(this.playerLvl.getValue() + 1);
   }
 }
