@@ -1,4 +1,4 @@
-import { upgrades } from './types';
+import {upgrades} from './types';
 
 export interface IUpgrade {
   id: number;
@@ -14,5 +14,4 @@ export interface IBoost {
   id: number;
   boost_type: string;
   value: number;
-  upgrade_id: number;
 }
