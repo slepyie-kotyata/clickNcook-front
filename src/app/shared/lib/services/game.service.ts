@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, delay, of } from 'rxjs';
 import { Upgrade } from '../../../entities/types';
 import { GameApiService } from './game-api.service';
 import { AuthService } from './auth.service';
@@ -37,7 +37,11 @@ export class GameService {
         };
         let userJSON = JSON.stringify(user);
         localStorage.setItem('user', userJSON);
-        this.isLoaded = true;
+        of(true)
+          .pipe(delay(1000))
+          .subscribe(() => {
+            this.isLoaded = true;
+          });
       },
       (error) => {
         this.toastr.error('Ошибка загрузки данных');
