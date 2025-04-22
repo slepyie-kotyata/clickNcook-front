@@ -6,11 +6,18 @@ import { ModalComponent } from '../../shared/ui/modal/modal.component';
 import { GameService } from '../../shared/lib/services/game.service';
 import { TrackComponent } from '../../shared/ui/locations/track/track.component';
 import { NgIf } from '@angular/common';
+import { LoadingComponent } from '../../shared/ui/loading/loading.component';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [MenuComponent, ModalComponent, TrackComponent, NgIf],
+  imports: [
+    MenuComponent,
+    ModalComponent,
+    TrackComponent,
+    NgIf,
+    LoadingComponent,
+  ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',
 })
