@@ -19,7 +19,7 @@ export class GameApiService {
   cook(count: number): Observable<{ dishes: number; status: number }> {
     return this.httpClient.patch<{ dishes: number; status: number }>(
       this.api + 'game/cook',
-      { clickCount: count },
+      { click_count: count },
     );
   }
 
@@ -30,6 +30,6 @@ export class GameApiService {
       dishes: number;
       money: number;
       status: number;
-    }>(this.api + 'game/sell', { clickCount: count });
+    }>(this.api + 'game/sell', { click_count: count });
   }
 }
