@@ -65,7 +65,7 @@ export class GameComponent implements OnInit {
     }
 
     if (this.cookClickCount >= 5) {
-      this.gameService.handleCook();
+      this.gameService.handleCook(this.cookClickCount);
       this.cookClickCount = 0;
     }
   }
@@ -85,11 +85,12 @@ export class GameComponent implements OnInit {
     if (totalMoneyCount > 0) {
       this.sellClickCount++;
       this.gameService.dishesCount--;
+      if (totalMoneyMultiplier === 0) totalMoneyMultiplier = 1;
       this.gameService.moneyCount += totalMoneyCount * totalMoneyMultiplier;
     }
 
     if (this.sellClickCount >= 5) {
-      this.gameService.handleSell();
+      this.gameService.handleSell(this.sellClickCount);
       this.sellClickCount = 0;
     }
   }

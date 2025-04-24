@@ -32,19 +32,6 @@ export class GameService {
         this.moneyCount = response.session.money;
         this.dishesCount = response.session.dishes;
         this.userUpgrades = response.session.upgrades;
-        this.userUpgrades.push({
-          id: 0,
-          name: 'Сэндвич',
-          icon_name: 'sandwich',
-          upgrade_type: 'dish',
-          price: 0,
-          access_level: 0,
-          boost: {
-            id: 0,
-            boost_type: 'mPc',
-            value: 1,
-          },
-        });
         let user = {
           id: response.session.user_id,
           lvl: this.playerLvl.value,
@@ -66,9 +53,23 @@ export class GameService {
     );
   }
 
-  handleCook() {
-    this.apiService.cook().subscribe(
+  handleCook(count: number) {
+    this.apiService.cook(count).subscribe(
       (response) => {
+        this.dishesCount = response.dishes;
+      },
+      (error) => {
+        if (error.error.code != 400 && error.error.code != 403) {
+          this.handleServerError(error, 'Серверная ошибка');
+        }
+      },
+    );
+  }
+
+  handleSell(count: number) {
+    this.apiService.sell(count).subscribe(
+      (response) => {
+        this.moneyCount = response.money;
         this.dishesCount = response.dishes;
       },
       (error) => {
@@ -79,21 +80,9 @@ export class GameService {
     );
   }
 
-  handleSell() {
-    this.apiService.sell().subscribe(
-      (response) => {
-        this.moneyCount = response.money;
-        this.dishesCount = response.dishes;
-      },
-      (error) => {
-        this.handleServerError(error, 'Серверная ошибка');
-      },
-    );
-  }
-
   handleServerError(error: any, message?: string) {
     if (message) this.toastr.error(message);
-    console.error(error.error.message);
+    console.error('[ERROR ', error.error.code, ']: ', error.error.message);
     this.authService.logout();
   }
 

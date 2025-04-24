@@ -47,23 +47,29 @@ export class GameApiService {
     );
   }
 
-  cook(): Observable<{ dishes: number; status: number }> {
+  cook(count: number): Observable<{ dishes: number; status: number }> {
     return this.tokenSubject.pipe(
       take(1),
       switchMap((token) => {
         return this.httpClient.patch<{
           dishes: number;
           status: number;
-        }>(this.api + 'game/cook', {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+        }>(
+          this.api + 'game/cook',
+          {},
+          {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+            },
           },
-        });
+        );
       }),
     );
   }
 
-  sell(): Observable<{ dishes: number; money: number; status: number }> {
+  sell(
+    count: number,
+  ): Observable<{ dishes: number; money: number; status: number }> {
     return this.tokenSubject.pipe(
       take(1),
       switchMap((token) => {
@@ -71,11 +77,15 @@ export class GameApiService {
           dishes: number;
           money: number;
           status: number;
-        }>(this.api + 'game/sell', {
-          headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+        }>(
+          this.api + 'game/sell',
+          {},
+          {
+            headers: {
+              Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+            },
           },
-        });
+        );
       }),
     );
   }
