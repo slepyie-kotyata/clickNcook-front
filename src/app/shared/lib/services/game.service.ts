@@ -54,7 +54,6 @@ export class GameService {
         };
         let userJSON = JSON.stringify(user);
         localStorage.setItem('user', userJSON);
-        console.log(this.userUpgrades);
         of(true)
           .pipe(delay(1000))
           .subscribe(() => {
