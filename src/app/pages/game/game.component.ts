@@ -46,26 +46,52 @@ export class GameComponent implements OnInit {
   }
 
   handleCook(): void {
-    this.cookClickCount++;
-    this.gameService.dishesCount++;
-
-    if (this.cookClickCount > 5) {
-      //TODO: api post/cook
-      this.cookClickCount = 0;
+    if (!this.gameService.userUpgrades.find((u) => u.upgrade_type === 'dish'))
       return;
+
+    let totalDishesCount = 1;
+    this.gameService.userUpgrades
+      ?.filter((u) => u.boost.boost_type === 'dPc')
+      ?.forEach((u) => (totalDishesCount += u.boost.value));
+    let totalDishesMultiplier = 0;
+    this.gameService.userUpgrades
+      ?.filter((u) => u.boost.boost_type === 'dM')
+      ?.forEach((u) => (totalDishesMultiplier += u.boost.value));
+
+    if (totalDishesCount > 0) {
+      this.cookClickCount++;
+      if (totalDishesMultiplier == 0) totalDishesMultiplier = 1;
+      this.gameService.dishesCount += totalDishesCount * totalDishesMultiplier;
+    }
+
+    if (this.cookClickCount >= 5) {
+      this.gameService.handleCook(this.cookClickCount);
+      this.cookClickCount = 0;
     }
   }
 
   handleSell(): void {
     if (this.gameService.dishesCount <= 0) return;
 
-    this.sellClickCount++;
-    this.gameService.dishesCount--;
-    this.gameService.moneyCount++; //заглушка
-    if (this.sellClickCount > 5) {
-      //TODO: api post/cook
+    let totalMoneyCount = 0;
+    this.gameService.userUpgrades
+      ?.filter((u) => u.boost.boost_type === 'mPc')
+      ?.forEach((u) => (totalMoneyCount += u.boost.value));
+    let totalMoneyMultiplier = 0;
+    this.gameService.userUpgrades
+      ?.filter((u) => u.boost.boost_type === 'mM')
+      ?.forEach((u) => (totalMoneyMultiplier += u.boost.value));
+
+    if (totalMoneyCount > 0) {
+      this.sellClickCount++;
+      this.gameService.dishesCount--;
+      if (totalMoneyMultiplier === 0) totalMoneyMultiplier = 1;
+      this.gameService.moneyCount += totalMoneyCount * totalMoneyMultiplier;
+    }
+
+    if (this.sellClickCount >= 5) {
+      this.gameService.handleSell(this.sellClickCount);
       this.sellClickCount = 0;
-      return;
     }
   }
 

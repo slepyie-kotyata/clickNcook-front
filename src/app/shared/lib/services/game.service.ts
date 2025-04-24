@@ -4,6 +4,7 @@ import { Upgrade } from '../../../entities/types';
 import { GameApiService } from './game-api.service';
 import { AuthService } from './auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { IUpgrade } from '../../../entities/game';
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +14,13 @@ export class GameService {
   public moneyCount: number = 0;
   public dishesCount: number = 0;
   public prestigeLvl: number = 0;
+  public userUpgrades: IUpgrade[] = [];
   selectedMenuType: BehaviorSubject<Upgrade> = new BehaviorSubject<Upgrade>(
     'dish',
   );
   playerLvl: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   private isLoaded = false;
+
   private apiService = inject(GameApiService);
   private authService = inject(AuthService);
   private toastr = inject(ToastrService);
@@ -27,9 +30,10 @@ export class GameService {
     this.apiService.getGameInit().subscribe(
       (response) => {
         this.moneyCount = response.session.money;
+        this.dishesCount = response.session.dishes;
+        this.userUpgrades = response.session.upgrades;
         let user = {
-          id: response.session.id,
-          user_id: response.session.user_id,
+          id: response.session.user_id,
           lvl: this.playerLvl.value,
           money: response.session.money,
           dishes: response.session.dishes,
@@ -44,11 +48,42 @@ export class GameService {
           });
       },
       (error) => {
-        this.toastr.error('Ошибка загрузки данных');
-        console.error(error.error);
-        this.authService.logout();
+        this.handleServerError(error, 'Ошибка загрузки данных');
       },
     );
+  }
+
+  handleCook(count: number) {
+    this.apiService.cook(count).subscribe(
+      (response) => {
+        this.dishesCount = response.dishes;
+      },
+      (error) => {
+        if (error.error.code != 400 && error.error.code != 403) {
+          this.handleServerError(error, 'Серверная ошибка');
+        }
+      },
+    );
+  }
+
+  handleSell(count: number) {
+    this.apiService.sell(count).subscribe(
+      (response) => {
+        this.moneyCount = response.money;
+        this.dishesCount = response.dishes;
+      },
+      (error) => {
+        if (error.error.code != 400) {
+          this.handleServerError(error, 'Серверная ошибка');
+        }
+      },
+    );
+  }
+
+  handleServerError(error: any, message?: string) {
+    if (message) this.toastr.error(message);
+    console.error('[ERROR ', error.error.code, ']: ', error.error.message);
+    this.authService.logout();
   }
 
   decreaseMoney(value: number) {

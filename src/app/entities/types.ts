@@ -5,3 +5,5 @@ export type Upgrade =
   | 'recipe'
   | 'employee'
   | 'point';
+
+export type Boost = 'dPc' | 'mPc' | 'dPs' | 'mPs' | 'dM' | 'mM' | 'dpM' | 'mpM';
