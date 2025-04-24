@@ -4,6 +4,7 @@ import { Upgrade } from '../../../entities/types';
 import { GameApiService } from './game-api.service';
 import { AuthService } from './auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { IUpgrade } from '../../../entities/upgrade';
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +14,13 @@ export class GameService {
   public moneyCount: number = 0;
   public dishesCount: number = 0;
   public prestigeLvl: number = 0;
+  public userUpgrades: IUpgrade[] = [];
   selectedMenuType: BehaviorSubject<Upgrade> = new BehaviorSubject<Upgrade>(
     'dish',
   );
   playerLvl: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   private isLoaded = false;
+
   private apiService = inject(GameApiService);
   private authService = inject(AuthService);
   private toastr = inject(ToastrService);
@@ -27,9 +30,23 @@ export class GameService {
     this.apiService.getGameInit().subscribe(
       (response) => {
         this.moneyCount = response.session.money;
+        this.dishesCount = response.session.dishes;
+        this.userUpgrades = response.session.upgrades;
+        this.userUpgrades.push({
+          id: 0,
+          name: 'Сэндвич',
+          icon_name: 'sandwich',
+          upgrade_type: 'dish',
+          price: 0,
+          access_level: 0,
+          boost: {
+            id: 0,
+            boost_type: 'mPc',
+            value: 1,
+          },
+        });
         let user = {
-          id: response.session.id,
-          user_id: response.session.user_id,
+          id: response.session.user_id,
           lvl: this.playerLvl.value,
           money: response.session.money,
           dishes: response.session.dishes,
@@ -37,6 +54,7 @@ export class GameService {
         };
         let userJSON = JSON.stringify(user);
         localStorage.setItem('user', userJSON);
+        console.log(this.userUpgrades);
         of(true)
           .pipe(delay(1000))
           .subscribe(() => {
@@ -44,11 +62,40 @@ export class GameService {
           });
       },
       (error) => {
-        this.toastr.error('Ошибка загрузки данных');
-        console.error(error.error);
-        this.authService.logout();
+        this.handleServerError(error, 'Ошибка загрузки данных');
       },
     );
+  }
+
+  handleCook() {
+    this.apiService.cook().subscribe(
+      (response) => {
+        this.dishesCount = response.dishes;
+      },
+      (error) => {
+        if (error.error.code != 400) {
+          this.handleServerError(error, 'Серверная ошибка');
+        }
+      },
+    );
+  }
+
+  handleSell() {
+    this.apiService.sell().subscribe(
+      (response) => {
+        this.moneyCount = response.money;
+        this.dishesCount = response.dishes;
+      },
+      (error) => {
+        this.handleServerError(error, 'Серверная ошибка');
+      },
+    );
+  }
+
+  handleServerError(error: any, message?: string) {
+    if (message) this.toastr.error(message);
+    console.error(error.error.message);
+    this.authService.logout();
   }
 
   decreaseMoney(value: number) {
