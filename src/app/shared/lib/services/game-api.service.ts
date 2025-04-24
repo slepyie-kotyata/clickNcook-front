@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, take } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import { ITokens } from '../../../entities/tokens';
+import { ITokens } from '../../../entities/api';
 
 @Injectable({
   providedIn: 'root',

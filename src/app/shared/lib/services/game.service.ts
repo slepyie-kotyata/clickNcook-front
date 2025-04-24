@@ -4,7 +4,7 @@ import { Upgrade } from '../../../entities/types';
 import { GameApiService } from './game-api.service';
 import { AuthService } from './auth.service';
 import { ToastrService } from 'ngx-toastr';
-import { IUpgrade } from '../../../entities/upgrade';
+import { IUpgrade } from '../../../entities/game';
 
 @Injectable({
   providedIn: 'root',

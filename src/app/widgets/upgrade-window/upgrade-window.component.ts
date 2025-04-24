@@ -7,7 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { UpgradeButtonComponent } from '../../shared/ui/upgrade-button/upgrade-button.component';
-import { IUpgrade } from '../../entities/upgrade';
+import { IUpgrade } from '../../entities/game';
 import { NgForOf } from '@angular/common';
 import { GameService } from '../../shared/lib/services/game.service';
 import { Upgrade } from '../../entities/types';
