@@ -1,4 +1,4 @@
-import {Upgrade} from './types';
+import { Boost, Upgrade } from './types';
 
 export interface IUpgrade {
   id: number;
@@ -12,6 +12,6 @@ export interface IUpgrade {
 
 export interface IBoost {
   id: number;
-  boost_type: string;
+  boost_type: Boost;
   value: number;
 }
