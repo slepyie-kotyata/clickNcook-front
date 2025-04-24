@@ -30,6 +30,15 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      req = req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+
     return next.handle(req).pipe(
       catchError((error) => {
         if (error instanceof HttpErrorResponse && error.status === 401) {
@@ -91,7 +100,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
 
           const newRequest = request.clone({
             setHeaders: {
-              Authorization: `Bearer ${response.tokens.refresh_token}`,
+              Authorization: `Bearer ${response.tokens.access_token}`,
             },
           });
           return next.handle(newRequest);
