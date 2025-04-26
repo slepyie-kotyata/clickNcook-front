@@ -7,10 +7,10 @@ import {
   ViewChild,
 } from '@angular/core';
 import { UpgradeButtonComponent } from '../../shared/ui/upgrade-button/upgrade-button.component';
-import { IUpgrade } from '../../entities/game';
 import { NgForOf } from '@angular/common';
 import { GameService } from '../../shared/lib/services/game.service';
 import { Upgrade } from '../../entities/types';
+import { IUpgrade } from '../../entities/game';
 
 @Component({
   selector: 'app-upgrade-window',
@@ -22,9 +22,8 @@ import { Upgrade } from '../../entities/types';
 export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   gameService = inject(GameService);
   selectedType: Upgrade = 'dish';
+
   upgrades: IUpgrade[] = [];
-  currentUpgrades: IUpgrade[] = [];
-  availableUpgrades: IUpgrade[] = [];
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   isAtTop = true;
@@ -37,21 +36,12 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   }
 
   handleBuy(id: number) {
-    //TODO: api
-
-    let price = this.availableUpgrades.find((x) => x.id == id)?.price;
-
-    if (price) {
-      this.gameService.decreaseMoney(price);
-      this.currentUpgrades.push(
-        this.upgrades.find((x) => x.id == id) as IUpgrade,
-      );
-      this.refreshUpgradesList();
-    }
+    this.gameService.handleBuy(id);
+    this.refreshUpgradesList();
   }
 
   getAvailableUpgrades() {
-    this.upgrades = [
+    this.gameService.sessionUpgrades = [
       {
         id: 1,
         name: 'Гамбургер',
@@ -97,11 +87,11 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   }
 
   refreshUpgradesList() {
-    this.availableUpgrades = this.upgrades.filter(
-      (u) =>
-        !this.currentUpgrades.some((c) => c.id === u.id) &&
-        u.upgrade_type === this.selectedType &&
-        u.access_level <= this.gameService.playerLvl.getValue(),
+    this.upgrades = this.gameService.sessionUpgrades.filter(
+      (su) =>
+        !this.gameService.userUpgrades.some((u) => u.id === su.id) &&
+        su.upgrade_type === this.selectedType &&
+        su.access_level <= this.gameService.playerLvl.getValue(),
     );
 
     setTimeout(() => this.updateScrollButtons(), 10);

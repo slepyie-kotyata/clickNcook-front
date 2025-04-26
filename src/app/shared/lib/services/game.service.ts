@@ -93,6 +93,7 @@ export class GameService {
             this.sessionUpgrades = this.sessionUpgrades.filter(
               (u) => u.id != id,
             );
+            this.decreaseMoney(new_upgrade.price);
           }
         }
       },
