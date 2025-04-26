@@ -32,4 +32,11 @@ export class GameApiService {
       status: number;
     }>(this.api + 'game/sell', { click_count: count });
   }
+
+  buy(id: number): Observable<{ message: string; status: number }> {
+    return this.httpClient.patch<{ message: string; status: number }>(
+      this.api + 'game/buy/' + id,
+      {},
+    );
+  }
 }

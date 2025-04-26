@@ -14,6 +14,7 @@ export class GameService {
   public moneyCount: number = 0;
   public dishesCount: number = 0;
   public prestigeLvl: number = 0;
+  public sessionUpgrades: IUpgrade[] = [];
   public userUpgrades: IUpgrade[] = [];
   selectedMenuType: BehaviorSubject<Upgrade> = new BehaviorSubject<Upgrade>(
     'dish',
@@ -51,6 +52,7 @@ export class GameService {
         this.handleServerError(error, 'Ошибка загрузки данных');
       },
     );
+    this.sessionUpgrades = [];
   }
 
   handleCook(count: number) {
@@ -74,6 +76,28 @@ export class GameService {
       },
       (error) => {
         if (error.error.code != 400) {
+          this.handleServerError(error, 'Серверная ошибка');
+        }
+      },
+    );
+  }
+
+  handleBuy(id: number) {
+    if (id < 0) return;
+    this.apiService.buy(id).subscribe(
+      (response) => {
+        if (response.status === 0) {
+          let new_upgrade = this.sessionUpgrades.find((u) => u.id === id);
+          if (new_upgrade) {
+            this.userUpgrades.push(new_upgrade);
+            this.sessionUpgrades = this.sessionUpgrades.filter(
+              (u) => u.id != id,
+            );
+          }
+        }
+      },
+      (error) => {
+        if (error.error.code === 404) {
           this.handleServerError(error, 'Серверная ошибка');
         }
       },
