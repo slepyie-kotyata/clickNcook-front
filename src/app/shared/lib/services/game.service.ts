@@ -39,6 +39,10 @@ export class GameService {
           dishes: response.session.dishes,
           prestige: this.prestigeLvl,
         };
+
+        //test
+        this.playerLvl.next(15);
+
         let userJSON = JSON.stringify(user);
         localStorage.setItem('user', userJSON);
         of(true)
