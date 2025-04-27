@@ -102,11 +102,9 @@ export class GameService {
     if (!upgrade || upgrade.id < 0) return;
     this.apiService.buy(upgrade.id).subscribe(
       (response) => {
-        if (response.status === 0) {
-          this.userUpgrades.push(upgrade);
-          this.getAvailableUpgrades();
-          this.decreaseMoney(upgrade.price * upgrade.price_factor);
-        }
+        this.moneyCount = response.money;
+        this.getAvailableUpgrades();
+        this.userUpgrades.push(upgrade);
       },
       (error) => {
         if (error.error.code === 404) {
@@ -122,19 +120,8 @@ export class GameService {
     this.authService.logout();
   }
 
-  decreaseMoney(value: number) {
-    if (value > this.moneyCount) return;
-    //TODO: api
-    this.moneyCount -= value;
-  }
-
   selectMenuType(type: Upgrade) {
     this.selectedMenuType.next(type);
-  }
-
-  levelUp() {
-    //TODO: get from API
-    this.playerLvl.next(this.playerLvl.getValue() + 1);
   }
 
   isGameLoaded(): boolean {

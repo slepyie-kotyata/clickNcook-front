@@ -43,11 +43,14 @@ export class GameApiService {
     }>(this.api + 'game/sell', body);
   }
 
-  buy(id: number): Observable<{ message: string; status: number }> {
-    return this.httpClient.patch<{ message: string; status: number }>(
-      this.api + 'game/buy/' + id,
-      {},
-    );
+  buy(
+    id: number,
+  ): Observable<{ message: string; status: number; money: number }> {
+    return this.httpClient.patch<{
+      message: string;
+      status: number;
+      money: number;
+    }>(this.api + 'game/buy/' + id, {});
   }
 
   getUpgrades(): Observable<{
