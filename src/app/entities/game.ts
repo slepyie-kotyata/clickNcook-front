@@ -23,7 +23,6 @@ export default interface ISession {
   dishes: number;
   //prestige: number; ?
   //level: ILevel;
-  upgrades: IUpgrade[];
   user_id: number;
 }
 

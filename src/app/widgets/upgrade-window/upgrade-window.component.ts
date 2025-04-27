@@ -23,7 +23,6 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   gameService = inject(GameService);
   selectedType: Upgrade = 'dish';
   availableUpgrades: IUpgrade[] = [];
-  currentUpgrades: IUpgrade[] = [];
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   isAtTop = true;
@@ -32,25 +31,21 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   disableAllScrollButtons = false;
 
   constructor() {
-    this.refreshUpgradesList();
+    this.gameService.sessionUpgrades.subscribe(() =>
+      this.refreshUpgradesList(),
+    );
   }
 
   handleBuy(id: number) {
-    //TODO: api
-
     let upgrade = this.availableUpgrades.find((x) => x.id == id);
 
     if (upgrade) {
-      this.gameService.decreaseMoney(upgrade.price * upgrade.price_factor);
-      this.currentUpgrades.push(
-        this.availableUpgrades.find((x) => x.id == id) as IUpgrade,
-      );
-      this.refreshUpgradesList();
+      this.gameService.handleBuy(upgrade);
     }
   }
 
   refreshUpgradesList() {
-    this.availableUpgrades = this.gameService.sessionUpgrades.filter(
+    this.availableUpgrades = this.gameService.sessionUpgrades.value.filter(
       (u) =>
         u.upgrade_type === this.selectedType &&
         u.access_level <= this.gameService.playerLvl.getValue(),

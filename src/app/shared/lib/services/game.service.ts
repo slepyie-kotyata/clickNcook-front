@@ -15,7 +15,9 @@ export class GameService {
   public dishesCount: number = 0;
   public prestigeLvl: number = 0;
   public userUpgrades: IUpgrade[] = [];
-  public sessionUpgrades: IUpgrade[] = [];
+  public sessionUpgrades: BehaviorSubject<IUpgrade[]> = new BehaviorSubject<
+    IUpgrade[]
+  >([]);
   selectedMenuType: BehaviorSubject<Upgrade> = new BehaviorSubject<Upgrade>(
     'dish',
   );
@@ -32,7 +34,8 @@ export class GameService {
       (response) => {
         this.moneyCount = response.session.money;
         this.dishesCount = response.session.dishes;
-        this.userUpgrades = response.session.upgrades;
+        this.userUpgrades = [];
+        response.upgrades?.forEach((u) => this.userUpgrades.push(u.upgrade));
         let user = {
           id: response.session.user_id,
           lvl: this.playerLvl.value,
@@ -58,7 +61,9 @@ export class GameService {
   getAvailableUpgrades() {
     this.apiService.getUpgrades().subscribe(
       (response) => {
-        response.upgrades.forEach((u) => this.sessionUpgrades.push(u.upgrade));
+        let upgrades: IUpgrade[] = [];
+        response.upgrades.forEach((u) => upgrades.push(u.upgrade));
+        this.sessionUpgrades.next(upgrades);
       },
       (error) => {
         this.handleServerError(error, 'Серверная ошибка');
@@ -93,25 +98,30 @@ export class GameService {
     );
   }
 
+  handleBuy(upgrade: IUpgrade) {
+    if (!upgrade || upgrade.id < 0) return;
+    this.apiService.buy(upgrade.id).subscribe(
+      (response) => {
+        this.moneyCount = response.money;
+        this.getAvailableUpgrades();
+        this.userUpgrades.push(upgrade);
+      },
+      (error) => {
+        if (error.error.code === 404) {
+          this.handleServerError(error, 'Серверная ошибка');
+        }
+      },
+    );
+  }
+
   handleServerError(error: any, message?: string) {
     if (message) this.toastr.error(message);
     console.error('[ERROR ', error.error.code, ']: ', error.error.message);
     this.authService.logout();
   }
 
-  decreaseMoney(value: number) {
-    if (value > this.moneyCount) return;
-    //TODO: api
-    this.moneyCount -= value;
-  }
-
   selectMenuType(type: Upgrade) {
     this.selectedMenuType.next(type);
-  }
-
-  levelUp() {
-    //TODO: get from API
-    this.playerLvl.next(this.playerLvl.getValue() + 1);
   }
 
   isGameLoaded(): boolean {
