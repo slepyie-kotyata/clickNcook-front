@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import ISession from '../../../entities/game';
+import ISession, { IUpgrade } from '../../../entities/game';
 
 @Injectable({
   providedIn: 'root',
@@ -38,5 +38,15 @@ export class GameApiService {
       this.api + 'game/buy/' + id,
       {},
     );
+  }
+
+  getUpgrades(): Observable<{
+    status: number;
+    upgrades: { upgrade: IUpgrade; times_bought: number }[];
+  }> {
+    return this.httpClient.get<{
+      status: number;
+      upgrades: { upgrade: IUpgrade; times_bought: number }[];
+    }>(this.api + 'game/upgrades');
   }
 }

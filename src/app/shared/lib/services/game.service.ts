@@ -14,8 +14,8 @@ export class GameService {
   public moneyCount: number = 0;
   public dishesCount: number = 0;
   public prestigeLvl: number = 0;
-  public sessionUpgrades: IUpgrade[] = [];
   public userUpgrades: IUpgrade[] = [];
+  public sessionUpgrades: IUpgrade[] = [];
   selectedMenuType: BehaviorSubject<Upgrade> = new BehaviorSubject<Upgrade>(
     'dish',
   );
@@ -52,7 +52,18 @@ export class GameService {
         this.handleServerError(error, 'Ошибка загрузки данных');
       },
     );
-    this.sessionUpgrades = [];
+    this.getAvailableUpgrades();
+  }
+
+  getAvailableUpgrades() {
+    this.apiService.getUpgrades().subscribe(
+      (response) => {
+        response.upgrades.forEach((u) => this.sessionUpgrades.push(u.upgrade));
+      },
+      (error) => {
+        this.handleServerError(error, 'Серверная ошибка');
+      },
+    );
   }
 
   handleCook(count: number) {

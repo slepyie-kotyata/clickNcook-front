@@ -1,4 +1,4 @@
-<div class="z-30 overscroll-none scrollbar-hide">
+<div *ngIf="gameService.isGameLoaded() && !showResolutionWarning" class="z-30 overscroll-none scrollbar-hide">
   <section class="z-max fixed flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
     <button (click)="setLogoutWindow(true)"
             class="max-w-14 max-h-14 rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
@@ -22,7 +22,7 @@
     </div>
   </section>
   <section
-    class="z-10 bg-secondary rounded-t-xxl border border-black px-[5.5dvw] py-[5.5dvh] left-[12dvw] 2xl:left-[7dvw] absolute bottom-0 w-[75dvw] 2xl:w-[50dvw] h-[29dvh]">
+    class="z-10 bg-secondary rounded-t-xxl border border-black px-[5.5dvw] py-[5.5dvh] left-[7dvw] absolute bottom-0 w-[50dvw] h-[29dvh]">
     <div class="w-full h-full flex flex-col md:flex-row gap-6 justify-end items-center">
       <button (click)="handleCook()"
               class="bg-primary rounded-xxl w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
@@ -43,11 +43,11 @@
 <div>
   <div *ngIf="gameService.playerLvl.value < 10">
     <app-track [decorCount]="4"></app-track>
-    <img class="fixed bottom-[5dvh] left-[10dvw] z-max" src="/locations/track/sauces.png">
+    <img class="fixed bottom-[5dvh] left-[10dvw] z-max w-[312px] hidden xl:block" src="/locations/track/sauces.svg">
   </div>
   <div *ngIf="gameService.playerLvl.value >= 10 && gameService.playerLvl.value < 20">
     <app-cafe></app-cafe>
-    <img class="fixed bottom-[5dvh] left-[10dvw] z-max w-[350px]" src="/locations/cafe/Cat.svg">
+    <img class="fixed bottom-[5dvh] left-[10dvw] z-max w-[350px] hidden xl:block" src="/locations/cafe/Cat.svg">
   </div>
 </div>
 
@@ -69,12 +69,6 @@
     </section>
   </div>
 </app-modal>
-
-<div *ngIf="showResolutionWarning"
-     class="fixed inset-0 bg-black text-white z-max flex items-center justify-center">
-  <p class="text-2xl text-center px-10 cursor-default select-none">Пожалуйста, увеличьте размер окна для корректной
-    работы сайта</p>
-</div>
 
 <app-modal
   (close)="setPrestigeWindow(false)"
@@ -99,5 +93,11 @@
     </button>
   </div>
 </app-modal>
+
+<div *ngIf="showResolutionWarning"
+     class="fixed inset-0 bg-black text-white z-max flex items-center justify-center overscroll-none">
+  <p class="text-2xl text-center px-10 cursor-default select-none">Пожалуйста, измените размер окна для корректной
+    работы сайта</p>
+</div>
 
 <app-loading *ngIf="!this.gameService.isGameLoaded()"></app-loading>

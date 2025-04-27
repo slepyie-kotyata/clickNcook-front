@@ -5,6 +5,7 @@ export interface IUpgrade {
   name: string;
   icon_name: string;
   upgrade_type: Upgrade;
+  price_factor: number;
   price: number;
   access_level: number;
   boost: IBoost;
