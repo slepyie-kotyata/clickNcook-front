@@ -22,9 +22,8 @@ import { Upgrade } from '../../entities/types';
 export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   gameService = inject(GameService);
   selectedType: Upgrade = 'dish';
-  upgrades: IUpgrade[] = [];
-  currentUpgrades: IUpgrade[] = [];
   availableUpgrades: IUpgrade[] = [];
+  currentUpgrades: IUpgrade[] = [];
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   isAtTop = true;
@@ -33,7 +32,7 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   disableAllScrollButtons = false;
 
   constructor() {
-    this.getAvailableUpgrades();
+    this.refreshUpgradesList();
   }
 
   handleBuy(id: number) {
@@ -44,62 +43,15 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
     if (price) {
       this.gameService.decreaseMoney(price);
       this.currentUpgrades.push(
-        this.upgrades.find((x) => x.id == id) as IUpgrade,
+        this.availableUpgrades.find((x) => x.id == id) as IUpgrade,
       );
       this.refreshUpgradesList();
     }
   }
 
-  getAvailableUpgrades() {
-    this.upgrades = [
-      {
-        id: 1,
-        name: 'Гамбургер',
-        icon_name: 'hamburger',
-        upgrade_type: 'dish',
-        price: 10,
-        access_level: 0,
-        boost: {
-          id: 1,
-          boost_type: 'dPc',
-          value: 2,
-        },
-      },
-      {
-        id: 2,
-        name: 'Хот-дог',
-        icon_name: 'hotdog',
-        upgrade_type: 'dish',
-        price: 25,
-        access_level: 1,
-        boost: {
-          id: 1,
-          boost_type: 'dPc',
-          value: 3,
-        },
-      },
-      {
-        id: 3,
-        name: 'Пицца',
-        icon_name: 'pizza',
-        upgrade_type: 'dish',
-        price: 100,
-        access_level: 2,
-        boost: {
-          id: 1,
-          boost_type: 'dPc',
-          value: 5,
-        },
-      },
-    ];
-
-    this.refreshUpgradesList();
-  }
-
   refreshUpgradesList() {
-    this.availableUpgrades = this.upgrades.filter(
+    this.availableUpgrades = this.gameService.sessionUpgrades.filter(
       (u) =>
-        !this.currentUpgrades.some((c) => c.id === u.id) &&
         u.upgrade_type === this.selectedType &&
         u.access_level <= this.gameService.playerLvl.getValue(),
     );
