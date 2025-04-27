@@ -1,4 +1,4 @@
-<div class="z-30 overscroll-none scrollbar-hide">
+<div *ngIf="gameService.isGameLoaded() && !showResolutionWarning" class="z-30 overscroll-none scrollbar-hide">
   <section class="z-max fixed flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
     <button (click)="setLogoutWindow(true)"
             class="max-w-14 max-h-14 rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
@@ -70,12 +70,6 @@
   </div>
 </app-modal>
 
-<div *ngIf="showResolutionWarning"
-     class="fixed inset-0 bg-black text-white z-max flex items-center justify-center">
-  <p class="text-2xl text-center px-10 cursor-default select-none">Пожалуйста, увеличьте размер окна для корректной
-    работы сайта</p>
-</div>
-
 <app-modal
   (close)="setPrestigeWindow(false)"
   [closeOnBackdrop]="true"
@@ -99,5 +93,11 @@
     </button>
   </div>
 </app-modal>
+
+<div *ngIf="showResolutionWarning"
+     class="fixed inset-0 bg-black text-white z-max flex items-center justify-center overscroll-none">
+  <p class="text-2xl text-center px-10 cursor-default select-none">Пожалуйста, измените размер окна для корректной
+    работы сайта</p>
+</div>
 
 <app-loading *ngIf="!this.gameService.isGameLoaded()"></app-loading>
