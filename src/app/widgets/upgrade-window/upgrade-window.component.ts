@@ -38,10 +38,10 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   handleBuy(id: number) {
     //TODO: api
 
-    let price = this.availableUpgrades.find((x) => x.id == id)?.price;
+    let upgrade = this.availableUpgrades.find((x) => x.id == id);
 
-    if (price) {
-      this.gameService.decreaseMoney(price);
+    if (upgrade) {
+      this.gameService.decreaseMoney(upgrade.price * upgrade.price_factor);
       this.currentUpgrades.push(
         this.availableUpgrades.find((x) => x.id == id) as IUpgrade,
       );

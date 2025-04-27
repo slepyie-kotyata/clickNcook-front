@@ -19,7 +19,7 @@ export class UpgradeButtonComponent {
   @Output() buyEvent: EventEmitter<number> = new EventEmitter();
 
   priceString(): string {
-    return formatNumber(this.upgrade.price);
+    return formatNumber(this.upgrade.price * this.upgrade.price_factor);
   }
 
   handleBuy() {
