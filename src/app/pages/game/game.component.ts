@@ -106,10 +106,13 @@ export class GameComponent implements OnInit {
   }
 
   @HostListener('window:resize', ['$event'])
+  @HostListener('window:load', ['$event'])
   onResize(event: Event) {
     const width = window.innerWidth;
     const height = window.innerHeight;
-    this.showResolutionWarning = width < 1024 || height < 768;
+    const aspectRatio = width / height;
+    this.showResolutionWarning =
+      width < 1024 || height < 768 || aspectRatio < 16 / 10;
   }
 
   protected getPrestigeLvl(): string {
