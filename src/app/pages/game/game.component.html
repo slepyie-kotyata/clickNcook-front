@@ -22,7 +22,7 @@
     </div>
   </section>
   <section
-    class="z-10 bg-secondary rounded-t-xxl border border-black px-[5.5dvw] py-[5.5dvh] left-[12dvw] 2xl:left-[7dvw] absolute bottom-0 w-[75dvw] 2xl:w-[50dvw] h-[29dvh]">
+    class="z-10 bg-secondary rounded-t-xxl border border-black px-[5.5dvw] py-[5.5dvh] left-[7dvw] absolute bottom-0 w-[50dvw] h-[29dvh]">
     <div class="w-full h-full flex flex-col md:flex-row gap-6 justify-end items-center">
       <button (click)="handleCook()"
               class="bg-primary rounded-xxl w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
@@ -43,11 +43,11 @@
 <div>
   <div *ngIf="gameService.playerLvl.value < 10">
     <app-track [decorCount]="4"></app-track>
-    <img class="fixed bottom-[5dvh] left-[10dvw] z-max w-[312px]" src="/locations/track/sauces.svg">
+    <img class="fixed bottom-[5dvh] left-[10dvw] z-max w-[312px] hidden xl:block" src="/locations/track/sauces.svg">
   </div>
   <div *ngIf="gameService.playerLvl.value >= 10 && gameService.playerLvl.value < 20">
     <app-cafe></app-cafe>
-    <img class="fixed bottom-[5dvh] left-[10dvw] z-max w-[350px]" src="/locations/cafe/Cat.svg">
+    <img class="fixed bottom-[5dvh] left-[10dvw] z-max w-[350px] hidden xl:block" src="/locations/cafe/Cat.svg">
   </div>
 </div>
 
