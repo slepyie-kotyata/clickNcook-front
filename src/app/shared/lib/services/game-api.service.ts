@@ -29,11 +29,17 @@ export class GameApiService {
     );
   }
 
-  sell(): Observable<{ dishes: number; money: number; status: number }> {
+  sell(): Observable<{
+    dishes: number;
+    money: number;
+    status: number;
+    xp: number;
+  }> {
     return this.httpClient.patch<{
       dishes: number;
       money: number;
       status: number;
+      xp: number;
     }>(this.api + 'game/sell', {});
   }
 

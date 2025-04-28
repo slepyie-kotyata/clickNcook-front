@@ -10,7 +10,6 @@ import { ILevel, IUpgrade } from '../../../entities/game';
   providedIn: 'root',
 })
 export class GameService {
-  public playerXP: number = 0;
   public moneyCount: number = 0;
   public dishesCount: number = 0;
   public prestigeLvl: number = 0;
@@ -82,6 +81,7 @@ export class GameService {
       (response) => {
         this.moneyCount = response.money;
         this.dishesCount = response.dishes;
+        this.updatePlayerXP(response.xp);
       },
       (error) => {
         if (error.error.code != 400) {
@@ -115,6 +115,11 @@ export class GameService {
 
   selectMenuType(type: Upgrade) {
     this.selectedMenuType.next(type);
+  }
+
+  updatePlayerXP(xp: number) {
+    //TODO: check next level from api
+    this.playerLvl.next({ rank: this.playerLvl.value.rank, xp: xp });
   }
 
   isGameLoaded(): boolean {
