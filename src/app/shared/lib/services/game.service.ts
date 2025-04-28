@@ -54,17 +54,6 @@ export class GameService {
     );
   }
 
-  getAvailableUpgrades() {
-    this.apiService.getUpgrades().subscribe(
-      (response) => {
-        this.sessionUpgrades.next(response.upgrades);
-      },
-      (error) => {
-        this.handleServerError(error, 'Серверная ошибка');
-      },
-    );
-  }
-
   handleCook() {
     this.apiService.cook().subscribe(
       (response) => {
@@ -109,19 +98,8 @@ export class GameService {
     );
   }
 
-  handleServerError(error: any, message?: string) {
-    if (message) this.toastr.error(message);
-    console.error('[ERROR ', error.error.code, ']: ', error.error.message);
-    this.authService.logout();
-  }
-
   selectMenuType(type: Upgrade) {
     this.selectedMenuType.next(type);
-  }
-
-  updatePlayerXP(xp: number) {
-    //TODO: check next level from api
-    this.playerLvl.next({ rank: this.playerLvl.value.rank, xp: xp });
   }
 
   getNextLevelXp() {
@@ -130,6 +108,28 @@ export class GameService {
 
   isGameLoaded(): boolean {
     return this.isLoaded;
+  }
+
+  private getAvailableUpgrades() {
+    this.apiService.getUpgrades().subscribe(
+      (response) => {
+        this.sessionUpgrades.next(response.upgrades);
+      },
+      (error) => {
+        this.handleServerError(error, 'Серверная ошибка');
+      },
+    );
+  }
+
+  private handleServerError(error: any, message?: string) {
+    if (message) this.toastr.error(message);
+    console.error('[ERROR ', error.error.code, ']: ', error.error.message);
+    this.authService.logout();
+  }
+
+  private updatePlayerXP(xp: number) {
+    //TODO: check next level from api
+    this.playerLvl.next({ rank: this.playerLvl.value.rank, xp: xp });
   }
 
   private getLevelInfo() {
