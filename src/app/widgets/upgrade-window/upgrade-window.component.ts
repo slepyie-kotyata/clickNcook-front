@@ -10,7 +10,6 @@ import { UpgradeButtonComponent } from '../../shared/ui/upgrade-button/upgrade-b
 import { IUpgrade } from '../../entities/game';
 import { NgForOf } from '@angular/common';
 import { GameService } from '../../shared/lib/services/game.service';
-import { Upgrade } from '../../entities/types';
 
 @Component({
   selector: 'app-upgrade-window',
@@ -21,7 +20,6 @@ import { Upgrade } from '../../entities/types';
 })
 export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   gameService = inject(GameService);
-  selectedType: Upgrade = 'dish';
   availableUpgrades: IUpgrade[] = [];
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
@@ -47,7 +45,7 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   refreshUpgradesList() {
     this.availableUpgrades = this.gameService.sessionUpgrades.value.filter(
       (u) =>
-        u.upgrade_type === this.selectedType &&
+        u.upgrade_type === this.gameService.selectedMenuType.value &&
         u.access_level <= this.gameService.playerLvl.getValue().rank,
     );
 
@@ -93,7 +91,6 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.gameService.selectedMenuType.subscribe((type) => {
-      this.selectedType = type;
       this.refreshUpgradesList();
     });
 
