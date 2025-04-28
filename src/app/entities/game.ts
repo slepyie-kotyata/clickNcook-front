@@ -9,6 +9,7 @@ export interface IUpgrade {
   price: number;
   access_level: number;
   boost: IBoost;
+  times_bought: number;
 }
 
 export interface IBoost {
@@ -21,12 +22,12 @@ export default interface ISession {
   id: number;
   money: number;
   dishes: number;
-  //prestige: number; ?
-  //level: ILevel;
+  //prestige: IPrestige;
+  level: ILevel;
   user_id: number;
 }
 
 export interface ILevel {
   rank: number;
-  points: number;
+  xp: number;
 }

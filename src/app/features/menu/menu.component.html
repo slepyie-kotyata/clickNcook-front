@@ -27,15 +27,15 @@
                      [iconSource]="'/icons/fondue.svg'"
                      [selected]="selected == 'dish'"
                      [type]="'dish'" class="border-r border-black"></app-menu-button>
-    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value < 5"
+    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 5"
                      [iconSource]="'/icons/table.svg'"
                      [selected]="selected == 'equipment'"
                      [type]="'equipment'" class="border-x border-black"></app-menu-button>
-    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value < 25"
+    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 10"
                      [iconSource]="'/icons/upgrades.svg'"
                      [selected]="selected == 'upgrade'"
                      [type]="'upgrade'" class="border-x border-black"></app-menu-button>
-    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value < 50"
+    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 25"
                      [iconSource]="'/icons/person.svg'"
                      [selected]="selected == 'employee'"
                      [type]="'employee'" class="border-x border-black"></app-menu-button>
@@ -43,7 +43,7 @@
                      [iconSource]="'/icons/menu.svg'"
                      [selected]="false"
                      [type]="'recipe'" class="border-x border-black"></app-menu-button>
-    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value < 100"
+    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 50"
                      [iconSource]="'/icons/map.svg'"
                      [selected]="selected == 'point'"
                      [type]="'point'" class="border-l border-black"></app-menu-button>

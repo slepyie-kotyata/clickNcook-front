@@ -13,12 +13,12 @@ export class GameApiService {
   getGameInit(): Observable<{
     session: ISession;
     status: number;
-    upgrades: { upgrade: IUpgrade; times_bought: number }[];
+    upgrades: IUpgrade[];
   }> {
     return this.httpClient.get<{
       session: ISession;
       status: number;
-      upgrades: { upgrade: IUpgrade; times_bought: number }[];
+      upgrades: IUpgrade[];
     }>(this.api + 'game/init');
   }
 
@@ -43,11 +43,8 @@ export class GameApiService {
     }>(this.api + 'game/sell', body);
   }
 
-  buy(
-    id: number,
-  ): Observable<{ message: string; status: number; money: number }> {
+  buy(id: number): Observable<{ status: number; money: number }> {
     return this.httpClient.patch<{
-      message: string;
       status: number;
       money: number;
     }>(this.api + 'game/buy/' + id, {});
@@ -55,11 +52,11 @@ export class GameApiService {
 
   getUpgrades(): Observable<{
     status: number;
-    upgrades: { upgrade: IUpgrade; times_bought: number }[];
+    upgrades: IUpgrade[];
   }> {
     return this.httpClient.get<{
       status: number;
-      upgrades: { upgrade: IUpgrade; times_bought: number }[];
+      upgrades: IUpgrade[];
     }>(this.api + 'game/upgrades');
   }
 }

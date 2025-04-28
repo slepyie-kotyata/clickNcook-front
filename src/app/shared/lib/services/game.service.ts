@@ -4,7 +4,7 @@ import { Upgrade } from '../../../entities/types';
 import { GameApiService } from './game-api.service';
 import { AuthService } from './auth.service';
 import { ToastrService } from 'ngx-toastr';
-import { IUpgrade } from '../../../entities/game';
+import { ILevel, IUpgrade } from '../../../entities/game';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +21,10 @@ export class GameService {
   selectedMenuType: BehaviorSubject<Upgrade> = new BehaviorSubject<Upgrade>(
     'dish',
   );
-  playerLvl: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  playerLvl: BehaviorSubject<ILevel> = new BehaviorSubject<ILevel>({
+    rank: 0,
+    xp: 0,
+  });
   private isLoaded = false;
 
   private apiService = inject(GameApiService);
@@ -35,16 +38,8 @@ export class GameService {
         this.moneyCount = response.session.money;
         this.dishesCount = response.session.dishes;
         this.userUpgrades = [];
-        response.upgrades?.forEach((u) => this.userUpgrades.push(u.upgrade));
-        let user = {
-          id: response.session.user_id,
-          lvl: this.playerLvl.value,
-          money: response.session.money,
-          dishes: response.session.dishes,
-          prestige: this.prestigeLvl,
-        };
-        let userJSON = JSON.stringify(user);
-        localStorage.setItem('user', userJSON);
+        this.userUpgrades = response.upgrades;
+        this.playerLvl.next(response.session.level);
         of(true)
           .pipe(delay(1000))
           .subscribe(() => {
@@ -61,9 +56,7 @@ export class GameService {
   getAvailableUpgrades() {
     this.apiService.getUpgrades().subscribe(
       (response) => {
-        let upgrades: IUpgrade[] = [];
-        response.upgrades.forEach((u) => upgrades.push(u.upgrade));
-        this.sessionUpgrades.next(upgrades);
+        this.sessionUpgrades.next(response.upgrades);
       },
       (error) => {
         this.handleServerError(error, 'Серверная ошибка');

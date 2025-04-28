@@ -48,7 +48,7 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
     this.availableUpgrades = this.gameService.sessionUpgrades.value.filter(
       (u) =>
         u.upgrade_type === this.selectedType &&
-        u.access_level <= this.gameService.playerLvl.getValue(),
+        u.access_level <= this.gameService.playerLvl.getValue().rank,
     );
 
     setTimeout(() => this.updateScrollButtons(), 10);
