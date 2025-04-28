@@ -59,4 +59,18 @@ export class GameApiService {
       upgrades: IUpgrade[];
     }>(this.api + 'game/upgrades');
   }
+
+  getLevelInfo(): Observable<{
+    current_rank: number;
+    current_xp: number;
+    needed_xp: number;
+    status: number;
+  }> {
+    return this.httpClient.get<{
+      current_rank: number;
+      current_xp: number;
+      needed_xp: number;
+      status: number;
+    }>(this.api + 'game/levels');
+  }
 }

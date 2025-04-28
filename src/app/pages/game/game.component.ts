@@ -81,9 +81,12 @@ export class GameComponent implements OnInit {
   }
 
   protected getPlayerLvlPercentage(): number {
-    let neededXP = 100; //TODO: get from api
     return parseFloat(
-      ((this.gameService.playerLvl.value.xp / neededXP) * 100).toFixed(1),
+      (
+        (this.gameService.playerLvl.value.xp /
+          this.gameService.getNextLevelXp()) *
+        100
+      ).toFixed(1),
     );
   }
 }

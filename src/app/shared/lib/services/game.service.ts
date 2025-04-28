@@ -24,6 +24,7 @@ export class GameService {
     rank: 0,
     xp: 0,
   });
+  private nextLvlXp: number = 0;
   private isLoaded = false;
 
   private apiService = inject(GameApiService);
@@ -42,6 +43,7 @@ export class GameService {
         of(true)
           .pipe(delay(500))
           .subscribe(() => {
+            this.getLevelInfo();
             this.getAvailableUpgrades();
             this.isLoaded = true;
           });
@@ -122,7 +124,26 @@ export class GameService {
     this.playerLvl.next({ rank: this.playerLvl.value.rank, xp: xp });
   }
 
+  getNextLevelXp() {
+    return this.nextLvlXp;
+  }
+
   isGameLoaded(): boolean {
     return this.isLoaded;
+  }
+
+  private getLevelInfo() {
+    this.apiService.getLevelInfo().subscribe(
+      (response) => {
+        this.playerLvl.next({
+          rank: response.current_rank,
+          xp: response.current_xp,
+        });
+        this.nextLvlXp = response.needed_xp;
+      },
+      (error) => {
+        this.handleServerError(error, 'Серверная ошибка');
+      },
+    );
   }
 }
