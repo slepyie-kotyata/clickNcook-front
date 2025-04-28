@@ -70,9 +70,6 @@ export class RegComponent {
         next: (response) => {
           this.toastrService.success('Регистрация успешна');
           this.regForm.reset();
-
-          localStorage.setItem('accessToken', response.tokens.access_token);
-          localStorage.setItem('refreshToken', response.tokens.refresh_token);
           this.router.navigate(['']);
         },
         error: (error) => {
