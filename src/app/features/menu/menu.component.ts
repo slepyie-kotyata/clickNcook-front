@@ -1,9 +1,9 @@
-import {Component, inject, OnInit} from '@angular/core';
+import { Component, inject } from '@angular/core';
 import formatNumber from '../../shared/lib/formatNumber';
-import {MenuButtonComponent} from '../../shared/ui/menu-button/menu-button.component';
-import {UpgradeWindowComponent} from '../../widgets/upgrade-window/upgrade-window.component';
-import {GameService} from '../../shared/lib/services/game.service';
-import {Upgrade} from '../../entities/types';
+import { MenuButtonComponent } from '../../shared/ui/menu-button/menu-button.component';
+import { UpgradeWindowComponent } from '../../widgets/upgrade-window/upgrade-window.component';
+import { GameService } from '../../shared/lib/services/game.service';
+import { Upgrade } from '../../entities/types';
 
 @Component({
   selector: 'app-menu',
@@ -12,10 +12,9 @@ import {Upgrade} from '../../entities/types';
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css',
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent {
   gameService = inject(GameService);
   isOpen: boolean = false;
-  selected: Upgrade = 'dish';
   protected readonly window = window;
 
   getDishCount(): string {
@@ -32,11 +31,5 @@ export class MenuComponent implements OnInit {
 
   selectMenu(value: Upgrade) {
     this.gameService.selectMenuType(value);
-  }
-
-  ngOnInit(): void {
-    this.gameService.selectedMenuType.subscribe((type) => {
-      this.selected = type;
-    });
   }
 }
