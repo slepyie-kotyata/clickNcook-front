@@ -1,9 +1,9 @@
 export type Upgrade =
   | 'dish'
   | 'equipment'
-  | 'upgrade'
+  | 'global'
   | 'recipe'
-  | 'employee'
+  | 'staff'
   | 'point';
 
 export type Boost = 'dPc' | 'mPc' | 'dPs' | 'mPs' | 'dM' | 'mM' | 'dpM' | 'mpM';
