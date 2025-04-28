@@ -40,8 +40,9 @@ export class GameService {
         this.userUpgrades = response.upgrades;
         this.playerLvl.next(response.session.level);
         of(true)
-          .pipe(delay(1000))
+          .pipe(delay(500))
           .subscribe(() => {
+            this.getAvailableUpgrades();
             this.isLoaded = true;
           });
       },
@@ -49,7 +50,6 @@ export class GameService {
         this.handleServerError(error, 'Ошибка загрузки данных');
       },
     );
-    this.getAvailableUpgrades();
   }
 
   getAvailableUpgrades() {
