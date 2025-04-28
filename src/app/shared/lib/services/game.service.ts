@@ -64,8 +64,8 @@ export class GameService {
     );
   }
 
-  handleCook(count: number) {
-    this.apiService.cook(count).subscribe(
+  handleCook() {
+    this.apiService.cook().subscribe(
       (response) => {
         this.dishesCount = response.dishes;
       },
@@ -77,8 +77,8 @@ export class GameService {
     );
   }
 
-  handleSell(count: number) {
-    this.apiService.sell(count).subscribe(
+  handleSell() {
+    this.apiService.sell().subscribe(
       (response) => {
         this.moneyCount = response.money;
         this.dishesCount = response.dishes;

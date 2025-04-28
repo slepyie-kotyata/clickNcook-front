@@ -22,25 +22,19 @@ export class GameApiService {
     }>(this.api + 'game/init');
   }
 
-  cook(count: number): Observable<{ dishes: number; status: number }> {
-    let body: FormData = new FormData();
-    body.set('click_count', count.toString());
+  cook(): Observable<{ dishes: number; status: number }> {
     return this.httpClient.patch<{ dishes: number; status: number }>(
       this.api + 'game/cook',
-      body,
+      {},
     );
   }
 
-  sell(
-    count: number,
-  ): Observable<{ dishes: number; money: number; status: number }> {
-    let body: FormData = new FormData();
-    body.set('click_count', count.toString());
+  sell(): Observable<{ dishes: number; money: number; status: number }> {
     return this.httpClient.patch<{
       dishes: number;
       money: number;
       status: number;
-    }>(this.api + 'game/sell', body);
+    }>(this.api + 'game/sell', {});
   }
 
   buy(id: number): Observable<{ status: number; money: number }> {

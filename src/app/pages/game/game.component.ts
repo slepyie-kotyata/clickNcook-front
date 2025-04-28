@@ -32,8 +32,6 @@ export class GameComponent implements OnInit {
 
   prestigeProgressCount: number = 0;
   showResolutionWarning: boolean = false;
-  private cookClickCount = 0;
-  private sellClickCount = 0;
 
   getPrestigeMultiplier(): number {
     return 1 + this.prestigeProgressCount * 0.5;
@@ -51,50 +49,13 @@ export class GameComponent implements OnInit {
     if (!this.gameService.userUpgrades.find((u) => u.upgrade_type === 'dish'))
       return;
 
-    let totalDishesCount = 1;
-    this.gameService.userUpgrades
-      ?.filter((u) => u.boost.boost_type === 'dPc')
-      ?.forEach((u) => (totalDishesCount += u.boost.value));
-    let totalDishesMultiplier = 0;
-    this.gameService.userUpgrades
-      ?.filter((u) => u.boost.boost_type === 'dM')
-      ?.forEach((u) => (totalDishesMultiplier += u.boost.value));
-
-    if (totalDishesCount > 0) {
-      this.cookClickCount++;
-      if (totalDishesMultiplier == 0) totalDishesMultiplier = 1;
-      this.gameService.dishesCount += totalDishesCount * totalDishesMultiplier;
-    }
-
-    if (this.cookClickCount >= 5) {
-      this.gameService.handleCook(this.cookClickCount);
-      this.cookClickCount = 0;
-    }
+    this.gameService.handleCook();
   }
 
   handleSell(): void {
     if (this.gameService.dishesCount <= 0) return;
 
-    let totalMoneyCount = 0;
-    this.gameService.userUpgrades
-      ?.filter((u) => u.boost.boost_type === 'mPc')
-      ?.forEach((u) => (totalMoneyCount += u.boost.value));
-    let totalMoneyMultiplier = 0;
-    this.gameService.userUpgrades
-      ?.filter((u) => u.boost.boost_type === 'mM')
-      ?.forEach((u) => (totalMoneyMultiplier += u.boost.value));
-
-    if (totalMoneyCount > 0) {
-      this.sellClickCount++;
-      this.gameService.dishesCount--;
-      if (totalMoneyMultiplier === 0) totalMoneyMultiplier = 1;
-      this.gameService.moneyCount += totalMoneyCount * totalMoneyMultiplier;
-    }
-
-    if (this.sellClickCount >= 5) {
-      this.gameService.handleSell(this.sellClickCount);
-      this.sellClickCount = 0;
-    }
+    this.gameService.handleSell();
   }
 
   logout() {
