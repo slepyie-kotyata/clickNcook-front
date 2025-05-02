@@ -77,10 +77,7 @@ export class GameService {
         this.updatePlayerXP(response.xp);
       },
       (error) => {
-        if (error.status === 409) {
-          this.handleServerError(error, 'Обнаружен спам');
-        }
-        if (error.status != 400) {
+        if (error.status != 400 && error.status != 409) {
           this.handleServerError(error, 'Серверная ошибка');
         }
       },
