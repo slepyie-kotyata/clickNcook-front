@@ -60,7 +60,7 @@ export class GameService {
         this.dishesCount = response.dishes;
       },
       (error) => {
-        if (error.error.code != 400 && error.error.code != 403) {
+        if (error.status != 400 && error.status != 403) {
           this.handleServerError(error, 'Серверная ошибка');
         }
       },
@@ -75,7 +75,10 @@ export class GameService {
         this.updatePlayerXP(response.xp);
       },
       (error) => {
-        if (error.error.code != 400) {
+        if (error.status === 409) {
+          this.handleServerError(error, 'Обнаружен спам');
+        }
+        if (error.status != 400) {
           this.handleServerError(error, 'Серверная ошибка');
         }
       },
@@ -91,7 +94,7 @@ export class GameService {
         this.userUpgrades.push(upgrade);
       },
       (error) => {
-        if (error.error.code === 404) {
+        if (error.status === 404) {
           this.handleServerError(error, 'Серверная ошибка');
         }
       },
@@ -123,7 +126,7 @@ export class GameService {
 
   private handleServerError(error: any, message?: string) {
     if (message) this.toastr.error(message);
-    console.error('[ERROR ', error.error.code, ']: ', error.error.message);
+    console.error(`[ERROR ${error.status}]: ${error.error.message}`);
     this.authService.logout();
   }
 
@@ -146,13 +149,6 @@ export class GameService {
           rank: response.current_rank,
           xp: response.current_xp,
         });
-        console.log(
-          this.playerLvl.value.rank +
-            ' ' +
-            this.playerLvl.value.xp +
-            ' | ' +
-            this.nextLvlXp,
-        );
         this.getLevelInfo();
       },
       (error) => {
@@ -169,13 +165,6 @@ export class GameService {
           xp: response.current_xp,
         });
         this.nextLvlXp = response.needed_xp;
-        console.log(
-          this.playerLvl.value.rank +
-            ' ' +
-            this.playerLvl.value.xp +
-            ' | ' +
-            this.nextLvlXp,
-        );
       },
       (error) => {
         this.handleServerError(error, 'Серверная ошибка');
