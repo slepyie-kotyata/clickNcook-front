@@ -128,8 +128,37 @@ export class GameService {
   }
 
   private updatePlayerXP(xp: number) {
-    //TODO: check next level from api
-    this.playerLvl.next({ rank: this.playerLvl.value.rank, xp: xp });
+    if (xp >= this.nextLvlXp) {
+      this.levelUp();
+      return;
+    }
+
+    this.playerLvl.next({
+      rank: this.playerLvl.value.rank,
+      xp: xp,
+    });
+  }
+
+  private levelUp() {
+    this.apiService.levelUp().subscribe(
+      (response) => {
+        this.playerLvl.next({
+          rank: response.current_rank,
+          xp: response.current_xp,
+        });
+        console.log(
+          this.playerLvl.value.rank +
+            ' ' +
+            this.playerLvl.value.xp +
+            ' | ' +
+            this.nextLvlXp,
+        );
+        this.getLevelInfo();
+      },
+      (error) => {
+        this.handleServerError(error, 'Серверная ошибка');
+      },
+    );
   }
 
   private getLevelInfo() {
@@ -140,6 +169,13 @@ export class GameService {
           xp: response.current_xp,
         });
         this.nextLvlXp = response.needed_xp;
+        console.log(
+          this.playerLvl.value.rank +
+            ' ' +
+            this.playerLvl.value.xp +
+            ' | ' +
+            this.nextLvlXp,
+        );
       },
       (error) => {
         this.handleServerError(error, 'Серверная ошибка');

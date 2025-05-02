@@ -73,4 +73,11 @@ export class GameApiService {
       status: number;
     }>(this.api + 'game/levels');
   }
+
+  levelUp(): Observable<{ current_rank: number; current_xp: number }> {
+    return this.httpClient.patch<{ current_rank: number; current_xp: number }>(
+      this.api + 'game/levels',
+      {},
+    );
+  }
 }
