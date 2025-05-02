@@ -1,4 +1,4 @@
-<button (click)="handleClick()" [disabled]="disabled"
+<button (click)="handleClick()" [attr.disabled]="disabled"
         [ngClass]="{
           'bg-primary':!isSelected(),
           'bg-secondary':isSelected()

@@ -1,6 +1,6 @@
 <button
   (click)="handleBuy()"
-  [disabled]="blocked"
+  [attr.disabled]="blocked"
   [ngClass]="{
   'group':!blocked
   }"
