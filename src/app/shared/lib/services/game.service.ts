@@ -41,11 +41,13 @@ export class GameService {
         this.userUpgrades = response.upgrades;
         this.playerLvl.next(response.session.level);
         of(true)
-          .pipe(delay(500))
+          .pipe()
           .subscribe(() => {
             this.getLevelInfo();
             this.getAvailableUpgrades();
-            this.isLoaded = true;
+            of(true)
+              .pipe(delay(500))
+              .subscribe(() => (this.isLoaded = true));
           });
       },
       (error) => {

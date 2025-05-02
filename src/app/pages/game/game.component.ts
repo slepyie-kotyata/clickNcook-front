@@ -81,12 +81,14 @@ export class GameComponent implements OnInit {
   }
 
   protected getPlayerLvlPercentage(): number {
-    return parseFloat(
+    let percentage = parseFloat(
       (
         (this.gameService.playerLvl.value.xp /
           this.gameService.getNextLevelXp()) *
         100
       ).toFixed(1),
     );
+
+    return percentage > 0 ? percentage : 0;
   }
 }
