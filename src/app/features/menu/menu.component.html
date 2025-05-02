@@ -26,19 +26,19 @@
     <app-menu-button (onClick)="selectMenu($event)"
                      [iconSource]="'/icons/fondue.svg'"
                      [type]="'dish'" class="border-r border-black"></app-menu-button>
-    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 5"
+    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 3"
                      [iconSource]="'/icons/table.svg'"
                      [type]="'equipment'" class="border-x border-black"></app-menu-button>
     <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 10"
                      [iconSource]="'/icons/upgrades.svg'"
                      [type]="'global'" class="border-x border-black"></app-menu-button>
-    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 25"
+    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 20"
                      [iconSource]="'/icons/person.svg'"
                      [type]="'staff'" class="border-x border-black"></app-menu-button>
     <app-menu-button [disabled]="true"
                      [iconSource]="'/icons/menu.svg'"
                      [type]="'recipe'" class="border-x border-black"></app-menu-button>
-    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 50"
+    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 70"
                      [iconSource]="'/icons/map.svg'"
                      [type]="'point'" class="border-l border-black"></app-menu-button>
   </section>

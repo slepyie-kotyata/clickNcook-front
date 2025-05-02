@@ -41,11 +41,13 @@ export class GameService {
         this.userUpgrades = response.upgrades;
         this.playerLvl.next(response.session.level);
         of(true)
-          .pipe(delay(500))
+          .pipe()
           .subscribe(() => {
             this.getLevelInfo();
             this.getAvailableUpgrades();
-            this.isLoaded = true;
+            of(true)
+              .pipe(delay(500))
+              .subscribe(() => (this.isLoaded = true));
           });
       },
       (error) => {
@@ -60,7 +62,7 @@ export class GameService {
         this.dishesCount = response.dishes;
       },
       (error) => {
-        if (error.error.code != 400 && error.error.code != 403) {
+        if (error.status != 400 && error.status != 403) {
           this.handleServerError(error, 'Серверная ошибка');
         }
       },
@@ -75,7 +77,7 @@ export class GameService {
         this.updatePlayerXP(response.xp);
       },
       (error) => {
-        if (error.error.code != 400) {
+        if (error.status != 400 && error.status != 409) {
           this.handleServerError(error, 'Серверная ошибка');
         }
       },
@@ -91,7 +93,7 @@ export class GameService {
         this.userUpgrades.push(upgrade);
       },
       (error) => {
-        if (error.error.code === 404) {
+        if (error.status === 404) {
           this.handleServerError(error, 'Серверная ошибка');
         }
       },
@@ -123,13 +125,35 @@ export class GameService {
 
   private handleServerError(error: any, message?: string) {
     if (message) this.toastr.error(message);
-    console.error('[ERROR ', error.error.code, ']: ', error.error.message);
+    console.error(`[ERROR ${error.status}]: ${error.error.message}`);
     this.authService.logout();
   }
 
   private updatePlayerXP(xp: number) {
-    //TODO: check next level from api
-    this.playerLvl.next({ rank: this.playerLvl.value.rank, xp: xp });
+    if (xp >= this.nextLvlXp) {
+      this.levelUp();
+      return;
+    }
+
+    this.playerLvl.next({
+      rank: this.playerLvl.value.rank,
+      xp: xp,
+    });
+  }
+
+  private levelUp() {
+    this.apiService.levelUp().subscribe(
+      (response) => {
+        this.playerLvl.next({
+          rank: response.current_rank,
+          xp: response.current_xp,
+        });
+        this.getLevelInfo();
+      },
+      (error) => {
+        this.handleServerError(error, 'Серверная ошибка');
+      },
+    );
   }
 
   private getLevelInfo() {
