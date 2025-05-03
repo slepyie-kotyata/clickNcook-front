@@ -49,6 +49,9 @@
     <app-cafe></app-cafe>
     <img class="fixed bottom-[5dvh] left-[10dvw] z-max w-[350px] hidden xl:block" src="/locations/cafe/Cat.svg">
   </div>
+  <div *ngIf="gameService.playerLvl.value.rank >= 20 && gameService.playerLvl.value.rank < 40">
+    <app-restaurant></app-restaurant>
+  </div>
 </div>
 
 
