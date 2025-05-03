@@ -8,6 +8,7 @@ import { TrackComponent } from '../../shared/ui/locations/track/track.component'
 import { NgIf } from '@angular/common';
 import { LoadingComponent } from '../../shared/ui/loading/loading.component';
 import { CafeComponent } from '../../shared/ui/locations/cafe/cafe.component';
+import {RestaurantComponent} from '../../shared/ui/locations/restaurant/restaurant.component';
 
 @Component({
   selector: 'app-game',
@@ -19,6 +20,7 @@ import { CafeComponent } from '../../shared/ui/locations/cafe/cafe.component';
     NgIf,
     LoadingComponent,
     CafeComponent,
+    RestaurantComponent,
   ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',
