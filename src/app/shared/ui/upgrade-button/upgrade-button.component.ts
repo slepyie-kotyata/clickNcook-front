@@ -1,22 +1,25 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import formatNumber from '../../lib/formatNumber';
 import getIcon from '../../lib/icons';
+import { boostTooltip } from '../../lib/boostTooltip';
 import { IUpgrade } from '../../../entities/game';
 import { Upgrade } from '../../../entities/types';
 
 @Component({
   selector: 'app-upgrade-button',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, NgIf],
   templateUrl: './upgrade-button.component.html',
   styleUrl: './upgrade-button.component.css',
 })
 export class UpgradeButtonComponent {
   @Input({ required: true }) upgrade: IUpgrade;
   @Input({ required: true }) blocked: boolean;
-
   @Output() buyEvent: EventEmitter<number> = new EventEmitter();
+  
+  showTooltip = false;
+  tooltipVisible = false;
 
   priceString(): string {
     return formatNumber(
@@ -24,7 +27,7 @@ export class UpgradeButtonComponent {
         ? this.upgrade.price *
             this.upgrade.price_factor *
             this.upgrade.times_bought
-        : this.upgrade.price,
+        : this.upgrade.price
     );
   }
 
@@ -35,7 +38,14 @@ export class UpgradeButtonComponent {
   icon(): string {
     return getIcon(
       this.upgrade.upgrade_type as Upgrade,
-      this.upgrade.icon_name,
+      this.upgrade.icon_name
+    );
+  }
+
+  boostDisplay(): string {
+    return boostTooltip(
+      this.upgrade.boost.value,
+      this.upgrade.boost.boost_type
     );
   }
 }
