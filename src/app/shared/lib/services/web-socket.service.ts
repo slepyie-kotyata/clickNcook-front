@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class WebSocketService {
+  isConnected: boolean = false;
   private socket$!: WebSocketSubject<any>;
   private dataSubject = new BehaviorSubject<IData>({
     money: 0,
@@ -26,6 +27,7 @@ export class WebSocketService {
 
     this.socket$.subscribe({
       next: (data: { message: IData }) => {
+        if (!this.isConnected) this.isConnected = true;
         this.dataSubject.next(data.message);
       },
       error: (error) => {

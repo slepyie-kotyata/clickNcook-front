@@ -48,10 +48,12 @@ export class GameService {
           this.getLevelInfo();
           this.getAvailableUpgrades();
           of(true).subscribe(() => {
-            this.webSocketService.connect();
-            this.webSocketService.data$.subscribe((value) => {
-              this.updateData(value);
-            });
+            if (this.userUpgrades.find((u) => u.upgrade_type === 'staff')) {
+              this.webSocketService.connect();
+              this.webSocketService.data$.subscribe((value) => {
+                this.updateData(value);
+              });
+            }
             of(true)
               .pipe(delay(500))
               .subscribe(() => {
@@ -108,6 +110,15 @@ export class GameService {
         this.moneyCount = response.money;
         this.getAvailableUpgrades();
         this.userUpgrades.push(upgrade);
+        if (
+          upgrade.upgrade_type === 'staff' &&
+          !this.webSocketService.isConnected
+        ) {
+          this.webSocketService.connect();
+          this.webSocketService.data$.subscribe((value) => {
+            this.updateData(value);
+          });
+        }
       },
       (error) => {
         if (error.status === 404) {
