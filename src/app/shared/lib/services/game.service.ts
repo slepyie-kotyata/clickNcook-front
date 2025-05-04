@@ -48,12 +48,7 @@ export class GameService {
           this.getLevelInfo();
           this.getAvailableUpgrades();
           of(true).subscribe(() => {
-            if (this.userUpgrades.find((u) => u.upgrade_type === 'staff')) {
-              this.webSocketService.connect();
-              this.webSocketService.data$.subscribe((value) => {
-                this.updateData(value);
-              });
-            }
+            this.connect();
             of(true)
               .pipe(delay(500))
               .subscribe(() => {
@@ -66,13 +61,6 @@ export class GameService {
         this.handleServerError(error, 'Ошибка загрузки данных');
       },
     );
-  }
-
-  updateData(data: IData) {
-    this.moneyCount = data.money;
-    this.dishesCount = data.dishes;
-    this.playerLvl.next({ rank: data.rank, xp: data.xp });
-    this.accumulatedPrestigeLvl = data.prestige_current;
   }
 
   handleCook() {
@@ -110,15 +98,7 @@ export class GameService {
         this.moneyCount = response.money;
         this.getAvailableUpgrades();
         this.userUpgrades.push(upgrade);
-        if (
-          upgrade.upgrade_type === 'staff' &&
-          !this.webSocketService.isConnected
-        ) {
-          this.webSocketService.connect();
-          this.webSocketService.data$.subscribe((value) => {
-            this.updateData(value);
-          });
-        }
+        this.connect();
       },
       (error) => {
         if (error.status === 404) {
@@ -138,6 +118,24 @@ export class GameService {
 
   isGameLoaded(): boolean {
     return this.isLoaded;
+  }
+
+  private updateData(data: IData) {
+    this.moneyCount = data.money;
+    this.dishesCount = data.dishes;
+    this.playerLvl.next({ rank: data.rank, xp: data.xp });
+    this.accumulatedPrestigeLvl = data.prestige_current;
+  }
+
+  private connect() {
+    if (this.webSocketService.isConnected) return;
+
+    if (this.userUpgrades.find((u) => u.upgrade_type === 'staff')) {
+      this.webSocketService.connect();
+      this.webSocketService.data$.subscribe((value) => {
+        this.updateData(value);
+      });
+    }
   }
 
   private getAvailableUpgrades() {
