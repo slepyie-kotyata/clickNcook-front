@@ -3,6 +3,9 @@ module.exports = {
   content: ["./src/**/*.{html,ts}"],
   theme: {
     extend: {
+      fontFamily: {
+        tektur: ['"Tektur"', "sans-serif"],
+      },
       colors: {
         primary: "#6F56FF",
         secondary: "#FFEB9C",
