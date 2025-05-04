@@ -9,6 +9,7 @@ import { NgIf } from '@angular/common';
 import { LoadingComponent } from '../../shared/ui/loading/loading.component';
 import { CafeComponent } from '../../shared/ui/locations/cafe/cafe.component';
 import {RestaurantComponent} from '../../shared/ui/locations/restaurant/restaurant.component';
+import {GastroRestaurantComponent} from '../../shared/ui/locations/gastro-restaurant/gastro-restaurant.component';
 
 @Component({
   selector: 'app-game',
@@ -21,6 +22,7 @@ import {RestaurantComponent} from '../../shared/ui/locations/restaurant/restaura
     LoadingComponent,
     CafeComponent,
     RestaurantComponent,
+    GastroRestaurantComponent,
   ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',
