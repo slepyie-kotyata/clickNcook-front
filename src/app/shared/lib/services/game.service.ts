@@ -5,6 +5,8 @@ import { GameApiService } from './game-api.service';
 import { AuthService } from './auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { ILevel, IUpgrade } from '../../../entities/game';
+import { WebSocketService } from './web-socket.service';
+import { IData } from '../../../entities/api';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +14,8 @@ import { ILevel, IUpgrade } from '../../../entities/game';
 export class GameService {
   public moneyCount: number = 0;
   public dishesCount: number = 0;
-  public prestigeLvl: number = 0;
+  public currentPrestigeLvl: number = 0;
+  public accumulatedPrestigeLvl: number = 0;
   public userUpgrades: IUpgrade[] = [];
   public sessionUpgrades: BehaviorSubject<IUpgrade[]> = new BehaviorSubject<
     IUpgrade[]
@@ -27,6 +30,7 @@ export class GameService {
   private nextLvlXp: number = 0;
   private isLoaded = false;
 
+  private webSocketService = inject(WebSocketService);
   private apiService = inject(GameApiService);
   private authService = inject(AuthService);
   private toastr = inject(ToastrService);
@@ -40,15 +44,18 @@ export class GameService {
         this.userUpgrades = [];
         this.userUpgrades = response.upgrades;
         this.playerLvl.next(response.session.level);
-        of(true)
-          .pipe()
-          .subscribe(() => {
-            this.getLevelInfo();
-            this.getAvailableUpgrades();
+        of(true).subscribe(() => {
+          this.getLevelInfo();
+          this.getAvailableUpgrades();
+          of(true).subscribe(() => {
+            this.connect();
             of(true)
               .pipe(delay(500))
-              .subscribe(() => (this.isLoaded = true));
+              .subscribe(() => {
+                this.isLoaded = true;
+              });
           });
+        });
       },
       (error) => {
         this.handleServerError(error, 'Ошибка загрузки данных');
@@ -91,6 +98,7 @@ export class GameService {
         this.moneyCount = response.money;
         this.getAvailableUpgrades();
         this.userUpgrades.push(upgrade);
+        this.connect();
       },
       (error) => {
         if (error.status === 404) {
@@ -110,6 +118,24 @@ export class GameService {
 
   isGameLoaded(): boolean {
     return this.isLoaded;
+  }
+
+  private updateData(data: IData) {
+    this.moneyCount = data.money;
+    this.dishesCount = data.dishes;
+    this.playerLvl.next({ rank: data.rank, xp: data.xp });
+    this.accumulatedPrestigeLvl = data.prestige_current;
+  }
+
+  private connect() {
+    if (this.webSocketService.isConnected) return;
+
+    if (this.userUpgrades.find((u) => u.upgrade_type === 'staff')) {
+      this.webSocketService.connect();
+      this.webSocketService.data$.subscribe((value) => {
+        this.updateData(value);
+      });
+    }
   }
 
   private getAvailableUpgrades() {
