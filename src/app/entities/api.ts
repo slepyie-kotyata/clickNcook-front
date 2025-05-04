@@ -9,3 +9,11 @@ export interface IUser {
   dishes: number;
   prestige: number;
 }
+
+export interface IData {
+  money: number;
+  dishes: number;
+  rank: number;
+  xp: number;
+  prestige_current: number;
+}

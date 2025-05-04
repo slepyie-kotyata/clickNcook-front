@@ -8,8 +8,8 @@ import { TrackComponent } from '../../shared/ui/locations/track/track.component'
 import { NgIf } from '@angular/common';
 import { LoadingComponent } from '../../shared/ui/loading/loading.component';
 import { CafeComponent } from '../../shared/ui/locations/cafe/cafe.component';
-import {RestaurantComponent} from '../../shared/ui/locations/restaurant/restaurant.component';
-import {GastroRestaurantComponent} from '../../shared/ui/locations/gastro-restaurant/gastro-restaurant.component';
+import { RestaurantComponent } from '../../shared/ui/locations/restaurant/restaurant.component';
+import { GastroRestaurantComponent } from '../../shared/ui/locations/gastro-restaurant/gastro-restaurant.component';
 
 @Component({
   selector: 'app-game',
@@ -34,11 +34,10 @@ export class GameComponent implements OnInit {
   logoutWindowToggle: boolean = false;
   prestigeWindowToggle: boolean = false;
 
-  prestigeProgressCount: number = 0;
   showResolutionWarning: boolean = false;
 
   getPrestigeMultiplier(): number {
-    return 1 + this.prestigeProgressCount * 0.5;
+    return 1 + this.gameService.accumulatedPrestigeLvl * 0.5;
   }
 
   setPrestigeWindow(value: boolean) {
@@ -81,7 +80,7 @@ export class GameComponent implements OnInit {
   }
 
   protected getPrestigeLvl(): string {
-    return formatNumber(this.gameService.prestigeLvl);
+    return formatNumber(this.gameService.currentPrestigeLvl);
   }
 
   protected getPlayerLvlPercentage(): number {
