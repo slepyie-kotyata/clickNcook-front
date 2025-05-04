@@ -7,8 +7,7 @@
                         [blocked]="(upgrade.times_bought > 0)
                         ? upgrade.price * upgrade.times_bought * upgrade.price_factor > this.gameService.moneyCount
                         : upgrade.price > this.gameService.moneyCount"
-                        [upgrade]="upgrade"
-                        [boost]="upgrade.boost"></app-upgrade-button>
+                        [upgrade]="upgrade"></app-upgrade-button>
   </div>
 </div>
 

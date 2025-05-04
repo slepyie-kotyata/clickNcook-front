@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgClass, NgIf } from '@angular/common';
 import formatNumber from '../../lib/formatNumber';
 import getIcon from '../../lib/icons';
-import {boostTooltip} from '../../lib/boostTooltip';
+import { boostTooltip } from '../../lib/boostTooltip';
 import { IBoost, IUpgrade } from '../../../entities/game';
 import { Upgrade } from '../../../entities/types';
 
@@ -16,7 +16,6 @@ import { Upgrade } from '../../../entities/types';
 export class UpgradeButtonComponent {
   @Input({ required: true }) upgrade: IUpgrade;
   @Input({ required: true }) blocked: boolean;
-  @Input({ required: true }) boost: IBoost;
   @Output() buyEvent: EventEmitter<number> = new EventEmitter();
 
   priceString(): string {
@@ -25,7 +24,7 @@ export class UpgradeButtonComponent {
         ? this.upgrade.price *
             this.upgrade.price_factor *
             this.upgrade.times_bought
-        : this.upgrade.price,
+        : this.upgrade.price
     );
   }
 
@@ -36,7 +35,7 @@ export class UpgradeButtonComponent {
   icon(): string {
     return getIcon(
       this.upgrade.upgrade_type as Upgrade,
-      this.upgrade.icon_name,
+      this.upgrade.icon_name
     );
   }
 
@@ -44,12 +43,9 @@ export class UpgradeButtonComponent {
   tooltipVisible = false;
 
   boostDisplay(): string {
-    console.log('boost:', this.boost);
-    return boostTooltip(this.boost.value , this.boost.boost_type);
+    return boostTooltip(
+      this.upgrade.boost.value,
+      this.upgrade.boost.boost_type
+    );
   }
-    
 }
-
-  
-
-
