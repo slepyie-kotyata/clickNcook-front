@@ -1,4 +1,5 @@
-<div *ngIf="gameService.isGameLoaded() && !showResolutionWarning" class="z-30 overscroll-none scrollbar-hide">
+<div *ngIf="gameService.isGameLoaded() && !showResolutionWarning"
+     class="z-30 overscroll-none scrollbar-hide font-tektur">
   <section class="z-max fixed flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
     <button (click)="setLogoutWindow(true)"
             class="max-w-14 max-h-14 rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
@@ -62,7 +63,7 @@
 <app-modal (close)="setLogoutWindow(false)"
            [closeOnBackdrop]="false"
            [show]="logoutWindowToggle">
-  <div class="flex flex-col items-center">
+  <div class="flex flex-col items-center font-tektur">
     <h2 class="text-white text-center md:text-4xl">Вы уверены что хотите выйти?</h2>
     <section class="flex flex-row gap-5">
       <button (click)="logout()"
@@ -81,17 +82,11 @@
   (close)="setPrestigeWindow(false)"
   [closeOnBackdrop]="true"
   [show]="prestigeWindowToggle">
-  <div class="flex flex-col items-center">
-    <h2 class="text-white text-4xl">Кулинарные звезды</h2>
-    <section
-      class="relative flex items-center justify-center w-[12.5dvw] h-[12.5dvw]">
-      <img class="w-full" src="/icons/star.svg">
-      <p
-        class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ this.gameService.currentPrestigeLvl }}</p>
-    </section>
-    <p class="text-white text-2xl whitespace-nowrap">Сейчас накоплено <span
+  <div class="flex flex-col items-center font-tektur">
+    <h2 class="text-white text-4xl mb-16">Кулинарные звезды</h2>
+    <p class="text-white text-xl whitespace-nowrap">Сейчас накоплено <span
       class="font-bold">{{ this.gameService.accumulatedPrestigeLvl }}</span> Кулинарных звезд</p>
-    <p class="text-white text-2xl whitespace-nowrap">Сбросив сейчас вы получите бонус
+    <p class="text-white text-xl whitespace-nowrap">Сбросив сейчас вы получите бонус
       <span class="font-bold">x{{ getPrestigeMultiplier() }}</span> к
       пассивному доходу</p>
     <button [disabled]="this.gameService.accumulatedPrestigeLvl<1"
@@ -103,7 +98,8 @@
 
 <div *ngIf="showResolutionWarning"
      class="fixed inset-0 bg-black text-white z-max flex items-center justify-center overscroll-none">
-  <p class="text-2xl text-center px-10 cursor-default select-none">Пожалуйста, измените размер окна для корректной
+  <p class="text-2xl text-center px-10 cursor-default select-none font-tektur">Пожалуйста, измените размер окна для
+    корректной
     работы сайта</p>
 </div>
 
