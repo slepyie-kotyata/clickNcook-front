@@ -1,29 +1,42 @@
-<button
-  (click)="handleBuy()"
-  [disabled]="blocked"
-  [ngClass]="{
-  'group':!blocked
-  }"
-  class="bg-black/25 disabled:bg-black/70 rounded-2xl flex flex-row gap-2.5 w-full px-4 py-2.5 items-center justify-between"
+<div
+  class="relative"
+  (mouseenter)="showTooltip = true"
+  (mouseleave)="showTooltip = false"
 >
-  <img
-    [src]="icon()"
-    alt=""
-    class="hidden sm:block bg-primary w-16 h-16 rounded-2xl flex-none"
-  />
-  <p
-    class="text-secondary text-start break-words leading-tight sm:max-w-[16dvw] md:max-w-full 2xl:max-w-[7dvw] text-xs md:text-base">
-    {{ upgrade.name }}
-  </p>
-  <span class="flex-1"></span>
-  <p class="text-secondary">{{ priceString() }} $</p>
-  <img
+  <button
+    (click)="handleBuy()"
+    [disabled]="blocked"
     [ngClass]="{
+      group: !blocked
+    }"
+    class="bg-black/25 disabled:bg-black/70 rounded-2xl flex flex-row gap-2.5 w-full px-4 py-2.5 items-center justify-between"
+  >
+    <img
+      [src]="icon()"
+      alt=""
+      class="hidden sm:block bg-primary w-16 h-16 rounded-2xl flex-none"
+    />
+    <p
+      class="text-secondary text-start break-words leading-tight sm:max-w-[16dvw] md:max-w-full 2xl:max-w-[7dvw] text-xs md:text-base"
+    >
+      {{ upgrade.name }}
+    </p>
+    <span class="flex-1"></span>
+    <p class="text-secondary">{{ priceString() }} $</p>
+    <img
+      [ngClass]="{
       'opacity-70': blocked,
       'bg-primary': !blocked,
       }"
-    alt=""
-    class="hidden sm:block w-16 h-16 rounded-2xl border-2 border-secondary group-hover:bg-secondary group-active:bg-secondary flex-none"
-    src="/icons/sell.svg"
-  />
-</button>
+      alt=""
+      class="hidden sm:block w-16 h-16 rounded-2xl border-2 border-secondary group-hover:bg-secondary group-active:bg-secondary flex-none"
+      src="/icons/sell.svg"
+    />
+    <div
+      *ngIf="showTooltip"
+      class="absolute right-1/3 px-3 py-2 rounded-2xl bg-primary border-black border-2 text-xs text-white md:text-base shadow z-max"
+    >
+      {{ boostDisplay() }}
+    </div>
+  </button>
+</div>
