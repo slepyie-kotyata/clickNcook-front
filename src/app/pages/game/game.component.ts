@@ -60,6 +60,10 @@ export class GameComponent implements OnInit {
     this.gameService.handleSell();
   }
 
+  toggleSound() {
+    this.gameService.setSoundSettings(!this.gameService.soundEnabled);
+  }
+
   logout() {
     this.authService.logout();
   }

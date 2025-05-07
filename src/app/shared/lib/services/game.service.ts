@@ -17,6 +17,7 @@ export class GameService {
   public currentPrestigeLvl: number = 0;
   public accumulatedPrestigeLvl: number = 0;
   public userUpgrades: IUpgrade[] = [];
+  public soundEnabled: boolean = true;
   public sessionUpgrades: BehaviorSubject<IUpgrade[]> = new BehaviorSubject<
     IUpgrade[]
   >([]);
@@ -46,6 +47,9 @@ export class GameService {
         this.playerLvl.next(response.session.level);
         this.currentPrestigeLvl = response.session.prestige_value;
         this.accumulatedPrestigeLvl = response.session.prestige.current_value;
+        this.soundEnabled = localStorage.getItem('sound')
+          ? localStorage.getItem('sound') === 'true'
+          : true;
         of(true).subscribe(() => {
           this.getLevelInfo();
           this.getAvailableUpgrades();
@@ -136,7 +140,14 @@ export class GameService {
       });
   }
 
+  setSoundSettings(value: boolean) {
+    this.soundEnabled = value;
+    localStorage.setItem('sound', value.toString());
+  }
+
   playSound(name: string) {
+    if (!this.soundEnabled) return;
+
     let sound = new Audio('/sounds/' + name + '.mp3');
     sound.load();
     sound.play();
