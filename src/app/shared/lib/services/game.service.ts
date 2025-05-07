@@ -66,6 +66,7 @@ export class GameService {
   }
 
   handleCook() {
+    this.playSound('cook');
     this.apiService.cook().subscribe(
       (response) => {
         this.dishesCount = response.dishes;
@@ -79,6 +80,7 @@ export class GameService {
   }
 
   handleSell() {
+    this.playSound('sell');
     this.apiService.sell().subscribe(
       (response) => {
         this.moneyCount = response.money;
@@ -95,6 +97,8 @@ export class GameService {
 
   handleBuy(upgrade: IUpgrade) {
     if (!upgrade || upgrade.id < 0) return;
+
+    this.playSound('buy');
     this.apiService.buy(upgrade.id).subscribe(
       (response) => {
         this.moneyCount = response.money;
@@ -114,20 +118,32 @@ export class GameService {
     if (this.accumulatedPrestigeLvl < 1) return;
 
     this.isLoaded = false;
+    this.playSound('prestige');
 
-    this.apiService.prestige().subscribe(
-      (response) => {
-        window.location.reload();
-      },
-      (error) => {
-        if (error.status != 400) {
-          this.handleServerError(error, 'Серверная ошибка');
-        }
-      },
-    );
+    of(true)
+      .pipe(delay(1100))
+      .subscribe(() => {
+        this.apiService.prestige().subscribe(
+          (response) => {
+            window.location.reload();
+          },
+          (error) => {
+            if (error.status != 400) {
+              this.handleServerError(error, 'Серверная ошибка');
+            }
+          },
+        );
+      });
+  }
+
+  playSound(name: string) {
+    let sound = new Audio('/sounds/' + name + '.mp3');
+    sound.load();
+    sound.play();
   }
 
   selectMenuType(type: Upgrade) {
+    this.playSound('click');
     this.selectedMenuType.next(type);
   }
 
@@ -194,6 +210,9 @@ export class GameService {
   private levelUp() {
     this.apiService.levelUp().subscribe(
       (response) => {
+        if (this.playerLvl.value.rank < response.current_rank)
+          this.playSound('level-up');
+
         this.playerLvl.next({
           rank: response.current_rank,
           xp: response.current_xp,

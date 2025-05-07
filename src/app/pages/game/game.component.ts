@@ -38,10 +38,12 @@ export class GameComponent implements OnInit {
   prestigeWindowToggle: boolean = false;
 
   setPrestigeWindow(value: boolean) {
+    this.gameService.playSound('click');
     this.prestigeWindowToggle = value;
   }
 
   setLogoutWindow(value: boolean) {
+    this.gameService.playSound('click');
     this.logoutWindowToggle = value;
   }
 
