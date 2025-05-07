@@ -17,6 +17,7 @@ export class GameService {
   public currentPrestigeLvl: number = 0;
   public accumulatedPrestigeLvl: number = 0;
   public userUpgrades: IUpgrade[] = [];
+  public soundEnabled: boolean = true;
   public sessionUpgrades: BehaviorSubject<IUpgrade[]> = new BehaviorSubject<
     IUpgrade[]
   >([]);
@@ -46,6 +47,9 @@ export class GameService {
         this.playerLvl.next(response.session.level);
         this.currentPrestigeLvl = response.session.prestige_value;
         this.accumulatedPrestigeLvl = response.session.prestige.current_value;
+        this.soundEnabled = localStorage.getItem('sound')
+          ? localStorage.getItem('sound') === 'true'
+          : true;
         of(true).subscribe(() => {
           this.getLevelInfo();
           this.getAvailableUpgrades();
@@ -66,6 +70,7 @@ export class GameService {
   }
 
   handleCook() {
+    this.playSound('cook');
     this.apiService.cook().subscribe(
       (response) => {
         this.dishesCount = response.dishes;
@@ -79,6 +84,7 @@ export class GameService {
   }
 
   handleSell() {
+    this.playSound('sell');
     this.apiService.sell().subscribe(
       (response) => {
         this.moneyCount = response.money;
@@ -95,6 +101,8 @@ export class GameService {
 
   handleBuy(upgrade: IUpgrade) {
     if (!upgrade || upgrade.id < 0) return;
+
+    this.playSound('buy');
     this.apiService.buy(upgrade.id).subscribe(
       (response) => {
         this.moneyCount = response.money;
@@ -114,20 +122,39 @@ export class GameService {
     if (this.accumulatedPrestigeLvl < 1) return;
 
     this.isLoaded = false;
+    this.playSound('prestige');
 
-    this.apiService.prestige().subscribe(
-      (response) => {
-        window.location.reload();
-      },
-      (error) => {
-        if (error.status != 400) {
-          this.handleServerError(error, 'Серверная ошибка');
-        }
-      },
-    );
+    of(true)
+      .pipe(delay(1100))
+      .subscribe(() => {
+        this.apiService.prestige().subscribe(
+          (response) => {
+            window.location.reload();
+          },
+          (error) => {
+            if (error.status != 400) {
+              this.handleServerError(error, 'Серверная ошибка');
+            }
+          },
+        );
+      });
+  }
+
+  setSoundSettings(value: boolean) {
+    this.soundEnabled = value;
+    localStorage.setItem('sound', value.toString());
+  }
+
+  playSound(name: string) {
+    if (!this.soundEnabled) return;
+
+    let sound = new Audio('/sounds/' + name + '.mp3');
+    sound.load();
+    sound.play();
   }
 
   selectMenuType(type: Upgrade) {
+    this.playSound('click');
     this.selectedMenuType.next(type);
   }
 
@@ -194,6 +221,9 @@ export class GameService {
   private levelUp() {
     this.apiService.levelUp().subscribe(
       (response) => {
+        if (this.playerLvl.value.rank < response.current_rank)
+          this.playSound('level-up');
+
         this.playerLvl.next({
           rank: response.current_rank,
           xp: response.current_xp,

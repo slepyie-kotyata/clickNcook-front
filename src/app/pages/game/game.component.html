@@ -87,4 +87,7 @@
     работы сайта</p>
 </div>
 
+<button (click)="toggleSound()" class="fixed bottom-0 left-0 px-4 py-4 z-max"><img
+  [src]="gameService.soundEnabled ? '/icons/sound-on.svg' : '/icons/sound-off.svg'"></button>
+
 <app-loading *ngIf="!this.gameService.isGameLoaded()"></app-loading>

@@ -38,10 +38,12 @@ export class GameComponent implements OnInit {
   prestigeWindowToggle: boolean = false;
 
   setPrestigeWindow(value: boolean) {
+    this.gameService.playSound('click');
     this.prestigeWindowToggle = value;
   }
 
   setLogoutWindow(value: boolean) {
+    this.gameService.playSound('click');
     this.logoutWindowToggle = value;
   }
 
@@ -56,6 +58,10 @@ export class GameComponent implements OnInit {
     if (this.gameService.dishesCount <= 0) return;
 
     this.gameService.handleSell();
+  }
+
+  toggleSound() {
+    this.gameService.setSoundSettings(!this.gameService.soundEnabled);
   }
 
   logout() {
