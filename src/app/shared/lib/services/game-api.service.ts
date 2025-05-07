@@ -22,11 +22,12 @@ export class GameApiService {
     }>(this.api + 'game/init');
   }
 
-  cook(): Observable<{ dishes: number; status: number }> {
-    return this.httpClient.patch<{ dishes: number; status: number }>(
-      this.api + 'game/cook',
-      {},
-    );
+  cook(): Observable<{ dishes: number; status: number; xp: number }> {
+    return this.httpClient.patch<{
+      dishes: number;
+      status: number;
+      xp: number;
+    }>(this.api + 'game/cook', {});
   }
 
   sell(): Observable<{

@@ -74,6 +74,7 @@ export class GameService {
     this.apiService.cook().subscribe(
       (response) => {
         this.dishesCount = response.dishes;
+        this.updatePlayerXP(response.xp);
       },
       (error) => {
         if (error.status != 400 && error.status != 403) {
