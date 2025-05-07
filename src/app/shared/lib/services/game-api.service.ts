@@ -50,6 +50,13 @@ export class GameApiService {
     }>(this.api + 'game/buy/' + id, {});
   }
 
+  prestige(): Observable<{ message: string; status: number }> {
+    return this.httpClient.patch<{ message: string; status: number }>(
+      this.api + 'game/reset',
+      {},
+    );
+  }
+
   getUpgrades(): Observable<{
     status: number;
     upgrades: IUpgrade[];

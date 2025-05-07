@@ -10,6 +10,7 @@ import { LoadingComponent } from '../../shared/ui/loading/loading.component';
 import { CafeComponent } from '../../shared/ui/locations/cafe/cafe.component';
 import { RestaurantComponent } from '../../shared/ui/locations/restaurant/restaurant.component';
 import { GastroRestaurantComponent } from '../../shared/ui/locations/gastro-restaurant/gastro-restaurant.component';
+import { PrestigeWindowComponent } from '../../widgets/prestige-window/prestige-window.component';
 
 @Component({
   selector: 'app-game',
@@ -23,6 +24,7 @@ import { GastroRestaurantComponent } from '../../shared/ui/locations/gastro-rest
     CafeComponent,
     RestaurantComponent,
     GastroRestaurantComponent,
+    PrestigeWindowComponent,
   ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',
@@ -32,13 +34,8 @@ export class GameComponent implements OnInit {
   gameService = inject(GameService);
 
   logoutWindowToggle: boolean = false;
-  prestigeWindowToggle: boolean = false;
-
   showResolutionWarning: boolean = false;
-
-  getPrestigeMultiplier(): number {
-    return 1 + this.gameService.accumulatedPrestigeLvl * 0.5;
-  }
+  prestigeWindowToggle: boolean = false;
 
   setPrestigeWindow(value: boolean) {
     this.prestigeWindowToggle = value;

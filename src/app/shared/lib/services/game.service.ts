@@ -44,6 +44,8 @@ export class GameService {
         this.userUpgrades = [];
         this.userUpgrades = response.upgrades;
         this.playerLvl.next(response.session.level);
+        this.currentPrestigeLvl = response.session.prestige_value;
+        this.accumulatedPrestigeLvl = response.session.prestige.current_value;
         of(true).subscribe(() => {
           this.getLevelInfo();
           this.getAvailableUpgrades();
@@ -102,6 +104,23 @@ export class GameService {
       },
       (error) => {
         if (error.status === 404) {
+          this.handleServerError(error, 'Ошибка синхронизации данных');
+        }
+      },
+    );
+  }
+
+  handlePrestige() {
+    if (this.accumulatedPrestigeLvl < 1) return;
+
+    this.isLoaded = false;
+
+    this.apiService.prestige().subscribe(
+      (response) => {
+        window.location.reload();
+      },
+      (error) => {
+        if (error.status != 400) {
           this.handleServerError(error, 'Серверная ошибка');
         }
       },
