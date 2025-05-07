@@ -78,23 +78,7 @@
   </div>
 </app-modal>
 
-<app-modal
-  (close)="setPrestigeWindow(false)"
-  [closeOnBackdrop]="true"
-  [show]="prestigeWindowToggle">
-  <div class="flex flex-col items-center font-tektur">
-    <h2 class="text-white text-4xl mb-16">Кулинарные звезды</h2>
-    <p class="text-white text-xl whitespace-nowrap">Сейчас накоплено <span
-      class="font-bold">{{ this.gameService.accumulatedPrestigeLvl }}</span> Кулинарных звезд</p>
-    <p class="text-white text-xl whitespace-nowrap">Сбросив сейчас вы получите бонус
-      <span class="font-bold">x{{ getPrestigeMultiplier() }}</span> к
-      пассивному доходу</p>
-    <button [disabled]="this.gameService.accumulatedPrestigeLvl<1"
-            class="bg-secondary disabled:bg-secondary/45 border-2 border-black mt-[2.5dvh] rounded-2xl px-[8.5dvw] py-[1.25dvh]">
-      Сбросить
-    </button>
-  </div>
-</app-modal>
+<app-prestige-window (closeEvent)="setPrestigeWindow($event)" [enabled]="prestigeWindowToggle"></app-prestige-window>
 
 <div *ngIf="showResolutionWarning"
      class="fixed inset-0 bg-black text-white z-max flex items-center justify-center overscroll-none">

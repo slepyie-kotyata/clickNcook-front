@@ -22,9 +22,14 @@ export default interface ISession {
   id: number;
   money: number;
   dishes: number;
-  //prestige: IPrestige;
+  prestige_value: number;
+  prestige: IPrestige;
   level: ILevel;
   user_id: number;
+}
+
+export interface IPrestige {
+  current_value: number;
 }
 
 export interface ILevel {
