@@ -11,6 +11,7 @@ import { CafeComponent } from '../../shared/ui/locations/cafe/cafe.component';
 import { RestaurantComponent } from '../../shared/ui/locations/restaurant/restaurant.component';
 import { GastroRestaurantComponent } from '../../shared/ui/locations/gastro-restaurant/gastro-restaurant.component';
 import { PrestigeWindowComponent } from '../../widgets/prestige-window/prestige-window.component';
+import {FinalComponent} from '../../shared/ui/locations/final/final.component';
 
 @Component({
   selector: 'app-game',
@@ -25,6 +26,7 @@ import { PrestigeWindowComponent } from '../../widgets/prestige-window/prestige-
     RestaurantComponent,
     GastroRestaurantComponent,
     PrestigeWindowComponent,
+    FinalComponent,
   ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',

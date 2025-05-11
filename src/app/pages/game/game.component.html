@@ -57,6 +57,9 @@
   <div *ngIf="gameService.playerLvl.value.rank >= 40 && gameService.playerLvl.value.rank < 70">
     <app-gastro-restaurant></app-gastro-restaurant>
   </div>
+  <div *ngIf="gameService.playerLvl.value.rank >= 70">
+    <app-final></app-final>
+  </div>
 </div>
 
 
