@@ -24,19 +24,28 @@
     <p class="relative text-3xl text-center">LVL {{ this.gameService.playerLvl.value.rank }}</p>
   </section>
   <section
-    class="z-10 bg-secondary rounded-t-xxl border border-black px-[5.5dvw] py-[5.5dvh] left-[7dvw] absolute bottom-0 w-[50dvw] h-[29dvh]">
+    class="z-10 px-[5.5dvw] py-[5.5dvh] left-[7dvw] absolute bottom-0 w-[65dvw] h-[53dvh]">
     <div class="w-full h-full flex flex-col md:flex-row gap-6 justify-end items-center">
-      <button (click)="handleCook()"
-              class="bg-primary rounded-xxl w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
-        <img
-          class="h-full"
-          src="/icons/cook.svg"></button>
-      <button (click)="handleSell()"
-              class="bg-primary rounded-xxl w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
-        <img
-          class="h-full"
-          src="/icons/sell.svg">
-      </button>
+      <div class="flex flex-col justify-center align-middle items-center">
+        <img *ngIf="gameService.playerLvl.value.rank < 70" class="w-[312px] hidden xl:block"
+             src="/icons/upgrades/equipment/gas_burner.svg">
+        <button (click)="handleCook()"
+                class="z-max bg-primary rounded-xxl border border-black w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
+          <img
+            class="h-full"
+            src="/icons/cook.svg">
+        </button>
+      </div>
+      <div class="flex flex-col justify-center align-middle items-center">
+        <img *ngIf="gameService.playerLvl.value.rank < 70" class="w-[312px] hidden xl:block"
+             src="/icons/upgrades/equipment/new_cashier.svg">
+        <button (click)="handleSell()"
+                class="bg-primary rounded-xxl border border-black w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
+          <img
+            class="h-full"
+            src="/icons/sell.svg">
+        </button>
+      </div>
     </div>
   </section>
   <app-menu></app-menu>
