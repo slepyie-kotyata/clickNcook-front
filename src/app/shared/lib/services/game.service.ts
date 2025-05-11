@@ -168,14 +168,19 @@ export class GameService {
   }
 
   private updateData(data: IData) {
+    this.moneyCount = data.money;
+    this.dishesCount = data.dishes;
+    this.accumulatedPrestigeLvl = data.prestige_current;
+
+    if (this.playerLvl.value.rank === 100) {
+      return;
+    }
+
     this.apiService.levelUp().subscribe((response) => {
-      this.moneyCount = data.money;
-      this.dishesCount = data.dishes;
       this.playerLvl.next({
         rank: response.current_rank,
         xp: response.current_xp,
       });
-      this.accumulatedPrestigeLvl = data.prestige_current;
     });
   }
 
@@ -220,6 +225,10 @@ export class GameService {
   }
 
   private levelUp() {
+    if (this.playerLvl.value.rank === 100) {
+      return;
+    }
+
     this.apiService.levelUp().subscribe(
       (response) => {
         if (this.playerLvl.value.rank < response.current_rank)
