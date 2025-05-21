@@ -4,3 +4,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+input, a {
+  pointer-events: auto !important;
+  user-select: auto !important;
+}
+
+button {
+  pointer-events: auto !important;
+}
