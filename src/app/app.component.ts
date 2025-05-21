@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -10,4 +10,19 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   title = 'Click & Cook';
+
+  @HostListener('document:contextmenu', ['$event'])
+  onRightClick(event: MouseEvent) {
+    event.preventDefault();
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeydown(event: KeyboardEvent) {
+    if (
+      (event.ctrlKey || event.metaKey) &&
+      ['c', 'u', 's', 'a'].includes(event.key.toLowerCase())
+    ) {
+      event.preventDefault();
+    }
+  }
 }
