@@ -22,6 +22,30 @@ export class GameApiService {
     }>(this.api + 'game/init');
   }
 
+  getUpgrades(): Observable<{
+    status: number;
+    upgrades: IUpgrade[];
+  }> {
+    return this.httpClient.get<{
+      status: number;
+      upgrades: IUpgrade[];
+    }>(this.api + 'game/upgrades');
+  }
+
+  getLevelInfo(): Observable<{
+    current_rank: number;
+    current_xp: number;
+    needed_xp: number;
+    status: number;
+  }> {
+    return this.httpClient.get<{
+      current_rank: number;
+      current_xp: number;
+      needed_xp: number;
+      status: number;
+    }>(this.api + 'game/levels');
+  }
+
   cook(): Observable<{ dishes: number; status: number; xp: number }> {
     return this.httpClient.patch<{
       dishes: number;
@@ -56,30 +80,6 @@ export class GameApiService {
       this.api + 'game/reset',
       {},
     );
-  }
-
-  getUpgrades(): Observable<{
-    status: number;
-    upgrades: IUpgrade[];
-  }> {
-    return this.httpClient.get<{
-      status: number;
-      upgrades: IUpgrade[];
-    }>(this.api + 'game/upgrades');
-  }
-
-  getLevelInfo(): Observable<{
-    current_rank: number;
-    current_xp: number;
-    needed_xp: number;
-    status: number;
-  }> {
-    return this.httpClient.get<{
-      current_rank: number;
-      current_xp: number;
-      needed_xp: number;
-      status: number;
-    }>(this.api + 'game/levels');
   }
 
   levelUp(): Observable<{ current_rank: number; current_xp: number }> {
