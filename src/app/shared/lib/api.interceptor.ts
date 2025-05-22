@@ -35,6 +35,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
       req = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,
+          'X-timestamp': Date.now().toString(),
         },
       });
     }
@@ -78,6 +79,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
           const newRequest = request.clone({
             setHeaders: {
               Authorization: `Bearer ${response.tokens.access_token}`,
+              'X-timestamp': Date.now().toString(),
             },
           });
 
@@ -101,6 +103,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
           const newRequest = request.clone({
             setHeaders: {
               Authorization: `Bearer ${response.tokens.access_token}`,
+              'X-timestamp': Date.now().toString(),
             },
           });
           return next.handle(newRequest);

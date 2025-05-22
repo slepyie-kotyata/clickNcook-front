@@ -51,7 +51,7 @@ export class GameApiService {
       dishes: number;
       status: number;
       xp: number;
-    }>(this.api + 'game/cook', this.getTimestamp());
+    }>(this.api + 'game/cook', {});
   }
 
   sell(): Observable<{
@@ -65,35 +65,27 @@ export class GameApiService {
       money: number;
       status: number;
       xp: number;
-    }>(this.api + 'game/sell', this.getTimestamp());
+    }>(this.api + 'game/sell', {});
   }
 
   buy(id: number): Observable<{ status: number; money: number }> {
     return this.httpClient.patch<{
       status: number;
       money: number;
-    }>(this.api + 'game/buy/' + id, this.getTimestamp());
+    }>(this.api + 'game/buy/' + id, {});
   }
 
   prestige(): Observable<{ message: string; status: number }> {
     return this.httpClient.patch<{ message: string; status: number }>(
       this.api + 'game/reset',
-      this.getTimestamp(),
+      {},
     );
   }
 
   levelUp(): Observable<{ current_rank: number; current_xp: number }> {
     return this.httpClient.patch<{ current_rank: number; current_xp: number }>(
       this.api + 'game/levels',
-      this.getTimestamp(),
+      {},
     );
-  }
-
-  private getTimestamp(): FormData {
-    let timestamp = Date.now();
-    let body = new FormData();
-    body.append('timestamp', timestamp.toString());
-    console.log('timestamp ', timestamp);
-    return body;
   }
 }
