@@ -93,6 +93,7 @@ export class GameApiService {
     let timestamp = Date.now();
     let body = new FormData();
     body.append('timestamp', timestamp.toString());
+    console.log('timestamp ', timestamp);
     return body;
   }
 }
