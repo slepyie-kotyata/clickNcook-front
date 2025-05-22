@@ -22,42 +22,6 @@ export class GameApiService {
     }>(this.api + 'game/init');
   }
 
-  cook(): Observable<{ dishes: number; status: number; xp: number }> {
-    return this.httpClient.patch<{
-      dishes: number;
-      status: number;
-      xp: number;
-    }>(this.api + 'game/cook', {});
-  }
-
-  sell(): Observable<{
-    dishes: number;
-    money: number;
-    status: number;
-    xp: number;
-  }> {
-    return this.httpClient.patch<{
-      dishes: number;
-      money: number;
-      status: number;
-      xp: number;
-    }>(this.api + 'game/sell', {});
-  }
-
-  buy(id: number): Observable<{ status: number; money: number }> {
-    return this.httpClient.patch<{
-      status: number;
-      money: number;
-    }>(this.api + 'game/buy/' + id, {});
-  }
-
-  prestige(): Observable<{ message: string; status: number }> {
-    return this.httpClient.patch<{ message: string; status: number }>(
-      this.api + 'game/reset',
-      {},
-    );
-  }
-
   getUpgrades(): Observable<{
     status: number;
     upgrades: IUpgrade[];
@@ -82,10 +46,53 @@ export class GameApiService {
     }>(this.api + 'game/levels');
   }
 
+  cook(): Observable<{ dishes: number; status: number; xp: number }> {
+    return this.httpClient.patch<{
+      dishes: number;
+      status: number;
+      xp: number;
+    }>(this.api + 'game/cook', this.getTimestamp());
+  }
+
+  sell(): Observable<{
+    dishes: number;
+    money: number;
+    status: number;
+    xp: number;
+  }> {
+    return this.httpClient.patch<{
+      dishes: number;
+      money: number;
+      status: number;
+      xp: number;
+    }>(this.api + 'game/sell', this.getTimestamp());
+  }
+
+  buy(id: number): Observable<{ status: number; money: number }> {
+    return this.httpClient.patch<{
+      status: number;
+      money: number;
+    }>(this.api + 'game/buy/' + id, this.getTimestamp());
+  }
+
+  prestige(): Observable<{ message: string; status: number }> {
+    return this.httpClient.patch<{ message: string; status: number }>(
+      this.api + 'game/reset',
+      this.getTimestamp(),
+    );
+  }
+
   levelUp(): Observable<{ current_rank: number; current_xp: number }> {
     return this.httpClient.patch<{ current_rank: number; current_xp: number }>(
       this.api + 'game/levels',
-      {},
+      this.getTimestamp(),
     );
+  }
+
+  private getTimestamp(): FormData {
+    let timestamp = Date.now();
+    let body = new FormData();
+    body.append('timestamp', timestamp.toString());
+    return body;
   }
 }
