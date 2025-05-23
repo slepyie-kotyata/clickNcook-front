@@ -15,9 +15,12 @@ export class PrestigeWindowComponent {
 
   protected gameService = inject(GameService);
   protected isProcessing: boolean = false;
+  protected readonly parseFloat = parseFloat;
 
   protected getPrestigeMultiplier(): number {
-    return 1 + this.gameService.accumulatedPrestigeLvl * 0.5;
+    return parseFloat(
+      (1 + this.gameService.accumulatedPrestigeLvl * 0.5).toFixed(2),
+    );
   }
 
   protected close() {

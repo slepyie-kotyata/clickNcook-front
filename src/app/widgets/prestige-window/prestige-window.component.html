@@ -5,7 +5,8 @@
   <div class="flex flex-col items-center font-tektur">
     <h2 class="text-white text-4xl mb-16">Кулинарные звезды</h2>
     <p class="text-white text-xl whitespace-nowrap">Сейчас накоплено <span
-      class="font-bold">{{ this.gameService.accumulatedPrestigeLvl }}</span> Кулинарных звезд</p>
+      class="font-bold">{{ parseFloat((this.gameService.accumulatedPrestigeLvl).toFixed(2)) }}</span> Кулинарных звезд
+    </p>
     <p class="text-white text-xl whitespace-nowrap">Сбросив сейчас вы получите бонус
       <span class="font-bold">x{{ getPrestigeMultiplier() }}</span> к
       пассивному доходу</p>

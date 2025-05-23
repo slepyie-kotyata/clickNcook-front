@@ -179,6 +179,7 @@ export class GameService {
     this.moneyCount = data.money;
     this.dishesCount = data.dishes;
     this.accumulatedPrestigeLvl = data.prestige_current;
+    this.playerLvl.next({ rank: data.rank, xp: data.xp });
 
     if (this.playerLvl.value.rank === 100) {
       return;
