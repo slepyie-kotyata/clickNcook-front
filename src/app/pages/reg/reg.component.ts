@@ -75,7 +75,7 @@ export class RegComponent {
         error: (error) => {
           if (error.status === 409) {
             this.toastrService.error(
-              'Пользователь с таким именем или почтой уже существует',
+              'Пользователь с такой почтой уже зарегистрирован',
               'Ошибка регистрации',
             );
           } else {
