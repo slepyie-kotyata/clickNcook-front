@@ -11,7 +11,7 @@ import { CafeComponent } from '../../shared/ui/locations/cafe/cafe.component';
 import { RestaurantComponent } from '../../shared/ui/locations/restaurant/restaurant.component';
 import { GastroRestaurantComponent } from '../../shared/ui/locations/gastro-restaurant/gastro-restaurant.component';
 import { PrestigeWindowComponent } from '../../widgets/prestige-window/prestige-window.component';
-import {FinalComponent} from '../../shared/ui/locations/final/final.component';
+import { FinalComponent } from '../../shared/ui/locations/final/final.component';
 
 @Component({
   selector: 'app-game',
@@ -67,7 +67,7 @@ export class GameComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout();
+    this.gameService.handleLogout();
   }
 
   ngOnInit(): void {

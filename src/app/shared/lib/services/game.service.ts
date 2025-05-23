@@ -139,6 +139,11 @@ export class GameService {
       });
   }
 
+  handleLogout() {
+    if (this.webSocketService.isConnected) this.webSocketService.close();
+    this.authService.logout();
+  }
+
   setSoundSettings(value: boolean) {
     this.soundEnabled = value;
     localStorage.setItem('sound', value.toString());
