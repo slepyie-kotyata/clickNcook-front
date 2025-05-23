@@ -10,13 +10,11 @@ import {
 
 import { Observable, take, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-import { ToastrService } from 'ngx-toastr';
 import { AuthService } from './services/auth.service';
 
 @Injectable()
 export class HttpRequestInterceptor implements HttpInterceptor {
   private authService: AuthService = inject(AuthService);
-  private toastrService = inject(ToastrService);
   private isRefreshing = false;
 
   intercept(
@@ -87,8 +85,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
         }),
         catchError((error) => {
           this.isRefreshing = false;
-          this.authService.logout();
-          this.toastrService.error('Время сессии истекло', 'Ошибка');
+          this.authService.logout('Время сессии истекло');
 
           return throwError(() => error);
         }),

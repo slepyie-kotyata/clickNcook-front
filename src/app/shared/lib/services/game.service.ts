@@ -1,9 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, delay, of } from 'rxjs';
+import { BehaviorSubject, delay, firstValueFrom, of } from 'rxjs';
 import { Upgrade } from '../../../entities/types';
 import { GameApiService } from './game-api.service';
 import { AuthService } from './auth.service';
-import { ToastrService } from 'ngx-toastr';
 import { ILevel, IUpgrade } from '../../../entities/game';
 import { WebSocketService } from './web-socket.service';
 import { IData } from '../../../entities/api';
@@ -34,47 +33,45 @@ export class GameService {
   private webSocketService = inject(WebSocketService);
   private apiService = inject(GameApiService);
   private authService = inject(AuthService);
-  private toastr = inject(ToastrService);
 
-  loadData() {
+  async loadData() {
     this.isLoaded = false;
-    this.apiService.getGameInit().subscribe(
-      (response) => {
-        this.moneyCount = response.session.money;
-        this.dishesCount = response.session.dishes;
-        this.userUpgrades = [];
-        this.userUpgrades = response.upgrades;
-        this.playerLvl.next(response.session.level);
-        this.currentPrestigeLvl = response.session.prestige_value;
-        this.accumulatedPrestigeLvl = response.session.prestige.current_value;
-        this.soundEnabled = localStorage.getItem('sound')
-          ? localStorage.getItem('sound') === 'true'
-          : true;
-        of(true).subscribe(() => {
-          this.getLevelInfo();
-          this.getAvailableUpgrades();
-          of(true).subscribe(() => {
-            this.connect();
-            of(true)
-              .pipe(delay(500))
-              .subscribe(() => {
-                this.isLoaded = true;
-              });
-          });
-        });
-      },
-      (error) => {
+
+    try {
+      const response = await firstValueFrom(this.apiService.getGameInit());
+
+      this.moneyCount = response.session.money;
+      this.dishesCount = response.session.dishes;
+      this.userUpgrades = [];
+      this.userUpgrades = response.upgrades;
+      this.playerLvl.next(response.session.level);
+      this.currentPrestigeLvl = response.session.prestige_value;
+      this.accumulatedPrestigeLvl = response.session.prestige.current_value;
+      this.soundEnabled = localStorage.getItem('sound')
+        ? localStorage.getItem('sound') === 'true'
+        : true;
+
+      await this.getLevelInfoAsync();
+      await this.getAvailableUpgradesAsync();
+      await this.connectToWebSocketAsync();
+
+      this.isLoaded = true;
+    } catch (error) {
+      if (this.isHttpError(error))
         this.handleServerError(error, 'Ошибка загрузки данных');
-      },
-    );
+      else {
+        console.error('[ERROR]: ', error);
+        this.authService.logout('Непредвиденная ошибка');
+      }
+    }
   }
 
   handleCook() {
-    this.playSound('cook');
     this.apiService.cook().subscribe(
       (response) => {
         this.dishesCount = response.dishes;
         this.updatePlayerXP(response.xp);
+        this.playSound('cook');
       },
       (error) => {
         if (error.status != 400 && error.status != 403) {
@@ -85,12 +82,12 @@ export class GameService {
   }
 
   handleSell() {
-    this.playSound('sell');
     this.apiService.sell().subscribe(
       (response) => {
         this.moneyCount = response.money;
         this.dishesCount = response.dishes;
         this.updatePlayerXP(response.xp);
+        this.playSound('sell');
       },
       (error) => {
         if (error.status != 400 && error.status != 409) {
@@ -100,23 +97,29 @@ export class GameService {
     );
   }
 
-  handleBuy(upgrade: IUpgrade) {
+  async handleBuy(upgrade: IUpgrade) {
     if (!upgrade || upgrade.id < 0) return;
 
-    this.playSound('buy');
-    this.apiService.buy(upgrade.id).subscribe(
-      (response) => {
-        this.moneyCount = response.money;
-        this.getAvailableUpgrades();
-        this.userUpgrades.push(upgrade);
-        this.connect();
-      },
-      (error) => {
+    try {
+      const response = await firstValueFrom(this.apiService.buy(upgrade.id));
+
+      this.moneyCount = response.money;
+      await this.getAvailableUpgradesAsync();
+      this.userUpgrades.push(upgrade);
+
+      this.playSound('buy');
+
+      await this.connectToWebSocketAsync();
+    } catch (error) {
+      if (this.isHttpError(error)) {
         if (error.status === 404) {
           this.handleServerError(error, 'Ошибка синхронизации данных');
         }
-      },
-    );
+      } else {
+        console.error('[ERROR]: ', error);
+        this.authService.logout('Непредвиденная ошибка');
+      }
+    }
   }
 
   handlePrestige() {
@@ -139,6 +142,11 @@ export class GameService {
           },
         );
       });
+  }
+
+  handleLogout() {
+    if (this.webSocketService.isConnected) this.webSocketService.close();
+    this.authService.logout();
   }
 
   setSoundSettings(value: boolean) {
@@ -171,45 +179,52 @@ export class GameService {
     this.moneyCount = data.money;
     this.dishesCount = data.dishes;
     this.accumulatedPrestigeLvl = data.prestige_current;
+    this.playerLvl.next({ rank: data.rank, xp: data.xp });
 
     if (this.playerLvl.value.rank === 100) {
       return;
     }
 
-    this.apiService.levelUp().subscribe((response) => {
-      this.playerLvl.next({
-        rank: response.current_rank,
-        xp: response.current_xp,
-      });
-    });
+    if (this.playerLvl.value.xp >= this.nextLvlXp) this.levelUp();
   }
 
-  private connect() {
+  private async connectToWebSocketAsync() {
     if (this.webSocketService.isConnected) return;
 
     if (this.userUpgrades.find((u) => u.upgrade_type === 'staff')) {
-      this.webSocketService.connect();
-      this.webSocketService.data$.subscribe((value) => {
-        this.updateData(value);
-      });
+      try {
+        await this.webSocketService.connect();
+        this.webSocketService.data$.subscribe((value) => {
+          this.updateData(value);
+        });
+      } catch (error) {
+        if (this.isHttpError(error))
+          this.handleServerError(error, 'Ошибка подключения к серверу');
+        else {
+          console.error('[ERROR]: ', error);
+          this.authService.logout('Непредвиденная ошибка');
+        }
+      }
     }
   }
 
-  private getAvailableUpgrades() {
-    this.apiService.getUpgrades().subscribe(
-      (response) => {
-        this.sessionUpgrades.next(response.upgrades);
-      },
-      (error) => {
+  private async getAvailableUpgradesAsync() {
+    try {
+      const response = await firstValueFrom(this.apiService.getUpgrades());
+      await this.sessionUpgrades.next(response.upgrades);
+    } catch (error) {
+      if (this.isHttpError(error))
         this.handleServerError(error, 'Серверная ошибка');
-      },
-    );
+      else {
+        console.error('[ERROR]: ', error);
+        this.authService.logout('Непредвиденная ошибка');
+      }
+    }
   }
 
   private handleServerError(error: any, message?: string) {
-    if (message) this.toastr.error(message);
     console.error(`[ERROR ${error.status}]: ${error.error.message}`);
-    this.authService.logout();
+    this.authService.logout(message);
   }
 
   private updatePlayerXP(xp: number) {
@@ -225,9 +240,7 @@ export class GameService {
   }
 
   private levelUp() {
-    if (this.playerLvl.value.rank === 100) {
-      return;
-    }
+    if (this.playerLvl.value.rank === 100) return;
 
     this.apiService.levelUp().subscribe(
       (response) => {
@@ -238,7 +251,8 @@ export class GameService {
           rank: response.current_rank,
           xp: response.current_xp,
         });
-        this.getLevelInfo();
+
+        this.nextLvlXp = response.next_xp;
       },
       (error) => {
         this.handleServerError(error, 'Серверная ошибка');
@@ -246,18 +260,32 @@ export class GameService {
     );
   }
 
-  private getLevelInfo() {
-    this.apiService.getLevelInfo().subscribe(
-      (response) => {
-        this.playerLvl.next({
-          rank: response.current_rank,
-          xp: response.current_xp,
-        });
-        this.nextLvlXp = response.needed_xp;
-      },
-      (error) => {
+  private async getLevelInfoAsync() {
+    try {
+      const response = await firstValueFrom(this.apiService.getLevelInfo());
+      this.playerLvl.next({
+        rank: response.current_rank,
+        xp: response.current_xp,
+      });
+      this.nextLvlXp = response.needed_xp;
+    } catch (error) {
+      if (this.isHttpError(error)) {
         this.handleServerError(error, 'Серверная ошибка');
-      },
+      } else {
+        console.error('[ERROR]: ', error);
+        this.authService.logout('Непредвиденная ошибка');
+      }
+    }
+  }
+
+  private isHttpError(
+    error: unknown,
+  ): error is { status: number; error: { message: string } } {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'status' in error &&
+      typeof (error as any).status === 'number'
     );
   }
 }

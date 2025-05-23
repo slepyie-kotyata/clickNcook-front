@@ -3,14 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ITokens } from '../../../entities/api';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  readonly api = import.meta.env.NG_APP_API;
-  httpClient = inject(HttpClient);
-  router = inject(Router);
+  private readonly api = import.meta.env.NG_APP_API;
+  private httpClient = inject(HttpClient);
+  private router = inject(Router);
+  private toastr = inject(ToastrService);
 
   register(data: FormData): Observable<{ tokens: ITokens; status: number }> {
     return this.httpClient.post<{ tokens: ITokens; status: number }>(
@@ -42,9 +44,10 @@ export class AuthService {
     return !!localStorage.getItem('accessToken');
   }
 
-  logout() {
+  logout(reason?: string) {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     this.router.navigate(['/auth']);
+    if (reason) this.toastr.error(reason);
   }
 }
