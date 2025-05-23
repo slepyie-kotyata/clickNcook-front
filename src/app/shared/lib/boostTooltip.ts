@@ -18,6 +18,8 @@ export function boostTooltip(value: number, type: Boost): string {
       ? 'множитель пассивных блюд'
       : type === 'mpM'
       ? 'множитель пассивного дохода'
+      : type === 'sPs'
+      ? 'к продаже блюд'
       : '';
 
   return label ? `+${value} ${label}` : '';
