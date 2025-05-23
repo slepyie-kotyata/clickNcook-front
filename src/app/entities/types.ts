@@ -6,4 +6,4 @@ export type Upgrade =
   | 'staff'
   | 'point';
 
-export type Boost = 'dPc' | 'mPc' | 'dPs' | 'mPs' | 'dM' | 'mM' | 'dpM' | 'mpM';
+export type Boost = 'dPc' | 'mPc' | 'dPs' | 'mPs' | 'dM' | 'mM' | 'dpM' | 'mpM' | 'sPs';
