@@ -26,15 +26,17 @@ export class WebSocketService {
     this.socket$ = webSocket(`${this.socketURL}${token}`);
 
     this.socket$.subscribe({
-      next: (data: { message: IData }) => {
+      next: (data: IData) => {
         if (!this.isConnected) this.isConnected = true;
-        this.dataSubject.next(data.message);
+        this.dataSubject.next(data);
+        this.socket$.next('success');
       },
       error: (error) => {
-        console.error('WebSocket error', error);
+        console.error('[ERROR] WebSocket: \n', error);
         this.authService.logout();
       },
       complete: () => {
+        this.isConnected = false;
         this.authService.logout();
       },
     });
