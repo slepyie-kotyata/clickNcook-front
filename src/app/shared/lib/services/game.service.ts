@@ -3,7 +3,6 @@ import { BehaviorSubject, delay, of } from 'rxjs';
 import { Upgrade } from '../../../entities/types';
 import { GameApiService } from './game-api.service';
 import { AuthService } from './auth.service';
-import { ToastrService } from 'ngx-toastr';
 import { ILevel, IUpgrade } from '../../../entities/game';
 import { WebSocketService } from './web-socket.service';
 import { IData } from '../../../entities/api';
@@ -34,7 +33,6 @@ export class GameService {
   private webSocketService = inject(WebSocketService);
   private apiService = inject(GameApiService);
   private authService = inject(AuthService);
-  private toastr = inject(ToastrService);
 
   loadData() {
     this.isLoaded = false;
@@ -207,9 +205,8 @@ export class GameService {
   }
 
   private handleServerError(error: any, message?: string) {
-    if (message) this.toastr.error(message);
     console.error(`[ERROR ${error.status}]: ${error.error.message}`);
-    this.authService.logout();
+    this.authService.logout(message);
   }
 
   private updatePlayerXP(xp: number) {

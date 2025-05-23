@@ -33,7 +33,9 @@ export class WebSocketService {
       },
       error: (error) => {
         console.error('[ERROR] WebSocket: \n', error);
-        this.authService.logout();
+        this.authService.logout(
+          'Ошибка подключения к серверу. Попробуйте позднее.',
+        );
       },
       complete: () => {
         this.isConnected = false;
