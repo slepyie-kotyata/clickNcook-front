@@ -46,7 +46,7 @@ export class GameComponent implements OnInit {
   protected get getPlayerLvlPercentage(): number {
     let percentage = parseFloat(
       (
-        (this.session.levelSignal().xp / this.session.nextLevelSignal) *
+        (this.session.levelSignal().xp / this.session.nextLevelXp) *
         100
       ).toFixed(1),
     );

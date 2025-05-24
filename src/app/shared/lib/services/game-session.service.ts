@@ -42,16 +42,16 @@ export class GameSessionService {
     return this.level;
   }
 
-  get nextLevelSignal() {
-    return this.xp();
-  }
-
   get prestigeSignal() {
     return this.prestigeLevel;
   }
 
   get accumulatedPrestigeSignal() {
     return this.accumulatedPrestigeLvl;
+  }
+
+  get nextLevelXp() {
+    return this.xp();
   }
 
   async loadData() {
