@@ -43,7 +43,7 @@ export class GameComponent implements OnInit {
   protected prestigeWindowToggle: boolean = false;
   protected sound = inject(GameSoundService);
 
-  protected get getPlayerLvlPercentage(): number {
+  protected get playerLvlPercentage(): number {
     let percentage = parseFloat(
       (
         (this.session.levelSignal().xp / this.session.nextLevelXp) *

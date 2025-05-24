@@ -13,12 +13,12 @@
     </button>
     <div class="relative w-[200px] sm:w-[330px] h-[35px] hidden sm:block">
       <progress
-        [value]="getPlayerLvlPercentage"
+        [value]="playerLvlPercentage"
         class="w-full h-full rounded-full overflow-hidden border border-black bg-secondary appearance-none"
         max="100">
       </progress>
       <p class="absolute right-3 top-1/2 transform -translate-y-1/2 text-black font-bold text-xl">
-        {{ getPlayerLvlPercentage }}%
+        {{ playerLvlPercentage }}%
       </p>
     </div>
     <p class="relative text-3xl text-center">LVL {{ levelRank }}</p>
