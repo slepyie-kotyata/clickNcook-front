@@ -1,16 +1,18 @@
-import {Component, HostListener, inject, OnInit} from '@angular/core';
-import {MenuComponent} from '../../features/menu/menu.component';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { MenuComponent } from '../../features/menu/menu.component';
 import formatNumber from '../../shared/lib/formatNumber';
-import {ModalComponent} from '../../shared/ui/modal/modal.component';
-import {GameService} from '../../shared/lib/services/game.service';
-import {TrackComponent} from '../../shared/ui/locations/track/track.component';
-import {NgClass, NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
-import {LoadingComponent} from '../../shared/ui/loading/loading.component';
-import {CafeComponent} from '../../shared/ui/locations/cafe/cafe.component';
-import {RestaurantComponent} from '../../shared/ui/locations/restaurant/restaurant.component';
-import {GastroRestaurantComponent} from '../../shared/ui/locations/gastro-restaurant/gastro-restaurant.component';
-import {PrestigeWindowComponent} from '../../widgets/prestige-window/prestige-window.component';
-import {FinalComponent} from '../../shared/ui/locations/final/final.component';
+import { ModalComponent } from '../../shared/ui/modal/modal.component';
+import { GameService } from '../../shared/lib/services/game.service';
+import { TrackComponent } from '../../shared/ui/locations/track/track.component';
+import { NgClass, NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
+import { LoadingComponent } from '../../shared/ui/loading/loading.component';
+import { CafeComponent } from '../../shared/ui/locations/cafe/cafe.component';
+import { RestaurantComponent } from '../../shared/ui/locations/restaurant/restaurant.component';
+import { GastroRestaurantComponent } from '../../shared/ui/locations/gastro-restaurant/gastro-restaurant.component';
+import { PrestigeWindowComponent } from '../../widgets/prestige-window/prestige-window.component';
+import { FinalComponent } from '../../shared/ui/locations/final/final.component';
+import { GameSessionService } from '../../shared/lib/services/game-session.service';
+import { GameSoundService } from '../../shared/lib/services/game-sound.service';
 
 @Component({
   selector: 'app-game',
@@ -35,16 +37,16 @@ import {FinalComponent} from '../../shared/ui/locations/final/final.component';
 })
 export class GameComponent implements OnInit {
   protected gameService = inject(GameService);
-
+  protected session = inject(GameSessionService);
   protected logoutWindowToggle: boolean = false;
   protected showResolutionWarning: boolean = false;
   protected prestigeWindowToggle: boolean = false;
+  protected sound = inject(GameSoundService);
 
   protected get getPlayerLvlPercentage(): number {
     let percentage = parseFloat(
       (
-        (this.gameService.level.xp /
-          this.gameService.nextLevelXp) *
+        (this.session.levelSignal().xp / this.session.nextLevelSignal) *
         100
       ).toFixed(1),
     );
@@ -53,45 +55,44 @@ export class GameComponent implements OnInit {
   }
 
   protected get prestige(): string {
-    return formatNumber(this.gameService.currentPrestige);
+    return formatNumber(this.session.prestigeSignal());
   }
 
   protected get locationConfig(): {
-    component: string,
-    imgSrc?: string,
-    imgClass?: string
+    component: string;
+    imgSrc?: string;
+    imgClass?: string;
   } {
     const rank = this.levelRank;
     if (rank < 10) {
       return {
         component: 'track',
         imgSrc: '/locations/track/sauces.svg',
-        imgClass: 'w-[312px]'
+        imgClass: 'w-[312px]',
       };
     }
     if (rank < 20) {
       return {
         component: 'cafe',
         imgSrc: '/locations/cafe/Cat.svg',
-        imgClass: 'w-[350px]'
+        imgClass: 'w-[350px]',
       };
     }
     if (rank < 40) {
-      return {component: 'restaurant'};
+      return { component: 'restaurant' };
     }
     if (rank < 70) {
-      return {component: 'gastro'};
+      return { component: 'gastro' };
     }
-    return {component: 'final'};
+    return { component: 'final' };
   }
 
-
   protected get levelRank(): number {
-    return this.gameService.level.rank;
+    return this.session.levelSignal().rank;
   }
 
   protected get isGameLoaded(): boolean {
-    return this.gameService.isGameLoaded;
+    return this.gameService.isLoaded;
   }
 
   ngOnInit(): void {
@@ -99,27 +100,26 @@ export class GameComponent implements OnInit {
   }
 
   protected toggleModal(type: 'logout' | 'prestige', value: boolean): void {
-    this.gameService.playSound('click');
+    this.sound.play('click');
     if (type === 'logout') this.logoutWindowToggle = value;
     else this.prestigeWindowToggle = value;
   }
 
-
   protected handleCook(): void {
-    if (!this.gameService.upgrades.find((u) => u.upgrade_type === 'dish'))
+    if (!this.session.upgradesSignal().find((u) => u.upgrade_type === 'dish'))
       return;
 
     this.gameService.handleCook();
   }
 
   protected handleSell(): void {
-    if (this.gameService.dishes <= 0) return;
+    if (this.session.dishesSignal() <= 0) return;
 
     this.gameService.handleSell();
   }
 
   protected toggleSound() {
-    this.gameService.soundSettings = this.gameService.sound;
+    this.sound.toggle();
   }
 
   protected logout() {

@@ -96,6 +96,6 @@
 </div>
 
 <button (click)="toggleSound()" class="fixed bottom-0 left-0 px-4 py-4 z-max"><img
-  [src]="gameService.sound ? '/icons/sound-on.svg' : '/icons/sound-off.svg'"></button>
+  [src]="sound.isEnabled ? '/icons/sound-on.svg' : '/icons/sound-off.svg'"></button>
 
 <app-loading *ngIf="!isGameLoaded"></app-loading>

@@ -5,12 +5,12 @@
   <div class="flex flex-col items-center font-tektur">
     <h2 class="text-white text-4xl mb-16">Кулинарные звезды</h2>
     <p class="text-white text-xl whitespace-nowrap">Сейчас накоплено <span
-      class="font-bold">{{ parseFloat((this.gameService.accumulatedPrestige).toFixed(2)) }}</span> Кулинарных звезд
+      class="font-bold">{{ parseFloat((this.session.accumulatedPrestigeSignal()).toFixed(2)) }}</span> Кулинарных звезд
     </p>
     <p class="text-white text-xl whitespace-nowrap">Сбросив сейчас вы получите бонус
       <span class="font-bold">x{{ prestigeMultiplier }}</span> к
       пассивному доходу</p>
-    <button (click)="handlePrestige()" [disabled]="this.gameService.accumulatedPrestige<1 || isProcessing"
+    <button (click)="handlePrestige()" [disabled]="this.session.accumulatedPrestigeSignal()<1 || isProcessing"
             class="bg-secondary disabled:bg-secondary/45 border-2 border-black mt-[2.5dvh] rounded-2xl px-[8.5dvw] py-[1.25dvh]">
       Сбросить
     </button>

@@ -26,7 +26,7 @@
     <app-menu-button
       (onClick)="selectMenu(button.type)"
       *ngFor="let button of menuButtons"
-      [disabled]="button.disabled || gameService.level.rank < button.requiredRank"
+      [disabled]="button.disabled || session.levelSignal().rank < button.requiredRank"
       [iconSource]="button.icon"
       [type]="button.type"
       class="border-black"

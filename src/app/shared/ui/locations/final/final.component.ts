@@ -1,6 +1,6 @@
-import {Component, inject} from '@angular/core';
-import {GameService} from '../../../lib/services/game.service';
-import {NgIf} from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { GameSessionService } from '../../../lib/services/game-session.service';
 
 @Component({
   selector: 'app-final',
@@ -10,7 +10,7 @@ import {NgIf} from '@angular/common';
   styleUrl: './final.component.css',
 })
 export class FinalComponent {
-  private gameService = inject(GameService);
+  private session = inject(GameSessionService);
 
   private serviceHasTruck = false;
   private serviceHasCafe = false;
@@ -20,28 +20,28 @@ export class FinalComponent {
   get hasTruck(): boolean {
     if (this.serviceHasTruck) return this.serviceHasTruck;
     this.serviceHasTruck =
-      this.gameService.upgrades.find((u) => u.id === 45) != undefined;
+      this.session.upgradesSignal().find((u) => u.id === 45) != undefined;
     return this.serviceHasTruck;
   }
 
   get hasCafe(): boolean {
     if (this.serviceHasCafe) return this.serviceHasCafe;
     this.serviceHasCafe =
-      this.gameService.upgrades.find((u) => u.id === 46) != undefined;
+      this.session.upgradesSignal().find((u) => u.id === 46) != undefined;
     return this.serviceHasCafe;
   }
 
   get hasRestaurant(): boolean {
     if (this.serviceHasRestaurant) return this.serviceHasRestaurant;
     this.serviceHasRestaurant =
-      this.gameService.upgrades.find((u) => u.id === 47) != undefined;
+      this.session.upgradesSignal().find((u) => u.id === 47) != undefined;
     return this.serviceHasRestaurant;
   }
 
   get hasGastronomic(): boolean {
     if (this.serviceHasGastronomic) return this.serviceHasGastronomic;
     this.serviceHasGastronomic =
-      this.gameService.upgrades.find((u) => u.id === 48) != undefined;
+      this.session.upgradesSignal().find((u) => u.id === 48) != undefined;
     return this.serviceHasGastronomic;
   }
 }
