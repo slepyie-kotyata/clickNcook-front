@@ -82,7 +82,7 @@ export class GameSessionService {
 
       this.money.set(response.money);
       await this.getAvailableUpgradesAsync();
-      this.userUpgrades().push(upgrade);
+      this.userUpgrades.update((u) => [...u, upgrade]);
       return Promise.resolve();
     } catch (error) {
       return Promise.reject(error);
