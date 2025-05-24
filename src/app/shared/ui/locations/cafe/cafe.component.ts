@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
-import { NgIf } from '@angular/common';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-cafe',
   standalone: true,
-  imports: [NgIf],
+  imports: [],
   templateUrl: './cafe.component.html',
   styleUrl: './cafe.component.css',
 })
-export class CafeComponent {}
+export class CafeComponent {
+}

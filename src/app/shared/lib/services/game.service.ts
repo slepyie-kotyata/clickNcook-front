@@ -1,32 +1,32 @@
-import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, delay, firstValueFrom, of } from 'rxjs';
-import { Upgrade } from '../../../entities/types';
-import { GameApiService } from './game-api.service';
-import { AuthService } from './auth.service';
-import { ILevel, IUpgrade } from '../../../entities/game';
-import { WebSocketService } from './web-socket.service';
-import { IData } from '../../../entities/api';
+import {inject, Injectable} from '@angular/core';
+import {BehaviorSubject, delay, firstValueFrom, of} from 'rxjs';
+import {Upgrade} from '../../../entities/types';
+import {GameApiService} from './game-api.service';
+import {AuthService} from './auth.service';
+import {ILevel, IUpgrade} from '../../../entities/game';
+import {WebSocketService} from './web-socket.service';
+import {IData} from '../../../entities/api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameService {
-  public moneyCount: number = 0;
-  public dishesCount: number = 0;
-  public currentPrestigeLvl: number = 0;
-  public accumulatedPrestigeLvl: number = 0;
-  public userUpgrades: IUpgrade[] = [];
-  public soundEnabled: boolean = true;
   public sessionUpgrades: BehaviorSubject<IUpgrade[]> = new BehaviorSubject<
     IUpgrade[]
   >([]);
-  selectedMenuType: BehaviorSubject<Upgrade> = new BehaviorSubject<Upgrade>(
+  private selectedMenuType: BehaviorSubject<Upgrade> = new BehaviorSubject<Upgrade>(
     'dish',
   );
-  playerLvl: BehaviorSubject<ILevel> = new BehaviorSubject<ILevel>({
+  private playerLvl: BehaviorSubject<ILevel> = new BehaviorSubject<ILevel>({
     rank: 0,
     xp: 0,
   });
+  private userUpgrades: IUpgrade[] = [];
+  private soundEnabled: boolean = true;
+  private moneyCount: number = 0;
+  private dishesCount: number = 0;
+  private currentPrestigeLvl: number = 0;
+  private accumulatedPrestigeLvl: number = 0;
   private nextLvlXp: number = 0;
   private isLoaded = false;
 
@@ -34,11 +34,60 @@ export class GameService {
   private apiService = inject(GameApiService);
   private authService = inject(AuthService);
 
+  get nextLevelXp() {
+    return this.nextLvlXp;
+  }
+
+  get isGameLoaded(): boolean {
+    return this.isLoaded;
+  }
+
+  get money() {
+    return this.moneyCount;
+  }
+
+  get dishes() {
+    return this.dishesCount;
+  }
+
+  get currentPrestige() {
+    return this.currentPrestigeLvl;
+  }
+
+  get accumulatedPrestige() {
+    return this.accumulatedPrestigeLvl;
+  }
+
+  get upgrades() {
+    return this.userUpgrades;
+  }
+
+  get sound() {
+    return this.soundEnabled;
+  }
+
+  get menu() {
+    return this.selectedMenuType;
+  }
+
+  get level() {
+    return this.playerLvl.value;
+  }
+
+  get levelBehaviour() {
+    return this.playerLvl;
+  }
+
+  set soundSettings(value: boolean) {
+    this.soundEnabled = value;
+    localStorage.setItem('sound', value.toString());
+  }
+
   async loadData() {
     this.isLoaded = false;
 
     try {
-      const response = await firstValueFrom(this.apiService.getGameInit());
+      const response = await firstValueFrom(this.apiService.init);
 
       this.moneyCount = response.session.money;
       this.dishesCount = response.session.dishes;
@@ -132,7 +181,7 @@ export class GameService {
       .pipe(delay(1100))
       .subscribe(() => {
         this.apiService.prestige().subscribe(
-          (response) => {
+          () => {
             window.location.reload();
           },
           (error) => {
@@ -145,13 +194,8 @@ export class GameService {
   }
 
   handleLogout() {
-    if (this.webSocketService.isConnected) this.webSocketService.close();
+    if (this.webSocketService.connected) this.webSocketService.close();
     this.authService.logout();
-  }
-
-  setSoundSettings(value: boolean) {
-    this.soundEnabled = value;
-    localStorage.setItem('sound', value.toString());
   }
 
   playSound(name: string) {
@@ -163,23 +207,17 @@ export class GameService {
   }
 
   selectMenuType(type: Upgrade) {
+    if (type === this.selectedMenuType.value) return;
+
     this.playSound('click');
     this.selectedMenuType.next(type);
-  }
-
-  getNextLevelXp() {
-    return this.nextLvlXp;
-  }
-
-  isGameLoaded(): boolean {
-    return this.isLoaded;
   }
 
   private updateData(data: IData) {
     this.moneyCount = data.money;
     this.dishesCount = data.dishes;
     this.accumulatedPrestigeLvl = data.prestige_current;
-    this.playerLvl.next({ rank: data.rank, xp: data.xp });
+    this.playerLvl.next({rank: data.rank, xp: data.xp});
 
     if (this.playerLvl.value.rank === 100) {
       return;
@@ -189,12 +227,12 @@ export class GameService {
   }
 
   private async connectToWebSocketAsync() {
-    if (this.webSocketService.isConnected) return;
+    if (this.webSocketService.connected) return;
 
     if (this.userUpgrades.find((u) => u.upgrade_type === 'staff')) {
       try {
         await this.webSocketService.connect();
-        this.webSocketService.data$.subscribe((value) => {
+        this.webSocketService.data.subscribe((value) => {
           this.updateData(value);
         });
       } catch (error) {
@@ -210,8 +248,8 @@ export class GameService {
 
   private async getAvailableUpgradesAsync() {
     try {
-      const response = await firstValueFrom(this.apiService.getUpgrades());
-      await this.sessionUpgrades.next(response.upgrades);
+      const response = await firstValueFrom(this.apiService.upgrades);
+      this.sessionUpgrades.next(response.upgrades);
     } catch (error) {
       if (this.isHttpError(error))
         this.handleServerError(error, 'Серверная ошибка');
@@ -262,7 +300,7 @@ export class GameService {
 
   private async getLevelInfoAsync() {
     try {
-      const response = await firstValueFrom(this.apiService.getLevelInfo());
+      const response = await firstValueFrom(this.apiService.level);
       this.playerLvl.next({
         rank: response.current_rank,
         xp: response.current_xp,

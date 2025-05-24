@@ -1,9 +1,9 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { ITokens } from '../../../entities/api';
-import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import {inject, Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {ITokens} from '../../../entities/api';
+import {Router} from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +13,10 @@ export class AuthService {
   private httpClient = inject(HttpClient);
   private router = inject(Router);
   private toastr = inject(ToastrService);
+
+  get isAuthenticated(): boolean {
+    return !!localStorage.getItem('accessToken');
+  }
 
   register(data: FormData): Observable<{ tokens: ITokens; status: number }> {
     return this.httpClient.post<{ tokens: ITokens; status: number }>(
@@ -40,14 +44,13 @@ export class AuthService {
     );
   }
 
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('accessToken');
-  }
-
   logout(reason?: string) {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
-    this.router.navigate(['/auth']);
-    if (reason) this.toastr.error(reason);
+    this.router.navigate(['/auth']).then(
+      () => {
+        if (reason) this.toastr.error(reason);
+      }
+    );
   }
 }

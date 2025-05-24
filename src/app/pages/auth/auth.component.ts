@@ -1,23 +1,14 @@
-import { Component, inject } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
-import { AuthInputComponent } from '../../shared/ui/auth-input/auth-input.component';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
-import { AuthService } from '../../shared/lib/services/auth.service';
-import { Router } from '@angular/router';
+import {Component, inject} from '@angular/core';
+import {AuthInputComponent} from '../../shared/ui/auth-input/auth-input.component';
+import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {ToastrService} from 'ngx-toastr';
+import {AuthService} from '../../shared/lib/services/auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-auth',
   standalone: true,
   imports: [
-    NgOptimizedImage,
     AuthInputComponent,
     FormsModule,
     ReactiveFormsModule,
@@ -26,11 +17,10 @@ import { Router } from '@angular/router';
   styleUrl: './auth.component.css',
 })
 export class AuthComponent {
-  authForm: FormGroup;
-  toastrService = inject(ToastrService);
-  authService = inject(AuthService);
-  router = inject(Router);
-  protected readonly FormControl = FormControl;
+  protected authForm: FormGroup;
+  private toastrService = inject(ToastrService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   constructor(private fb: FormBuilder) {
     this.authForm = this.fb.group({

@@ -1,17 +1,16 @@
-import { Component, HostListener, inject, OnInit } from '@angular/core';
-import { MenuComponent } from '../../features/menu/menu.component';
+import {Component, HostListener, inject, OnInit} from '@angular/core';
+import {MenuComponent} from '../../features/menu/menu.component';
 import formatNumber from '../../shared/lib/formatNumber';
-import { AuthService } from '../../shared/lib/services/auth.service';
-import { ModalComponent } from '../../shared/ui/modal/modal.component';
-import { GameService } from '../../shared/lib/services/game.service';
-import { TrackComponent } from '../../shared/ui/locations/track/track.component';
-import { NgIf } from '@angular/common';
-import { LoadingComponent } from '../../shared/ui/loading/loading.component';
-import { CafeComponent } from '../../shared/ui/locations/cafe/cafe.component';
-import { RestaurantComponent } from '../../shared/ui/locations/restaurant/restaurant.component';
-import { GastroRestaurantComponent } from '../../shared/ui/locations/gastro-restaurant/gastro-restaurant.component';
-import { PrestigeWindowComponent } from '../../widgets/prestige-window/prestige-window.component';
-import { FinalComponent } from '../../shared/ui/locations/final/final.component';
+import {ModalComponent} from '../../shared/ui/modal/modal.component';
+import {GameService} from '../../shared/lib/services/game.service';
+import {TrackComponent} from '../../shared/ui/locations/track/track.component';
+import {NgClass, NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
+import {LoadingComponent} from '../../shared/ui/loading/loading.component';
+import {CafeComponent} from '../../shared/ui/locations/cafe/cafe.component';
+import {RestaurantComponent} from '../../shared/ui/locations/restaurant/restaurant.component';
+import {GastroRestaurantComponent} from '../../shared/ui/locations/gastro-restaurant/gastro-restaurant.component';
+import {PrestigeWindowComponent} from '../../widgets/prestige-window/prestige-window.component';
+import {FinalComponent} from '../../shared/ui/locations/final/final.component';
 
 @Component({
   selector: 'app-game',
@@ -27,76 +26,113 @@ import { FinalComponent } from '../../shared/ui/locations/final/final.component'
     GastroRestaurantComponent,
     PrestigeWindowComponent,
     FinalComponent,
+    NgClass,
+    NgSwitch,
+    NgSwitchCase,
   ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',
 })
 export class GameComponent implements OnInit {
-  authService = inject(AuthService);
-  gameService = inject(GameService);
+  protected gameService = inject(GameService);
 
-  logoutWindowToggle: boolean = false;
-  showResolutionWarning: boolean = false;
-  prestigeWindowToggle: boolean = false;
+  protected logoutWindowToggle: boolean = false;
+  protected showResolutionWarning: boolean = false;
+  protected prestigeWindowToggle: boolean = false;
 
-  setPrestigeWindow(value: boolean) {
-    this.gameService.playSound('click');
-    this.prestigeWindowToggle = value;
+  protected get getPlayerLvlPercentage(): number {
+    let percentage = parseFloat(
+      (
+        (this.gameService.level.xp /
+          this.gameService.nextLevelXp) *
+        100
+      ).toFixed(1),
+    );
+
+    return percentage > 0 ? percentage : 0;
   }
 
-  setLogoutWindow(value: boolean) {
-    this.gameService.playSound('click');
-    this.logoutWindowToggle = value;
+  protected get prestige(): string {
+    return formatNumber(this.gameService.currentPrestige);
   }
 
-  handleCook(): void {
-    if (!this.gameService.userUpgrades.find((u) => u.upgrade_type === 'dish'))
-      return;
-
-    this.gameService.handleCook();
+  protected get locationConfig(): {
+    component: string,
+    imgSrc?: string,
+    imgClass?: string
+  } {
+    const rank = this.levelRank;
+    if (rank < 10) {
+      return {
+        component: 'track',
+        imgSrc: '/locations/track/sauces.svg',
+        imgClass: 'w-[312px]'
+      };
+    }
+    if (rank < 20) {
+      return {
+        component: 'cafe',
+        imgSrc: '/locations/cafe/Cat.svg',
+        imgClass: 'w-[350px]'
+      };
+    }
+    if (rank < 40) {
+      return {component: 'restaurant'};
+    }
+    if (rank < 70) {
+      return {component: 'gastro'};
+    }
+    return {component: 'final'};
   }
 
-  handleSell(): void {
-    if (this.gameService.dishesCount <= 0) return;
 
-    this.gameService.handleSell();
+  protected get levelRank(): number {
+    return this.gameService.level.rank;
   }
 
-  toggleSound() {
-    this.gameService.setSoundSettings(!this.gameService.soundEnabled);
-  }
-
-  logout() {
-    this.gameService.handleLogout();
+  protected get isGameLoaded(): boolean {
+    return this.gameService.isGameLoaded;
   }
 
   ngOnInit(): void {
     this.gameService.loadData();
   }
 
-  @HostListener('window:resize', ['$event'])
+  protected toggleModal(type: 'logout' | 'prestige', value: boolean): void {
+    this.gameService.playSound('click');
+    if (type === 'logout') this.logoutWindowToggle = value;
+    else this.prestigeWindowToggle = value;
+  }
+
+
+  protected handleCook(): void {
+    if (!this.gameService.upgrades.find((u) => u.upgrade_type === 'dish'))
+      return;
+
+    this.gameService.handleCook();
+  }
+
+  protected handleSell(): void {
+    if (this.gameService.dishes <= 0) return;
+
+    this.gameService.handleSell();
+  }
+
+  protected toggleSound() {
+    this.gameService.soundSettings = this.gameService.sound;
+  }
+
+  protected logout() {
+    this.gameService.handleLogout();
+  }
+
   @HostListener('window:load', ['$event'])
-  onResize(event: Event) {
+  @HostListener('window:resize', ['$event'])
+  protected onResize(event: Event) {
     const width = window.innerWidth;
     const height = window.innerHeight;
     const aspectRatio = width / height;
     this.showResolutionWarning =
       width < 1024 || height < 768 || aspectRatio < 16 / 10;
-  }
-
-  protected getPrestigeLvl(): string {
-    return formatNumber(this.gameService.currentPrestigeLvl);
-  }
-
-  protected getPlayerLvlPercentage(): number {
-    let percentage = parseFloat(
-      (
-        (this.gameService.playerLvl.value.xp /
-          this.gameService.getNextLevelXp()) *
-        100
-      ).toFixed(1),
-    );
-
-    return percentage > 0 ? percentage : 0;
   }
 }

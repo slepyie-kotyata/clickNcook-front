@@ -1,15 +1,8 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { UpgradeButtonComponent } from '../../shared/ui/upgrade-button/upgrade-button.component';
-import { IUpgrade } from '../../entities/game';
-import { NgForOf } from '@angular/common';
-import { GameService } from '../../shared/lib/services/game.service';
+import {AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild,} from '@angular/core';
+import {UpgradeButtonComponent} from '../../shared/ui/upgrade-button/upgrade-button.component';
+import {IUpgrade} from '../../entities/game';
+import {NgForOf} from '@angular/common';
+import {GameService} from '../../shared/lib/services/game.service';
 
 @Component({
   selector: 'app-upgrade-window',
@@ -45,8 +38,8 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   refreshUpgradesList() {
     this.availableUpgrades = this.gameService.sessionUpgrades.value.filter(
       (u) =>
-        u.upgrade_type === this.gameService.selectedMenuType.value &&
-        u.access_level <= this.gameService.playerLvl.getValue().rank,
+        u.upgrade_type === this.gameService.menu.value &&
+        u.access_level <= this.gameService.level.rank,
     );
 
     setTimeout(() => this.updateScrollButtons(), 10);
@@ -90,11 +83,11 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.gameService.selectedMenuType.subscribe((type) => {
+    this.gameService.menu.subscribe((type) => {
       this.refreshUpgradesList();
     });
 
-    this.gameService.playerLvl.subscribe(() => {
+    this.gameService.levelBehaviour.subscribe(() => {
       this.refreshUpgradesList();
     });
   }

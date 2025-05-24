@@ -1,33 +1,33 @@
-<div *ngIf="gameService.isGameLoaded() && !showResolutionWarning"
+<div *ngIf="isGameLoaded && !showResolutionWarning"
      class="z-30 overscroll-none scrollbar-hide font-tektur">
   <section class="z-max fixed flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
-    <button (click)="setLogoutWindow(true)"
+    <button (click)="toggleModal('logout',true)"
             class="max-w-14 max-h-14 rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
       <img
         src="/icons/logout.svg"></button>
-    <button (click)="setPrestigeWindow(true)"
+    <button (click)="toggleModal('prestige',true)"
             class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary max-w-14 max-h-14">
       <img src="/icons/star.svg">
       <p
-        class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ getPrestigeLvl() }}</p>
+        class="absolute text-black font-bold text-xl leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ prestige }}</p>
     </button>
     <div class="relative w-[200px] sm:w-[330px] h-[35px] hidden sm:block">
       <progress
-        [value]="getPlayerLvlPercentage()"
+        [value]="getPlayerLvlPercentage"
         class="w-full h-full rounded-full overflow-hidden border border-black bg-secondary appearance-none"
         max="100">
       </progress>
       <p class="absolute right-3 top-1/2 transform -translate-y-1/2 text-black font-bold text-xl">
-        {{ getPlayerLvlPercentage() }}%
+        {{ getPlayerLvlPercentage }}%
       </p>
     </div>
-    <p class="relative text-3xl text-center">LVL {{ this.gameService.playerLvl.value.rank }}</p>
+    <p class="relative text-3xl text-center">LVL {{ levelRank }}</p>
   </section>
   <section
     class="z-10 px-[5.5dvw] py-[5.5dvh] left-[7dvw] absolute bottom-0 w-[65dvw] h-[53dvh]">
     <div class="w-full h-full flex flex-col md:flex-row gap-6 justify-end items-center">
       <div class="flex flex-col justify-center align-middle items-center">
-        <img *ngIf="gameService.playerLvl.value.rank < 70" class="w-[312px] hidden xl:block"
+        <img *ngIf="levelRank < 70" class="w-[312px] hidden xl:block"
              src="/icons/upgrades/equipment/gas_burner.svg">
         <button (click)="handleCook()"
                 class="z-max bg-primary rounded-xxl border border-black w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
@@ -37,7 +37,7 @@
         </button>
       </div>
       <div class="flex flex-col justify-center align-middle items-center">
-        <img *ngIf="gameService.playerLvl.value.rank < 70" class="w-[312px] hidden xl:block"
+        <img *ngIf="levelRank < 70" class="w-[312px] hidden xl:block"
              src="/icons/upgrades/equipment/new_cashier.svg">
         <button (click)="handleSell()"
                 class="bg-primary rounded-xxl border border-black w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
@@ -51,28 +51,23 @@
   <app-menu></app-menu>
 </div>
 
-<div>
-  <div *ngIf="gameService.playerLvl.value.rank < 10">
-    <app-track [decorCount]="4"></app-track>
-    <img class="fixed bottom-[5dvh] left-[10dvw] z-max w-[312px] hidden xl:block" src="/locations/track/sauces.svg">
-  </div>
-  <div *ngIf="gameService.playerLvl.value.rank >= 10 && gameService.playerLvl.value.rank < 20">
-    <app-cafe></app-cafe>
-    <img class="fixed bottom-[5dvh] left-[10dvw] z-max w-[350px] hidden xl:block" src="/locations/cafe/Cat.svg">
-  </div>
-  <div *ngIf="gameService.playerLvl.value.rank >= 20 && gameService.playerLvl.value.rank < 40">
-    <app-restaurant></app-restaurant>
-  </div>
-  <div *ngIf="gameService.playerLvl.value.rank >= 40 && gameService.playerLvl.value.rank < 70">
-    <app-gastro-restaurant></app-gastro-restaurant>
-  </div>
-  <div *ngIf="gameService.playerLvl.value.rank >= 70">
-    <app-final></app-final>
-  </div>
+<div [ngSwitch]="locationConfig.component">
+  <app-track *ngSwitchCase="'track'" [decorCount]="4"></app-track>
+  <app-cafe *ngSwitchCase="'cafe'"></app-cafe>
+  <app-restaurant *ngSwitchCase="'restaurant'"></app-restaurant>
+  <app-gastro-restaurant *ngSwitchCase="'gastro'"></app-gastro-restaurant>
+  <app-final *ngSwitchCase="'final'"></app-final>
 </div>
 
+<img
+  *ngIf="locationConfig.imgSrc"
+  [ngClass]="locationConfig.imgClass"
+  [src]="locationConfig.imgSrc"
+  class="fixed bottom-[5dvh] left-[10dvw] z-max hidden xl:block"
+/>
 
-<app-modal (close)="setLogoutWindow(false)"
+
+<app-modal (close)="toggleModal('logout',false)"
            [closeOnBackdrop]="false"
            [show]="logoutWindowToggle">
   <div class="flex flex-col items-center font-tektur">
@@ -82,7 +77,7 @@
               class="bg-green-600 border-2 border-black mt-[2.5dvh] rounded-2xl px-[4.5dvw] py-[1.25dvh] font-bold text-2xl text-white">
         Да
       </button>
-      <button (click)="setLogoutWindow(false)"
+      <button (click)="toggleModal('logout',false)"
               class="bg-red border-2 border-black mt-[2.5dvh] rounded-2xl px-[4.5dvw] py-[1.25dvh] font-bold text-2xl text-white">
         Нет
       </button>
@@ -90,7 +85,8 @@
   </div>
 </app-modal>
 
-<app-prestige-window (closeEvent)="setPrestigeWindow($event)" [enabled]="prestigeWindowToggle"></app-prestige-window>
+<app-prestige-window (closeEvent)="toggleModal('prestige',$event)"
+                     [enabled]="prestigeWindowToggle"></app-prestige-window>
 
 <div *ngIf="showResolutionWarning"
      class="fixed inset-0 bg-black text-white z-max flex items-center justify-center overscroll-none">
@@ -100,6 +96,6 @@
 </div>
 
 <button (click)="toggleSound()" class="fixed bottom-0 left-0 px-4 py-4 z-max"><img
-  [src]="gameService.soundEnabled ? '/icons/sound-on.svg' : '/icons/sound-off.svg'"></button>
+  [src]="gameService.sound ? '/icons/sound-on.svg' : '/icons/sound-off.svg'"></button>
 
-<app-loading *ngIf="!this.gameService.isGameLoaded()"></app-loading>
+<app-loading *ngIf="!isGameLoaded"></app-loading>
