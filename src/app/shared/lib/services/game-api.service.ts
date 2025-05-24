@@ -1,7 +1,7 @@
-import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import ISession, { IUpgrade } from '../../../entities/game';
+import {inject, Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import ISession, {IUpgrade} from '../../../entities/game';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +10,7 @@ export class GameApiService {
   private readonly api = import.meta.env.NG_APP_API;
   private httpClient = inject(HttpClient);
 
-  getGameInit(): Observable<{
+  get init(): Observable<{
     session: ISession;
     status: number;
     upgrades: IUpgrade[];
@@ -22,7 +22,7 @@ export class GameApiService {
     }>(this.api + 'game/init');
   }
 
-  getUpgrades(): Observable<{
+  get upgrades(): Observable<{
     status: number;
     upgrades: IUpgrade[];
   }> {
@@ -32,7 +32,7 @@ export class GameApiService {
     }>(this.api + 'game/upgrades');
   }
 
-  getLevelInfo(): Observable<{
+  get level(): Observable<{
     current_rank: number;
     current_xp: number;
     needed_xp: number;

@@ -3,13 +3,17 @@ import {
   Component,
   ElementRef,
   inject,
+  Injector,
   OnInit,
+  runInInjectionContext,
   ViewChild,
 } from '@angular/core';
 import { UpgradeButtonComponent } from '../../shared/ui/upgrade-button/upgrade-button.component';
 import { IUpgrade } from '../../entities/game';
 import { NgForOf } from '@angular/common';
 import { GameService } from '../../shared/lib/services/game.service';
+import { GameSessionService } from '../../shared/lib/services/game-session.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-upgrade-window',
@@ -19,35 +23,35 @@ import { GameService } from '../../shared/lib/services/game.service';
   styleUrl: './upgrade-window.component.css',
 })
 export class UpgradeWindowComponent implements OnInit, AfterViewInit {
-  gameService = inject(GameService);
-  availableUpgrades: IUpgrade[] = [];
-
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-  isAtTop = true;
-  isAtBottom = false;
-  scrollItemHeight = 115;
-  disableAllScrollButtons = false;
+  protected gameService = inject(GameService);
+  protected session = inject(GameSessionService);
+  protected availableUpgrades: IUpgrade[] = [];
+  protected isAtTop = true;
+  protected isAtBottom = false;
+  protected scrollItemHeight = 115;
+  protected disableAllScrollButtons = false;
 
-  constructor() {
-    this.gameService.sessionUpgrades.subscribe(() =>
-      this.refreshUpgradesList(),
-    );
-  }
+  private injector = inject(Injector);
 
   handleBuy(id: number) {
     let upgrade = this.availableUpgrades.find((x) => x.id == id);
 
     if (upgrade) {
-      this.gameService.handleBuy(upgrade);
+      this.gameService
+        .handleBuy(upgrade)
+        .then(() => this.refreshUpgradesList());
     }
   }
 
   refreshUpgradesList() {
-    this.availableUpgrades = this.gameService.sessionUpgrades.value.filter(
-      (u) =>
-        u.upgrade_type === this.gameService.selectedMenuType.value &&
-        u.access_level <= this.gameService.playerLvl.getValue().rank,
-    );
+    this.availableUpgrades = this.session
+      .sessionUpgradesSignal()
+      .filter(
+        (u) =>
+          u.upgrade_type === this.gameService.menu.value &&
+          u.access_level <= this.session.levelSignal().rank,
+      );
 
     setTimeout(() => this.updateScrollButtons(), 10);
   }
@@ -69,6 +73,8 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   }
 
   updateScrollButtons(): void {
+    if (!this.scrollContainer?.nativeElement) return;
+
     const el = this.scrollContainer.nativeElement;
 
     const scrollTop = el.scrollTop;
@@ -90,11 +96,17 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.gameService.selectedMenuType.subscribe((type) => {
-      this.refreshUpgradesList();
+    runInInjectionContext(this.injector, () => {
+      toObservable(this.session.levelSignal).subscribe(() => {
+        this.refreshUpgradesList();
+      });
+
+      toObservable(this.session.sessionUpgradesSignal).subscribe(() => {
+        this.refreshUpgradesList();
+      });
     });
 
-    this.gameService.playerLvl.subscribe(() => {
+    this.gameService.menu.subscribe(() => {
       this.refreshUpgradesList();
     });
   }

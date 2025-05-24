@@ -5,8 +5,8 @@
     <app-upgrade-button (buyEvent)="handleBuy($event)"
                         *ngFor="let upgrade of availableUpgrades"
                         [blocked]="(upgrade.times_bought > 0)
-                        ? upgrade.price * upgrade.times_bought * upgrade.price_factor > this.gameService.moneyCount
-                        : upgrade.price > this.gameService.moneyCount"
+                        ? upgrade.price * upgrade.times_bought * upgrade.price_factor > this.session.moneySignal()
+                        : upgrade.price > this.session.moneySignal()"
                         [upgrade]="upgrade"></app-upgrade-button>
   </div>
 </div>

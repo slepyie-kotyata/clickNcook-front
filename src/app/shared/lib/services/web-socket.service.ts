@@ -1,19 +1,24 @@
-import { inject, Injectable } from '@angular/core';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
-import { ReplaySubject } from 'rxjs';
-import { IData } from '../../../entities/api';
-import { AuthService } from './auth.service';
+import {Injectable} from '@angular/core';
+import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
+import {ReplaySubject} from 'rxjs';
+import {IData} from '../../../entities/api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WebSocketService {
-  isConnected: boolean = false;
+  private isConnected: boolean = false;
   private socket$!: WebSocketSubject<any>;
   private dataSubject = new ReplaySubject<IData>(1);
-  data$ = this.dataSubject.asObservable();
   private readonly socketURL = import.meta.env.NG_APP_WEBSOCKET_API;
-  private authService = inject(AuthService);
+
+  get connected() {
+    return this.isConnected;
+  }
+
+  get data() {
+    return this.dataSubject.asObservable();
+  }
 
   async connect(): Promise<void> {
     return new Promise((resolve, reject) => {

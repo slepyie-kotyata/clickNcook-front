@@ -1,8 +1,8 @@
 <button (click)="handleClick()" [disabled]="disabled"
         [ngClass]="{
-          'bg-primary':!isSelected(),
-          'bg-secondary':isSelected()
-        }"
+          'bg-primary':!selected,
+          'bg-secondary':selected
+          }"
         class="border-t-2 border-black disabled:bg-black/45">
-  <img [height]="90" [ngSrc]="iconSource" [width]="90" class="p-3">
+  <img [alt]="type" [height]="90" [ngSrc]="iconSource" [width]="90" class="p-3">
 </button>

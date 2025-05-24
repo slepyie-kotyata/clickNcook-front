@@ -3,13 +3,6 @@ export interface ITokens {
   refresh_token: string;
 }
 
-export interface IUser {
-  lvl: number;
-  money: number;
-  dishes: number;
-  prestige: number;
-}
-
 export interface IData {
   money: number;
   dishes: number;

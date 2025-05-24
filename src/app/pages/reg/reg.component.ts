@@ -1,15 +1,9 @@
-import { Component, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { AuthInputComponent } from '../../shared/ui/auth-input/auth-input.component';
-import { ToastrService } from 'ngx-toastr';
-import { AuthService } from '../../shared/lib/services/auth.service';
-import { Router } from '@angular/router';
+import {Component, inject} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {AuthInputComponent} from '../../shared/ui/auth-input/auth-input.component';
+import {ToastrService} from 'ngx-toastr';
+import {AuthService} from '../../shared/lib/services/auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-reg',
@@ -19,11 +13,10 @@ import { Router } from '@angular/router';
   styleUrl: './reg.component.css',
 })
 export class RegComponent {
-  regForm: FormGroup;
-  toastrService = inject(ToastrService);
-  authService = inject(AuthService);
-  router = inject(Router);
-  protected readonly FormControl = FormControl;
+  protected regForm: FormGroup;
+  private toastrService = inject(ToastrService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   constructor(private fb: FormBuilder) {
     this.regForm = this.fb.group(
@@ -39,7 +32,7 @@ export class RegComponent {
         ],
         repeat_password: [''],
       },
-      { validator: this.passwordsMatch },
+      {validator: this.passwordsMatch},
     );
   }
 
@@ -58,7 +51,7 @@ export class RegComponent {
   passwordsMatch(group: FormGroup) {
     const password = group.get('password')?.value;
     const repeatPassword = group.get('repeat_password')?.value;
-    return password === repeatPassword ? null : { passwordsMismatch: true };
+    return password === repeatPassword ? null : {passwordsMismatch: true};
   }
 
   submitForm() {

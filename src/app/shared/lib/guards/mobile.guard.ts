@@ -1,5 +1,5 @@
-import { CanActivateFn, Router } from '@angular/router';
-import { inject } from '@angular/core';
+import {CanActivateFn, Router} from '@angular/router';
+import {inject} from '@angular/core';
 
 export const mobileGuard: CanActivateFn = (route, state) => {
   let router = inject(Router);
@@ -10,8 +10,7 @@ export const mobileGuard: CanActivateFn = (route, state) => {
     );
 
   if (isMobile) {
-    router.navigate(['/mobile-not-supported']);
-    return false;
+    return router.navigate(['/mobile-not-supported']).then(r => false);
   }
 
   return true;

@@ -4,7 +4,7 @@
     class="bg-primary h-14 sm:h-20 border-b-2 border-black flex flex-row items-center px-4 gap-4"
   >
     <span class="flex-1"></span>
-    <p class="text-xl sm:text-2xl">{{ getDishCount() }}</p>
+    <p class="text-xl sm:text-2xl">{{ dishCount }}</p>
     <span
       class="bg-secondary rounded-xxl w-12 h-10 sm:w-16 sm:h-14 flex items-center justify-center"
     ><img class="w-full h-full" src="/icons/dishes.svg"
@@ -13,7 +13,7 @@
   <section
     class="bg-primary h-14 sm:h-20 border-b-2 border-black flex flex-row items-center px-4 gap-4 justify-end"
   >
-    <p class="text-xl sm:text-2xl">{{ getCashCount() }}</p>
+    <p class="text-xl sm:text-2xl">{{ cashCount }}</p>
     <span
       class="bg-secondary rounded-xxl w-12 h-10 sm:w-16 sm:h-14 flex items-center justify-center"
     ><img class="w-full h-full" src="/icons/money.svg"
@@ -23,23 +23,13 @@
   <section
     class="absolute -bottom-1.5 w-fit h-fit flex flex-row"
   >
-    <app-menu-button (onClick)="selectMenu($event)"
-                     [iconSource]="'/icons/fondue.svg'"
-                     [type]="'dish'" class="border-r border-black"></app-menu-button>
-    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 3"
-                     [iconSource]="'/icons/table.svg'"
-                     [type]="'equipment'" class="border-x border-black"></app-menu-button>
-    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 10"
-                     [iconSource]="'/icons/upgrades.svg'"
-                     [type]="'global'" class="border-x border-black"></app-menu-button>
-    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 20"
-                     [iconSource]="'/icons/person.svg'"
-                     [type]="'staff'" class="border-x border-black"></app-menu-button>
-    <app-menu-button [disabled]="true"
-                     [iconSource]="'/icons/menu.svg'"
-                     [type]="'recipe'" class="border-x border-black"></app-menu-button>
-    <app-menu-button (onClick)="selectMenu($event)" [disabled]="this.gameService.playerLvl.value.rank < 70"
-                     [iconSource]="'/icons/map.svg'"
-                     [type]="'point'" class="border-l border-black"></app-menu-button>
+    <app-menu-button
+      (onClick)="selectMenu(button.type)"
+      *ngFor="let button of menuButtons"
+      [disabled]="button.disabled || session.levelSignal().rank < button.requiredRank"
+      [iconSource]="button.icon"
+      [type]="button.type"
+      class="border-black"
+    ></app-menu-button>
   </section>
 </div>
