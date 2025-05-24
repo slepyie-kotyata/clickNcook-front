@@ -96,7 +96,7 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.gameService.loadData();
+    this.gameService.loadData().then(() => this.onResize());
   }
 
   protected toggleModal(type: 'logout' | 'prestige', value: boolean): void {
@@ -128,7 +128,7 @@ export class GameComponent implements OnInit {
 
   @HostListener('window:load', ['$event'])
   @HostListener('window:resize', ['$event'])
-  protected onResize(event: Event) {
+  protected onResize(event?: Event) {
     const width = window.innerWidth;
     const height = window.innerHeight;
     const aspectRatio = width / height;
