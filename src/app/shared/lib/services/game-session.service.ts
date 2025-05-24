@@ -91,34 +91,29 @@ export class GameSessionService {
 
   async updatePlayerXP(xp: number) {
     if (xp >= this.xp()) {
-      await this.levelUp();
-      return Promise.resolve();
+      try {
+        await this.levelUp();
+        return Promise.resolve();
+      } catch (error) {
+        return Promise.reject(error);
+      }
     }
 
-    this.level.set({
-      rank: this.level().rank,
-      xp: xp,
-    });
+    this.level.set({ rank: this.level().rank, xp: xp });
     return Promise.resolve();
   }
 
   async levelUp() {
     if (this.level().rank === 100) return;
 
-    this.api.levelUp().subscribe(
-      (response) => {
-        this.level.set({
-          rank: response.current_rank,
-          xp: response.current_xp,
-        });
-
-        this.xp.set(response.next_xp);
-        return Promise.resolve();
-      },
-      (error) => {
-        return Promise.reject(error);
-      },
-    );
+    try {
+      const response = await firstValueFrom(this.api.levelUp());
+      this.level.set({ rank: response.current_rank, xp: response.current_xp });
+      this.xp.set(response.next_xp);
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   async getLevelInfoAsync() {
