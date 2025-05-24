@@ -25,7 +25,7 @@ img {
   user-select: none;
 }
 
-input, a {
+input, a, .clickable {
   pointer-events: auto !important;
   user-select: auto !important;
 }
