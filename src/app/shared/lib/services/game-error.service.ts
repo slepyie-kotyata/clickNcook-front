@@ -45,10 +45,7 @@ export class GameErrorService {
         case 403:
         case 409:
         case 400:
-          break;
         case 404:
-          message = 'Ошибка синхронизации данных';
-          logout = true;
           break;
         default:
           message = 'Ошибка подключения к серверу';
