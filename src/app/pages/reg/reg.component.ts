@@ -1,9 +1,20 @@
-import {Component, inject} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
-import {AuthInputComponent} from '../../shared/ui/auth-input/auth-input.component';
-import {ToastrService} from 'ngx-toastr';
-import {AuthService} from '../../shared/lib/services/auth.service';
-import {Router} from '@angular/router';
+import { Component, inject } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { AuthInputComponent } from '../../shared/ui/auth-input/auth-input.component';
+import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../shared/lib/services/auth.service';
+import { Router } from '@angular/router';
+import {
+  email,
+  password,
+  passwordsMatch,
+} from '../../shared/lib/formValidators';
 
 @Component({
   selector: 'app-reg',
@@ -21,18 +32,11 @@ export class RegComponent {
   constructor(private fb: FormBuilder) {
     this.regForm = this.fb.group(
       {
-        email: ['', [Validators.required, Validators.email]],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(7),
-            Validators.pattern('^(?=.*[0-9]).{7,}$'),
-          ],
-        ],
+        email: ['', [Validators.required, email]],
+        password: ['', [Validators.required, password]],
         repeat_password: [''],
       },
-      {validator: this.passwordsMatch},
+      { validator: passwordsMatch },
     );
   }
 
@@ -46,12 +50,6 @@ export class RegComponent {
 
   get repeatPasswordControl(): FormControl {
     return this.regForm.get('repeat_password') as FormControl;
-  }
-
-  passwordsMatch(group: FormGroup) {
-    const password = group.get('password')?.value;
-    const repeatPassword = group.get('repeat_password')?.value;
-    return password === repeatPassword ? null : {passwordsMismatch: true};
   }
 
   submitForm() {
@@ -85,18 +83,17 @@ export class RegComponent {
     if (this.emailControl.hasError('required')) {
       errors.push('Поле "Почта" обязательно для заполнения.');
     }
-    if (this.emailControl.hasError('email')) {
-      errors.push('Введите корректный email.');
+    if (this.emailControl.hasError('invalidEmail')) {
+      const errorText = this.emailControl.getError('invalidEmail');
+      errors.push(errorText);
     }
 
     if (this.passwordControl.hasError('required')) {
       errors.push('Поле "Пароль" обязательно для заполнения.');
     }
-    if (this.passwordControl.hasError('minlength')) {
-      errors.push('Пароль должен быть не менее 7 символов.');
-    }
-    if (this.passwordControl.hasError('pattern')) {
-      errors.push('Пароль должен содержать хотя бы одну цифру.');
+    if (this.passwordControl.hasError('invalidPassword')) {
+      const errorText = this.passwordControl.getError('invalidPassword');
+      errors.push(errorText);
     }
 
     if (
@@ -105,8 +102,9 @@ export class RegComponent {
     ) {
       errors.push('Поле "Повторите пароль" обязательно для заполнения.');
     }
-    if (this.repeatPasswordControl.value !== this.passwordControl.value) {
-      errors.push('Пароли не совпадают.');
+    if (this.regForm.hasError('passwordsMismatch')) {
+      const errorText = this.regForm.getError('passwordsMismatch');
+      errors.push(errorText);
     }
 
     errors.forEach((error) => {
