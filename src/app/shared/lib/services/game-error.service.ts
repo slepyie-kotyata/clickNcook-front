@@ -1,11 +1,41 @@
-import { Injectable } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
+import { Subject, takeUntil, tap, timer } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameErrorService {
-  constructor(private auth: AuthService) {}
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly destroy$ = new Subject<void>();
+  private readonly error$ = new Subject<void>();
+  private readonly limit = 5;
+  private errorCount: number = 0;
+
+  constructor(private auth: AuthService) {
+    this.destroyRef.onDestroy(() => this.destroy$.next());
+
+    this.error$
+      .pipe(
+        tap(() => {
+          this.errorCount++;
+        }),
+        tap(() => {
+          if (this.errorCount >= this.limit) {
+            this.auth.logout('Непредвиденная ошибка');
+          }
+        }),
+        tap(() => {
+          timer(5000)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+              this.errorCount--;
+            });
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe();
+  }
 
   public handle(error: any) {
     if (this.isHttpError(error)) {
@@ -27,10 +57,14 @@ export class GameErrorService {
       if (logout) {
         console.error(`[ERROR ${error.status}]: ${error.error.message}`);
         this.auth.logout(message);
+        return;
       }
     } else {
       this.auth.logout('Непредвиденная ошибка');
+      return;
     }
+
+    this.error$.next();
   }
 
   private isHttpError(
