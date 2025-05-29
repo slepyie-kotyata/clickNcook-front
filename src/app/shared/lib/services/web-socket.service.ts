@@ -40,6 +40,8 @@ export class WebSocketService {
         error: (error) => {
           this.isConnected = false;
           this.error.handle(error);
+          this.close();
+          reject(error);
         },
         complete: () => {
           this.isConnected = false;
