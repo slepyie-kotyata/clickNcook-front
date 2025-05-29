@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { ReplaySubject } from 'rxjs';
 import { IData } from '../../../entities/api';
+import { GameErrorService } from './game-error.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,8 @@ export class WebSocketService {
   private socket$!: WebSocketSubject<any>;
   private dataSubject = new ReplaySubject<IData>(1);
   private readonly socketURL = import.meta.env.NG_APP_WEBSOCKET_API;
+
+  constructor(private error: GameErrorService) {}
 
   get connected() {
     return this.isConnected;
@@ -36,7 +39,7 @@ export class WebSocketService {
         },
         error: (error) => {
           this.isConnected = false;
-          reject(error);
+          this.error.handle(error);
         },
         complete: () => {
           this.isConnected = false;

@@ -57,6 +57,12 @@ export class GameErrorService {
         return;
       }
     } else {
+      if (error.code && error.code === 1006) {
+        this.auth.logout('Вход на другом устройстве');
+        return;
+      }
+
+      console.error('[ERROR UNKNOWN]: \n ', error);
       this.auth.logout('Непредвиденная ошибка');
       return;
     }
