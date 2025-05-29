@@ -20,7 +20,7 @@ export class WebSocketService {
     return this.dataSubject.asObservable();
   }
 
-  async connect() {
+  async connect(): Promise<void> {
     return new Promise((resolve, reject) => {
       const token = localStorage.getItem('accessToken');
       this.socket$ = webSocket(`${this.socketURL}${token}`);
