@@ -29,14 +29,14 @@ export class WebSocketService {
         next: (data: IData) => {
           if (!this.isConnected) {
             this.isConnected = true;
-            Promise.resolve();
+            resolve();
           }
           this.dataSubject.next(data);
           this.socket$.next('success');
         },
         error: (error) => {
           this.isConnected = false;
-          Promise.reject(error);
+          reject(error);
         },
         complete: () => {
           this.isConnected = false;
