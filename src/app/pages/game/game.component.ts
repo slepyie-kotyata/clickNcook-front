@@ -42,6 +42,8 @@ export class GameComponent implements OnInit {
   protected showResolutionWarning: boolean = false;
   protected prestigeWindowToggle: boolean = false;
   protected sound = inject(GameSoundService);
+  protected previousLevel: number = 0;
+  protected showLevelUpNotification: boolean = false;
 
   protected get playerLvlPercentage(): number {
     let percentage = parseFloat(
@@ -97,6 +99,8 @@ export class GameComponent implements OnInit {
 
   ngOnInit(): void {
     this.gameService.loadData().then(() => this.onResize());
+    setInterval(() => this.checkLevelIncrease(), 3000);
+
   }
 
   protected toggleModal(type: 'logout' | 'prestige', value: boolean): void {
@@ -125,6 +129,17 @@ export class GameComponent implements OnInit {
   protected logout() {
     this.gameService.handleLogout();
   }
+
+  checkLevelIncrease() {
+  if (this.levelRank > this.previousLevel) {
+    this.showLevelUpNotification = true;
+    this.previousLevel = this.levelRank;
+
+    setTimeout(() => {
+      this.showLevelUpNotification = false;
+    }, 3000);
+  }
+}
 
   @HostListener('window:load', ['$event'])
   @HostListener('window:resize', ['$event'])

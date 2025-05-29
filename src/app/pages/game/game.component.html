@@ -98,5 +98,11 @@
     работы сайта</p>
 </div>
 
+<div
+  *ngIf="showLevelUpNotification"
+  class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-2xl text-lg shadow-lg transition-opacity duration-500 opacity-100 z-50"
+>
+  🎉 Уровень повышен до {{ levelRank }}!
+</div>
 
 <app-loading *ngIf="!isGameLoaded"></app-loading>
