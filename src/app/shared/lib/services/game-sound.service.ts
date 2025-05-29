@@ -4,28 +4,29 @@ import { Injectable, signal } from '@angular/core';
   providedIn: 'root',
 })
 export class GameSoundService {
-  private soundEnabled = signal(true);
+  private volume = signal(100);
 
-  get isEnabled() {
-    return this.soundEnabled();
+  get currentVolume() {
+    return this.volume();
   }
 
   load() {
-    if (localStorage.getItem('sound')) {
-      this.soundEnabled.set(localStorage.getItem('sound') === 'true');
+    if (localStorage.getItem('volume')) {
+      this.volume.set(parseInt(localStorage.getItem('volume') || '100', 10));
     }
   }
 
   play(name: string): void {
-    if (this.soundEnabled()) {
+    if (this.volume() > 0) {
       let sound = new Audio('/sounds/' + name + '.mp3');
+      sound.volume = this.volume() / 100;
       sound.load();
       sound.play();
     }
   }
 
-  toggle(): void {
-    this.soundEnabled.set(!this.soundEnabled());
-    localStorage.setItem('sound', this.soundEnabled().toString());
+  setVolume(value: number) {
+    this.volume.set(value);
+    localStorage.setItem('volume', value.toString());
   }
 }

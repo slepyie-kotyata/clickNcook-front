@@ -17,3 +17,11 @@ progress::-moz-progress-bar {
   background-color: #6F56FF;
   border-radius: 9999px;
 }
+
+.volume-slider {
+  appearance: slider-vertical;
+  writing-mode: bt-lr;
+  width: 45px;
+  height: 150px;
+}
+
