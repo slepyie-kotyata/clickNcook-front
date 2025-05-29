@@ -39,6 +39,7 @@ export class GameService {
     try {
       await this.session.loadData();
       await this.ws.connectToWebSocketAsync();
+      this.sound.load();
       this.loaded.set(true);
     } catch (error) {
       this.error.handle(error);
