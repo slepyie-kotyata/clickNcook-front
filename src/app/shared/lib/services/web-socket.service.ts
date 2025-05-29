@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
-import {ReplaySubject} from 'rxjs';
-import {IData} from '../../../entities/api';
+import { Injectable } from '@angular/core';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { ReplaySubject } from 'rxjs';
+import { IData } from '../../../entities/api';
 
 @Injectable({
   providedIn: 'root',
