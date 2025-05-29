@@ -19,6 +19,8 @@ progress::-moz-progress-bar {
 }
 
 .volume-slider {
+  -webkit-appearance: slider-vertical;
+  -moz-appearance: slider-vertical;
   appearance: slider-vertical;
   writing-mode: bt-lr;
   width: 45px;
