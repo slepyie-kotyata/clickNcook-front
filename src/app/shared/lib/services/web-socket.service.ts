@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
-import {ReplaySubject} from 'rxjs';
-import {IData} from '../../../entities/api';
+import { Injectable } from '@angular/core';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { ReplaySubject } from 'rxjs';
+import { IData } from '../../../entities/api';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +20,7 @@ export class WebSocketService {
     return this.dataSubject.asObservable();
   }
 
-  async connect(): Promise<void> {
+  async connect() {
     return new Promise((resolve, reject) => {
       const token = localStorage.getItem('accessToken');
       this.socket$ = webSocket(`${this.socketURL}${token}`);
@@ -29,14 +29,14 @@ export class WebSocketService {
         next: (data: IData) => {
           if (!this.isConnected) {
             this.isConnected = true;
-            resolve();
+            Promise.resolve();
           }
           this.dataSubject.next(data);
           this.socket$.next('success');
         },
         error: (error) => {
           this.isConnected = false;
-          reject(error);
+          Promise.reject(error);
         },
         complete: () => {
           this.isConnected = false;

@@ -17,7 +17,7 @@ export class GameWebSocketService {
   }
 
   async connectToWebSocketAsync() {
-    if (this.ws.connected) return;
+    if (this.connected) return;
 
     try {
       await this.ws.connect();
