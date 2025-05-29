@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit, OnDestroy } from '@angular/core';
 import { MenuComponent } from '../../features/menu/menu.component';
 import formatNumber from '../../shared/lib/formatNumber';
 import { ModalComponent } from '../../shared/ui/modal/modal.component';
@@ -13,6 +13,8 @@ import { PrestigeWindowComponent } from '../../widgets/prestige-window/prestige-
 import { FinalComponent } from '../../shared/ui/locations/final/final.component';
 import { GameSessionService } from '../../shared/lib/services/game-session.service';
 import { GameSoundService } from '../../shared/lib/services/game-sound.service';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { Subscription } from 'rxjs'; 
 
 @Component({
   selector: 'app-game',
@@ -42,7 +44,8 @@ export class GameComponent implements OnInit {
   protected showResolutionWarning: boolean = false;
   protected prestigeWindowToggle: boolean = false;
   protected sound = inject(GameSoundService);
-  protected previousLevel: number = 0;
+  private levelSub?: Subscription;
+  private previousLevel: number = 0;
   protected showLevelUpNotification: boolean = false;
 
   protected get playerLvlPercentage(): number {
@@ -97,11 +100,28 @@ export class GameComponent implements OnInit {
     return this.gameService.isLoaded;
   }
 
-  ngOnInit(): void {
-    this.gameService.loadData().then(() => this.onResize());
-    setInterval(() => this.checkLevelIncrease(), 3000);
+  protected levelSignal = this.session.levelSignal(); 
 
-  }
+ngOnInit(): void {
+  this.gameService.loadData().then(() => {
+    this.onResize();
+
+    this.previousLevel = this.session.levelSignal().rank; 
+
+    setInterval(() => {
+      const currentLevel = this.session.levelSignal().rank;
+      if (currentLevel > this.previousLevel) {
+        this.checkLevelIncrease();
+        this.previousLevel = currentLevel;
+      }
+    }, 500);
+  });
+}
+
+
+ngOnDestroy(): void {
+  this.levelSub?.unsubscribe();
+}
 
   protected toggleModal(type: 'logout' | 'prestige', value: boolean): void {
     this.sound.play('click');
@@ -130,16 +150,15 @@ export class GameComponent implements OnInit {
     this.gameService.handleLogout();
   }
 
-  checkLevelIncrease() {
-  if (this.levelRank > this.previousLevel) {
-    this.showLevelUpNotification = true;
-    this.previousLevel = this.levelRank;
+  private checkLevelIncrease(): void {
+  this.showLevelUpNotification = true;
 
-    setTimeout(() => {
-      this.showLevelUpNotification = false;
-    }, 3000);
-  }
+  setTimeout(() => {
+    this.showLevelUpNotification = false;
+  }, 3000);
 }
+
+
 
   @HostListener('window:load', ['$event'])
   @HostListener('window:resize', ['$event'])
