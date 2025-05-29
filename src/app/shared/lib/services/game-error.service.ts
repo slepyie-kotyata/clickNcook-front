@@ -56,12 +56,23 @@ export class GameErrorService {
         this.auth.logout(message);
         return;
       }
-    } else {
-      if (error.code && error.code === 1006) {
-        this.auth.logout('Вход на другом устройстве');
-        return;
+    } else if (this.isWebSocketError(error)) {
+      switch (error.code) {
+        case 1006:
+          console.warn(
+            '[WebSocket] Соединение закрыто: вход с другого устройства',
+          );
+          this.auth.logout('Вход на другом устройстве');
+          return;
+        default:
+          console.error(
+            `[WebSocket ERROR ${error.code}]:`,
+            error.reason ?? 'Неизвестная причина',
+          );
+          this.auth.logout('Ошибка подключения к серверу');
+          return;
       }
-
+    } else {
       console.error('[ERROR UNKNOWN]: \n ', error);
       this.auth.logout('Непредвиденная ошибка');
       return;
@@ -78,6 +89,16 @@ export class GameErrorService {
       error !== null &&
       'status' in error &&
       typeof (error as any).status === 'number'
+    );
+  }
+
+  private isWebSocketError(error: unknown): error is CloseEvent {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      typeof error.code === 'number' &&
+      'reason' in error
     );
   }
 }
