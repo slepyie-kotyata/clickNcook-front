@@ -19,16 +19,14 @@ export class GameWebSocketService {
   async connectToWebSocketAsync() {
     if (this.ws.connected) return;
 
-    if (this.session.upgradesSignal().find((u) => u.upgrade_type === 'staff')) {
-      try {
-        await this.ws.connect();
-        this.ws.data.subscribe((value) => {
-          this.updateData(value);
-        });
-        return Promise.resolve();
-      } catch (error) {
-        return Promise.reject(error);
-      }
+    try {
+      await this.ws.connect();
+      this.ws.data.subscribe((value) => {
+        this.updateData(value);
+      });
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
     }
   }
 
