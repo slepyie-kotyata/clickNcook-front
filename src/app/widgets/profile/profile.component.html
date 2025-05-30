@@ -11,6 +11,7 @@
                         [blocked]="false"
                         [type]="'profile'"
                         [upgrade]="upgrade"></app-upgrade-button>
+    <p *ngIf="session.upgradesSignal().length===0" class="text-white text-2xl">Нет купленных улучшений</p>
   </section>
   <button (click)="openLogoutWindow()"
           class="font-tektur text-white font-bold text-xl bg-primary px-16 py-3.5 text-center rounded-2xl border-black/85 border">
