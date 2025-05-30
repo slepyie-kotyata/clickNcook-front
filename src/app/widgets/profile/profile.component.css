@@ -1,0 +1,31 @@
+.custom-scroll {
+  --track-color: transparent;
+  --thumb-color: #00000066;
+  --size: 46px;
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: var(--size);
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: var(--track-color);
+  border-radius: 1px;
+  margin-block: 20px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: var(--thumb-color);
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+  border-right: 20px solid #6F56FF;
+  margin-block: 20px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  body {
+    scrollbar-color: var(--thumb-color) var(--track-color);
+  }
+}
+
+

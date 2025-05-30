@@ -6,7 +6,7 @@
       class="text-white text-3xl font-bold text-center drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">{{ email }}</p>
   </section>
   <section
-    class="clickable bg-primary rounded-2xl border-2 border-black px-5 py-5 flex flex-col gap-5 h-[38dvh] w-full overflow-y-scroll">
+    class="clickable bg-primary rounded-2xl border-2 border-black px-5 py-5 flex flex-col gap-5 h-[38dvh] w-full overflow-y-scroll custom-scroll">
     <app-upgrade-button *ngFor="let upgrade of session.upgradesSignal()"
                         [blocked]="false"
                         [type]="'profile'"
