@@ -39,6 +39,9 @@ export class GameService {
     try {
       await this.session.loadData();
       await this.ws.connectToWebSocketAsync();
+      this.session.levelUp$.subscribe(() => {
+        this.sound.play('level-up');
+      });
       this.sound.load();
       this.loaded.set(true);
     } catch (error) {

@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
 import { AuthService } from './auth.service';
 import { GameApiService } from './game-api.service';
 import { ILevel, IUpgrade } from '../../../entities/game';
@@ -16,6 +16,8 @@ export class GameSessionService {
   private accumulatedPrestigeLvl = signal(0);
   private userUpgrades = signal<IUpgrade[]>([]);
   private sessionUpgrades = signal<IUpgrade[]>([]);
+  private levelUpSubject = new Subject<void>();
+  public readonly levelUp$ = this.levelUpSubject.asObservable();
 
   constructor(
     private auth: AuthService,
@@ -109,7 +111,8 @@ export class GameSessionService {
     try {
       const response = await firstValueFrom(this.api.levelUp());
       this.level.set({ rank: response.current_rank, xp: response.current_xp });
-      this.xp.set(response.next_xp);
+      if (response.next_xp) this.xp.set(response.next_xp);
+      this.levelUpSubject.next();
       return Promise.resolve();
     } catch (error) {
       return Promise.reject(error);
