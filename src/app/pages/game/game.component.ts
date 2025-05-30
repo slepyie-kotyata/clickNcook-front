@@ -13,6 +13,7 @@ import { PrestigeWindowComponent } from '../../widgets/prestige-window/prestige-
 import { FinalComponent } from '../../shared/ui/locations/final/final.component';
 import { GameSessionService } from '../../shared/lib/services/game-session.service';
 import { GameSoundService } from '../../shared/lib/services/game-sound.service';
+import { ProfileComponent } from '../../widgets/profile/profile.component';
 
 @Component({
   selector: 'app-game',
@@ -31,6 +32,7 @@ import { GameSoundService } from '../../shared/lib/services/game-sound.service';
     NgClass,
     NgSwitch,
     NgSwitchCase,
+    ProfileComponent,
   ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',
@@ -41,6 +43,7 @@ export class GameComponent implements OnInit {
   protected logoutWindowToggle: boolean = false;
   protected showResolutionWarning: boolean = false;
   protected prestigeWindowToggle: boolean = false;
+  protected profileWindowToggle: boolean = false;
   protected sound = inject(GameSoundService);
   protected showLevelUpNotification: boolean = false;
   protected showVolumeSlider = false;
@@ -111,10 +114,22 @@ export class GameComponent implements OnInit {
     });
   }
 
-  protected toggleModal(type: 'logout' | 'prestige', value: boolean): void {
+  protected toggleModal(
+    type: 'profile' | 'logout' | 'prestige',
+    value: boolean,
+  ): void {
     this.sound.play('click');
-    if (type === 'logout') this.logoutWindowToggle = value;
-    else this.prestigeWindowToggle = value;
+    switch (type) {
+      case 'logout':
+        this.logoutWindowToggle = value;
+        break;
+      case 'prestige':
+        this.prestigeWindowToggle = value;
+        break;
+      case 'profile':
+        this.profileWindowToggle = value;
+        break;
+    }
   }
 
   protected handleCook(): void {
