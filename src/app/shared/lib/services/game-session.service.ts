@@ -16,6 +16,7 @@ export class GameSessionService {
   private accumulatedPrestigeLvl = signal(0);
   private userUpgrades = signal<IUpgrade[]>([]);
   private sessionUpgrades = signal<IUpgrade[]>([]);
+  private userEmail: string;
   private levelUpSubject = new Subject<void>();
   public readonly levelUp$ = this.levelUpSubject.asObservable();
 
@@ -56,6 +57,10 @@ export class GameSessionService {
     return this.xp();
   }
 
+  get email() {
+    return this.userEmail;
+  }
+
   async loadData() {
     try {
       const response = await firstValueFrom(this.api.init);
@@ -66,6 +71,7 @@ export class GameSessionService {
       this.level.set(response.session.level);
       this.prestigeLevel.set(response.session.prestige_value);
       this.accumulatedPrestigeLvl.set(response.session.prestige.current_value);
+      this.userEmail = response.session.user_email;
 
       await this.getLevelInfoAsync();
       await this.getAvailableUpgradesAsync();

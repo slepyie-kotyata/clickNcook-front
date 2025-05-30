@@ -26,6 +26,7 @@ export default interface ISession {
   prestige: IPrestige;
   level: ILevel;
   user_id: number;
+  user_email: string;
 }
 
 export interface IPrestige {
