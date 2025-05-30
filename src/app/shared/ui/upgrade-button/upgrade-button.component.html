@@ -11,7 +11,7 @@
     <p
       class="text-secondary text-start break-words leading-tight sm:max-w-[16dvw] md:max-w-full 2xl:max-w-[7dvw] text-xs md:text-base">
       {{ upgrade.name }}
-      <span *ngIf="type ==='profile'">x{{ upgrade.times_bought }}</span>
+      <span *ngIf="type ==='profile' && upgrade.times_bought > 1">x{{ upgrade.times_bought }}</span>
     </p>
     <span *ngIf="type === 'shop'" class="flex-1"></span>
     <p *ngIf="type === 'shop'" class="text-secondary">{{ priceString() }} $</p>

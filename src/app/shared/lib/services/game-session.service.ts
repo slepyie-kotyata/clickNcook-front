@@ -2,7 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { firstValueFrom, Subject } from 'rxjs';
 import { AuthService } from './auth.service';
 import { GameApiService } from './game-api.service';
-import { ILevel, IUpgrade } from '../../../entities/game';
+import { ILevel, IUpgrade, upgradeTypeOrder } from '../../../entities/game';
 
 @Injectable({
   providedIn: 'root',
@@ -86,13 +86,20 @@ export class GameSessionService {
       await this.getAvailableUpgradesAsync();
       this.userUpgrades.update((upgrades) => {
         const existing = upgrades.find((u) => u.id === upgrade.id);
+        let newUpgrades: typeof upgrades;
+
         if (existing) {
-          return upgrades.map((u) =>
+          newUpgrades = upgrades.map((u) =>
             u.id === upgrade.id
               ? { ...u, times_bought: u.times_bought + 1 }
               : u,
           );
-        } else return [...upgrades, upgrade];
+        } else newUpgrades = [...upgrades, { ...upgrade, times_bought: 1 }];
+        return newUpgrades.sort(
+          (a, b) =>
+            upgradeTypeOrder.indexOf(a.upgrade_type) -
+            upgradeTypeOrder.indexOf(b.upgrade_type),
+        );
       });
       return Promise.resolve();
     } catch (error) {

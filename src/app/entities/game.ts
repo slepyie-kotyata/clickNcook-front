@@ -36,3 +36,12 @@ export interface ILevel {
   rank: number;
   xp: number;
 }
+
+export const upgradeTypeOrder: Upgrade[] = [
+  'dish',
+  'equipment',
+  'global',
+  'recipe',
+  'staff',
+  'point',
+];
