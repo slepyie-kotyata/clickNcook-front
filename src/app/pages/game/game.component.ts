@@ -43,6 +43,7 @@ export class GameComponent implements OnInit {
   protected prestigeWindowToggle: boolean = false;
   protected sound = inject(GameSoundService);
   protected showLevelUpNotification: boolean = false;
+  protected showVolumeSlider = false;
 
   protected get playerLvlPercentage(): number {
     let percentage = parseFloat(
@@ -129,8 +130,13 @@ export class GameComponent implements OnInit {
     this.gameService.handleSell();
   }
 
-  protected toggleSound() {
-    this.sound.toggle();
+  protected toggleVolumeSlider() {
+    this.showVolumeSlider = !this.showVolumeSlider;
+  }
+
+  protected onVolumeChange(event: any) {
+    const volume = +event.target.value;
+    this.sound.setVolume(volume);
   }
 
   protected logout() {

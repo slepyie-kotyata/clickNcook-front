@@ -30,7 +30,7 @@
         <img *ngIf="levelRank < 70" class="w-[312px] hidden xl:block"
              src="/icons/upgrades/equipment/gas_burner.svg">
         <button (click)="handleCook()"
-                class="z-max bg-primary rounded-xxl border border-black w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
+                class="active:scale-95 z-max bg-primary rounded-xxl border border-black w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
           <img
             class="h-full"
             src="/icons/cook.svg">
@@ -40,7 +40,7 @@
         <img *ngIf="levelRank < 70" class="w-[312px] hidden xl:block"
              src="/icons/upgrades/equipment/new_cashier.svg">
         <button (click)="handleSell()"
-                class="bg-primary rounded-xxl border border-black w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
+                class="active:scale-95 bg-primary rounded-xxl border border-black w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
           <img
             class="h-full"
             src="/icons/sell.svg">
@@ -88,8 +88,23 @@
 <app-prestige-window (closeEvent)="toggleModal('prestige',$event)"
                      [enabled]="prestigeWindowToggle"></app-prestige-window>
 
-<button (click)="toggleSound()" class="fixed bottom-0 left-0 px-4 py-4 z-max"><img
-  [src]="sound.isEnabled ? '/icons/sound-on.svg' : '/icons/sound-off.svg'"></button>
+<button (click)="toggleVolumeSlider()" class="fixed bottom-0 left-0 px-4 py-4 z-max">
+  <img [src]="sound.currentVolume > 0 ? '/icons/sound-on.svg' : '/icons/sound-off.svg'"/>
+</button>
+
+<div
+  *ngIf="showVolumeSlider"
+  class="fixed left-5 bottom-20 z-max p-2"
+>
+  <input
+    (input)="onVolumeChange($event)"
+    [value]="sound.currentVolume"
+    class="volume-slider"
+    max="100"
+    min="0"
+    type="range"
+  />
+</div>
 
 <div *ngIf="showResolutionWarning"
      class="fixed inset-0 bg-black text-white z-max flex items-center justify-center overscroll-none">

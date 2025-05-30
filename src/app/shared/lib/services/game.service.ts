@@ -42,6 +42,7 @@ export class GameService {
       this.session.levelUp$.subscribe(() => {
         this.sound.play('level-up');
       });
+      this.sound.load();
       this.loaded.set(true);
     } catch (error) {
       this.error.handle(error);
