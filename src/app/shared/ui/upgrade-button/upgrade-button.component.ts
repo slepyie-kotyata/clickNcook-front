@@ -14,38 +14,38 @@ import { Upgrade } from '../../../entities/types';
   styleUrl: './upgrade-button.component.css',
 })
 export class UpgradeButtonComponent {
+  @Input({ required: true }) type: 'shop' | 'profile';
   @Input({ required: true }) upgrade: IUpgrade;
   @Input({ required: true }) blocked: boolean;
   @Output() buyEvent: EventEmitter<number> = new EventEmitter();
-  
-  showTooltip = false;
-  tooltipVisible = false;
 
-  priceString(): string {
+  protected showTooltip = false;
+
+  protected priceString(): string {
     return formatNumber(
       this.upgrade.times_bought > 0
         ? this.upgrade.price *
             this.upgrade.price_factor *
             this.upgrade.times_bought
-        : this.upgrade.price
+        : this.upgrade.price,
     );
   }
 
-  handleBuy() {
+  protected handleBuy() {
     this.buyEvent.emit(this.upgrade.id);
   }
 
-  icon(): string {
+  protected icon(): string {
     return getIcon(
       this.upgrade.upgrade_type as Upgrade,
-      this.upgrade.icon_name
+      this.upgrade.icon_name,
     );
   }
 
-  boostDisplay(): string {
+  protected boostDisplay(): string {
     return boostTooltip(
       this.upgrade.boost.value,
-      this.upgrade.boost.boost_type
+      this.upgrade.boost.boost_type,
     );
   }
 }

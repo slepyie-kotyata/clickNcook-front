@@ -12,7 +12,12 @@ module.exports = {
         red: "#CB3D3D",
         sky: "#89E4FF",
       },
+      borderWidth: {
+        12: "12px",
+        16: "16px",
+      },
       borderRadius: {
+        "4xl": "2.2rem",
         xxl: "50px",
       },
       zIndex: {

@@ -1,7 +1,7 @@
 <div *ngIf="isGameLoaded && !showResolutionWarning"
      class="z-30 overscroll-none scrollbar-hide font-tektur">
   <section class="z-max fixed flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
-    <button (click)="toggleModal('logout',true)"
+    <button (click)="toggleModal('profile',true)"
             class="max-w-14 max-h-14 rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
       <img
         src="/icons/logout.svg"></button>
@@ -66,12 +66,21 @@
   class="fixed bottom-[5dvh] left-[10dvw] z-max hidden xl:block"
 />
 
+<app-modal (close)="toggleModal('profile',false)" [background]="'bg-secondary'" [border_color]="'primary'"
+           [border_size]="16"
+           [closeOnBackdrop]="true"
+           [show]="profileWindowToggle">
+  <app-profile (logoutEvent)="toggleModal('logout',$event)" [email]="session.email"></app-profile>
+</app-modal>
 
-<app-modal (close)="toggleModal('logout',false)"
-           [closeOnBackdrop]="false"
+<app-modal (close)="toggleModal('logout',false)" [background]="'bg-secondary'"
+           [border_color]="'primary'"
+           [border_size]="16"
+           [closeOnBackdrop]="true"
            [show]="logoutWindowToggle">
-  <div class="flex flex-col items-center font-tektur">
-    <h2 class="text-white text-center md:text-4xl">Вы уверены что хотите выйти?</h2>
+  <div class="flex flex-col items-center font-tektur py-[3.5dvh] px-[8.5dvw] drop-shadow-md">
+    <h2 class="text-white text-center md:text-4xl drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,1)]">Вы уверены, <br>что
+      хотите выйти?</h2>
     <section class="flex flex-row gap-5">
       <button (click)="logout()"
               class="bg-green-600 border-2 border-black mt-[2.5dvh] rounded-2xl px-[4.5dvw] py-[1.25dvh] font-bold text-2xl text-white">

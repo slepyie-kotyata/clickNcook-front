@@ -26,6 +26,7 @@ export default interface ISession {
   prestige: IPrestige;
   level: ILevel;
   user_id: number;
+  user_email: string;
 }
 
 export interface IPrestige {
@@ -36,3 +37,12 @@ export interface ILevel {
   rank: number;
   xp: number;
 }
+
+export const upgradeTypeOrder: Upgrade[] = [
+  'dish',
+  'equipment',
+  'global',
+  'recipe',
+  'staff',
+  'point',
+];

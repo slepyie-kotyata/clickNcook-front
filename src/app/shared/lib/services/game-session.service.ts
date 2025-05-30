@@ -2,7 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { firstValueFrom, Subject } from 'rxjs';
 import { AuthService } from './auth.service';
 import { GameApiService } from './game-api.service';
-import { ILevel, IUpgrade } from '../../../entities/game';
+import { ILevel, IUpgrade, upgradeTypeOrder } from '../../../entities/game';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +16,7 @@ export class GameSessionService {
   private accumulatedPrestigeLvl = signal(0);
   private userUpgrades = signal<IUpgrade[]>([]);
   private sessionUpgrades = signal<IUpgrade[]>([]);
+  private userEmail: string;
   private levelUpSubject = new Subject<void>();
   public readonly levelUp$ = this.levelUpSubject.asObservable();
 
@@ -56,6 +57,10 @@ export class GameSessionService {
     return this.xp();
   }
 
+  get email() {
+    return this.userEmail;
+  }
+
   async loadData() {
     try {
       const response = await firstValueFrom(this.api.init);
@@ -66,6 +71,7 @@ export class GameSessionService {
       this.level.set(response.session.level);
       this.prestigeLevel.set(response.session.prestige_value);
       this.accumulatedPrestigeLvl.set(response.session.prestige.current_value);
+      this.userEmail = response.session.user_email;
 
       await this.getLevelInfoAsync();
       await this.getAvailableUpgradesAsync();
@@ -84,7 +90,23 @@ export class GameSessionService {
 
       this.money.set(response.money);
       await this.getAvailableUpgradesAsync();
-      this.userUpgrades.update((u) => [...u, upgrade]);
+      this.userUpgrades.update((upgrades) => {
+        const existing = upgrades.find((u) => u.id === upgrade.id);
+        let newUpgrades: typeof upgrades;
+
+        if (existing) {
+          newUpgrades = upgrades.map((u) =>
+            u.id === upgrade.id
+              ? { ...u, times_bought: u.times_bought + 1 }
+              : u,
+          );
+        } else newUpgrades = [...upgrades, { ...upgrade, times_bought: 1 }];
+        return newUpgrades.sort(
+          (a, b) =>
+            upgradeTypeOrder.indexOf(a.upgrade_type) -
+            upgradeTypeOrder.indexOf(b.upgrade_type),
+        );
+      });
       return Promise.resolve();
     } catch (error) {
       return Promise.reject(error);

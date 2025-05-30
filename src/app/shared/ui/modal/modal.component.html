@@ -1,7 +1,15 @@
 <div (click)="onBackdropClick()" *ngIf="show"
-     class="clickable z-max absolute top-0 left-0 inset-0 h-[100dvh] w-[100dvw] px-[15dvw] xl:px-[25dvw] bg-black/60">
+     class="clickable z-max absolute top-0 left-0 inset-0 h-[100dvh] w-[100dvw] bg-black/60">
   <div (click)="stopPropagation($event)"
-       class="relative top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary border-2 border-black rounded-2xl py-[3.5dvh] px-[8.5dvw]">
+       [class]="styleString()"
+       [ngClass]="{
+       'border-2': border_size == 2,
+        'border-4': border_size== 4,
+        'border-8': border_size==8,
+        'border-12': border_size==12,
+        'border-16': border_size==16
+       }"
+       class="relative top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-4xl w-fit">
     <button (click)="handleClose()"
             class="absolute hidden xl:block text-white right-[1.25dvh] top-[1.25dvh] w-[5dvh] h-[5dvh] rounded-full place-self-end text-2xl text-center">
       ❌
