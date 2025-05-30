@@ -84,7 +84,16 @@ export class GameSessionService {
 
       this.money.set(response.money);
       await this.getAvailableUpgradesAsync();
-      this.userUpgrades.update((u) => [...u, upgrade]);
+      this.userUpgrades.update((upgrades) => {
+        const existing = upgrades.find((u) => u.id === upgrade.id);
+        if (existing) {
+          return upgrades.map((u) =>
+            u.id === upgrade.id
+              ? { ...u, times_bought: u.times_bought + 1 }
+              : u,
+          );
+        } else return [...upgrades, upgrade];
+      });
       return Promise.resolve();
     } catch (error) {
       return Promise.reject(error);
