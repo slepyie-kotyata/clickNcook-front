@@ -18,7 +18,7 @@ export interface IBoost {
   value: number;
 }
 
-export default interface ISession {
+export interface ISession {
   id: number;
   money: number;
   dishes: number;

@@ -89,6 +89,7 @@ export class GameSessionService {
       const response = await firstValueFrom(this.api.buy(upgrade.id));
 
       this.money.set(response.money);
+      await this.updatePlayerXP(response.xp);
       await this.getAvailableUpgradesAsync();
       this.userUpgrades.update((upgrades) => {
         const existing = upgrades.find((u) => u.id === upgrade.id);

@@ -1,7 +1,7 @@
-import {inject, Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
-import ISession, {IUpgrade} from '../../../entities/game';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { ISession, IUpgrade } from '../../../entities/game';
 
 @Injectable({
   providedIn: 'root',
@@ -68,10 +68,11 @@ export class GameApiService {
     }>(this.api + 'game/sell', {});
   }
 
-  buy(id: number): Observable<{ status: number; money: number }> {
+  buy(id: number): Observable<{ status: number; money: number; xp: number }> {
     return this.httpClient.patch<{
       status: number;
       money: number;
+      xp: number;
     }>(this.api + 'game/buy/' + id, {});
   }
 
