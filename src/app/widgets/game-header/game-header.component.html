@@ -1,0 +1,23 @@
+<section class="z-max fixed flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
+  <button (click)="openProfile.emit()"
+          class="max-w-14 max-h-14 rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
+    <img
+      src="/icons/logout.svg"></button>
+  <button (click)="openPrestige.emit()"
+          class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary max-w-14 max-h-14">
+    <img src="/icons/star.svg">
+    <p
+      class="absolute text-black font-bold text-base leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ prestige }}</p>
+  </button>
+  <div class="relative w-[200px] sm:w-[330px] h-[35px] hidden sm:block">
+    <progress
+      [value]="levelPercentage"
+      class="w-full h-full rounded-full overflow-hidden border border-black bg-secondary appearance-none"
+      max="100">
+    </progress>
+    <p class="absolute right-3 top-1/2 transform -translate-y-1/2 text-black font-bold text-xl">
+      {{ levelPercentage }}%
+    </p>
+  </div>
+  <p class="relative text-3xl text-center">LVL {{ level }}</p>
+</section>

@@ -1,53 +1,11 @@
-<div *ngIf="isGameLoaded && !showResolutionWarning"
+<div *ngIf="this.game.isLoaded && !showResolutionWarning"
      class="z-30 overscroll-none scrollbar-hide font-tektur">
-  <section class="z-max fixed flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
-    <button (click)="toggleModal('profile',true)"
-            class="max-w-14 max-h-14 rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
-      <img
-        src="/icons/logout.svg"></button>
-    <button (click)="toggleModal('prestige',true)"
-            class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary max-w-14 max-h-14">
-      <img src="/icons/star.svg">
-      <p
-        class="absolute text-black font-bold text-base leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ prestige }}</p>
-    </button>
-    <div class="relative w-[200px] sm:w-[330px] h-[35px] hidden sm:block">
-      <progress
-        [value]="playerLvlPercentage"
-        class="w-full h-full rounded-full overflow-hidden border border-black bg-secondary appearance-none"
-        max="100">
-      </progress>
-      <p class="absolute right-3 top-1/2 transform -translate-y-1/2 text-black font-bold text-xl">
-        {{ playerLvlPercentage }}%
-      </p>
-    </div>
-    <p class="relative text-3xl text-center">LVL {{ levelRank }}</p>
-  </section>
-  <section
-    class="z-10 px-[5.5dvw] py-[5.5dvh] left-[7dvw] absolute bottom-0 w-[65dvw] h-[53dvh]">
-    <div class="w-full h-full flex flex-col md:flex-row gap-6 justify-end items-center">
-      <div class="flex flex-col justify-center align-middle items-center">
-        <img *ngIf="levelRank < 70" class="w-[312px] hidden xl:block"
-             src="/icons/upgrades/equipment/gas_burner.svg">
-        <button (click)="handleCook()" [disabled]="isCooking"
-                class="active:scale-95 z-max bg-primary rounded-xxl border border-black w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
-          <img
-            class="h-full"
-            src="/icons/cook.svg">
-        </button>
-      </div>
-      <div class="flex flex-col justify-center align-middle items-center">
-        <img *ngIf="levelRank < 70" class="w-[312px] hidden xl:block"
-             src="/icons/upgrades/equipment/new_cashier.svg">
-        <button (click)="handleSell()" [disabled]="isSelling"
-                class="active:scale-95 bg-primary rounded-xxl border border-black w-36 h-14 sm:w-56 sm:h-48 md:w-28 md:h-24 flex justify-center items-center">
-          <img
-            class="h-full"
-            src="/icons/sell.svg">
-        </button>
-      </div>
-    </div>
-  </section>
+  <app-game-header (openPrestige)="toggleModal('prestige',true)" (openProfile)="toggleModal('profile', true)"
+                   [levelPercentage]="playerLvlPercentage()"
+                   [level]="this.session.levelSignal().rank"
+                   [prestige]="prestige()"></app-game-header>
+  <app-game-buttons (cook)="handleCook()" (sell)="handleSell()" [isCooking]="isCooking"
+                    [isSelling]="isSelling" [level]="this.session.levelSignal().rank"></app-game-buttons>
   <app-menu></app-menu>
 </div>
 
@@ -126,7 +84,7 @@
   *ngIf="showLevelUpNotification"
   class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-2xl text-lg shadow-lg transition-opacity duration-500 opacity-100 z-50"
 >
-  🎉 Уровень повышен до {{ levelRank }}!
+  🎉 Уровень повышен до {{ this.session.levelSignal().rank }}!
 </div>
 
-<app-loading *ngIf="!isGameLoaded"></app-loading>
+<app-loading *ngIf="!this.game.isLoaded"></app-loading>
