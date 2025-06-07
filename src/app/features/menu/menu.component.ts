@@ -2,10 +2,10 @@ import { Component, inject } from '@angular/core';
 import formatNumber from '../../shared/lib/formatNumber';
 import { MenuButtonComponent } from '../../shared/ui/menu-button/menu-button.component';
 import { UpgradeWindowComponent } from '../../widgets/upgrade-window/upgrade-window.component';
-import { GameService } from '../../shared/lib/services/game.service';
+import { GameService } from '../../shared/lib/services/game/game.service';
 import { Upgrade } from '../../entities/types';
 import { NgForOf } from '@angular/common';
-import { GameSessionService } from '../../shared/lib/services/game-session.service';
+import { SessionService } from '../../shared/lib/services/game/session.service';
 
 @Component({
   selector: 'app-menu',
@@ -34,7 +34,7 @@ export class MenuComponent {
     { type: 'point', icon: '/icons/map.svg', requiredRank: 70 },
   ];
   protected gameService = inject(GameService);
-  protected session = inject(GameSessionService);
+  protected session = inject(SessionService);
 
   get dishCount() {
     return formatNumber(this.session.dishesSignal());

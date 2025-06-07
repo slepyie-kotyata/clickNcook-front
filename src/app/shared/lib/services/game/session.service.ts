@@ -1,13 +1,14 @@
 import { Injectable, signal } from '@angular/core';
 import { firstValueFrom, Subject } from 'rxjs';
-import { AuthService } from './auth.service';
-import { GameApiService } from './game-api.service';
-import { ILevel, IUpgrade, upgradeTypeOrder } from '../../../entities/game';
+import { AuthService } from '../auth.service';
+import { ApiService } from '../api.service';
+import { ILevel, IUpgrade, upgradeTypeOrder } from '../../../../entities/game';
+import { ErrorService } from './error.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class GameSessionService {
+export class SessionService {
   private money = signal(0);
   private dishes = signal(0);
   private xp = signal(0);
@@ -22,7 +23,8 @@ export class GameSessionService {
 
   constructor(
     private auth: AuthService,
-    private api: GameApiService,
+    private api: ApiService,
+    private error: ErrorService,
   ) {}
 
   get moneySignal() {
@@ -110,7 +112,7 @@ export class GameSessionService {
       });
       return Promise.resolve();
     } catch (error) {
-      return Promise.reject(error);
+      this.error.handle(error);
     }
   }
 

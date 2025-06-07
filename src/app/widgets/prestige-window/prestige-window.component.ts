@@ -1,7 +1,7 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { ModalComponent } from '../../shared/ui/modal/modal.component';
-import { GameService } from '../../shared/lib/services/game.service';
-import { GameSessionService } from '../../shared/lib/services/game-session.service';
+import { GameService } from '../../shared/lib/services/game/game.service';
+import { SessionService } from '../../shared/lib/services/game/session.service';
 import formatNumber from '../../shared/lib/formatNumber';
 import { NgIf } from '@angular/common';
 
@@ -17,7 +17,7 @@ export class PrestigeWindowComponent {
   @Output() closeEvent = new EventEmitter<boolean>();
 
   protected gameService = inject(GameService);
-  protected session = inject(GameSessionService);
+  protected session = inject(SessionService);
   protected isProcessing: boolean = false;
   protected readonly parseFloat = parseFloat;
   protected readonly formatNumber = formatNumber;

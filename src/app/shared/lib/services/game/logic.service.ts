@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { GameSessionService } from './game-session.service';
+import { SessionService } from './session.service';
 import { delay, firstValueFrom } from 'rxjs';
-import { GameApiService } from './game-api.service';
+import { ApiService } from '../api.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class GameLogicService {
+export class LogicService {
   constructor(
-    private api: GameApiService,
-    private session: GameSessionService,
+    private api: ApiService,
+    private session: SessionService,
   ) {}
 
   async cook() {

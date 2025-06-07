@@ -1,11 +1,11 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
-import { AuthService } from './auth.service';
+import { AuthService } from '../auth.service';
 import { Subject, takeUntil, tap, timer } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class GameErrorService {
+export class ErrorService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly destroy$ = new Subject<void>();
   private readonly error$ = new Subject<void>();
