@@ -31,7 +31,7 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   protected isAtBottom = false;
   protected scrollItemHeight = 115;
   protected disableAllScrollButtons = false;
-
+  protected readonly Math = Math;
   private injector = inject(Injector);
 
   handleBuy(id: number) {

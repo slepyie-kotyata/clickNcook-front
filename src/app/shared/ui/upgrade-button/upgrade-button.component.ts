@@ -25,8 +25,7 @@ export class UpgradeButtonComponent {
     return formatNumber(
       this.upgrade.times_bought > 0
         ? this.upgrade.price *
-            this.upgrade.price_factor *
-            this.upgrade.times_bought
+            Math.pow(this.upgrade.price_factor, this.upgrade.times_bought)
         : this.upgrade.price,
     );
   }

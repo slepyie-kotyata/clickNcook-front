@@ -4,7 +4,7 @@
     class="bg-primary rounded-2xl border-2 border-black px-5 py-5 flex flex-col gap-5 h-full overflow-y-scroll scrollbar-hide">
     <app-upgrade-button (buyEvent)="handleBuy($event)" *ngFor="let upgrade of availableUpgrades"
                         [blocked]="(upgrade.times_bought > 0)
-                        ? upgrade.price * upgrade.times_bought * upgrade.price_factor > this.session.moneySignal()
+                        ? upgrade.price * Math.pow(upgrade.price_factor, upgrade.times_bought) > this.session.moneySignal()
                         : upgrade.price > this.session.moneySignal()"
                         [type]="'shop'"
                         [upgrade]="upgrade"></app-upgrade-button>
