@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { GameSessionService } from '../../shared/lib/services/game-session.service';
+import { SessionService } from '../../shared/lib/services/game/session.service';
 import { NgForOf, NgIf } from '@angular/common';
 import { UpgradeButtonComponent } from '../../shared/ui/upgrade-button/upgrade-button.component';
 import { ModalComponent } from '../../shared/ui/modal/modal.component';
@@ -15,7 +15,7 @@ export class ProfileComponent {
   @Input({ required: true }) email: string;
   @Output() logoutEvent = new EventEmitter<boolean>();
 
-  constructor(protected session: GameSessionService) {}
+  constructor(protected session: SessionService) {}
 
   protected openLogoutWindow() {
     this.logoutEvent.emit(true);

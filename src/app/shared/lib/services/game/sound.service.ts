@@ -3,7 +3,7 @@ import { Injectable, signal } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
-export class GameSoundService {
+export class SoundService {
   private volume = signal(100);
 
   get currentVolume() {

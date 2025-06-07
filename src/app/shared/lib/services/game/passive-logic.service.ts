@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
-import { WebSocketService } from './web-socket.service';
-import { GameSessionService } from './game-session.service';
-import { IData } from '../../../entities/api';
+import { WebSocketService } from '../web-socket.service';
+import { SessionService } from './session.service';
+import { IData } from '../../../../entities/api';
 
 @Injectable({
   providedIn: 'root',
 })
-export class GameWebSocketService {
+export class PassiveLogicService {
   constructor(
     private ws: WebSocketService,
-    private session: GameSessionService,
+    private session: SessionService,
   ) {}
 
-  get connected() {
+  get connectedToSocket() {
     return this.ws.connected;
   }
 
   async connectToWebSocketAsync() {
-    if (this.connected) return;
+    if (this.connectedToSocket) return;
 
     try {
       await this.ws.connect();
@@ -37,7 +37,7 @@ export class GameWebSocketService {
     this.session.accumulatedPrestigeSignal.set(data.prestige_current);
   }
 
-  close() {
+  closeSocket() {
     this.ws.close();
   }
 }

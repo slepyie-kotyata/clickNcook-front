@@ -1,6 +1,6 @@
 export default function formatNumber(num: number): string {
   if (num === 0) return '0';
-  if (num < 1000) return num.toFixed(1);
+  if (num < 1000) return Number.isInteger(num) ? `${num}` : num.toFixed(1);
 
   const suffixes = [
     '',
@@ -35,5 +35,10 @@ export default function formatNumber(num: number): string {
     i++;
   }
 
-  return `${parseFloat(formattedNum.toFixed(1))}${suffixes[i]}`;
+  const rounded = parseFloat(formattedNum.toFixed(1));
+  const displayNum = Number.isInteger(rounded)
+    ? rounded.toFixed(0)
+    : rounded.toFixed(1);
+
+  return `${displayNum}${suffixes[i]}`;
 }

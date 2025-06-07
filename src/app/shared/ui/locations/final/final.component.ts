@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { NgIf } from '@angular/common';
-import { GameSessionService } from '../../../lib/services/game-session.service';
+import { SessionService } from '../../../lib/services/game/session.service';
 
 @Component({
   selector: 'app-final',
@@ -10,7 +10,7 @@ import { GameSessionService } from '../../../lib/services/game-session.service';
   styleUrl: './final.component.css',
 })
 export class FinalComponent {
-  private session = inject(GameSessionService);
+  private session = inject(SessionService);
 
   private serviceHasTruck = false;
   private serviceHasCafe = false;

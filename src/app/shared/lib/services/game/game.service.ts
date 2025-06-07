@@ -1,13 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Upgrade } from '../../../entities/types';
-import { AuthService } from './auth.service';
-import { IUpgrade } from '../../../entities/game';
-import { GameLogicService } from './game-logic.service';
-import { GameSessionService } from './game-session.service';
-import { GameSoundService } from './game-sound.service';
-import { GameErrorService } from './game-error.service';
-import { GameWebSocketService } from './game-web-socket.service';
+import { Upgrade } from '../../../../entities/types';
+import { AuthService } from '../auth.service';
+import { LogicService } from './logic.service';
+import { SessionService } from './session.service';
+import { SoundService } from './sound.service';
+import { ErrorService } from './error.service';
+import { PassiveLogicService } from './passive-logic.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,11 +18,11 @@ export class GameService {
   private loaded = signal(false);
 
   constructor(
-    private logic: GameLogicService,
-    private session: GameSessionService,
-    private ws: GameWebSocketService,
-    private sound: GameSoundService,
-    private error: GameErrorService,
+    private logic: LogicService,
+    private session: SessionService,
+    private passive: PassiveLogicService,
+    private sound: SoundService,
+    private error: ErrorService,
   ) {}
 
   get menu() {
@@ -38,39 +37,12 @@ export class GameService {
     this.loaded.set(false);
     try {
       await this.session.loadData();
-      await this.ws.connectToWebSocketAsync();
+      await this.passive.connectToWebSocketAsync();
       this.session.levelUp$.subscribe(() => {
         this.sound.play('level-up');
       });
       this.sound.load();
       this.loaded.set(true);
-    } catch (error) {
-      this.error.handle(error);
-    }
-  }
-
-  async handleCook() {
-    try {
-      await this.logic.cook();
-      this.sound.play('cook');
-    } catch (error) {
-      this.error.handle(error);
-    }
-  }
-
-  async handleSell() {
-    try {
-      await this.logic.sell();
-      this.sound.play('sell');
-    } catch (error) {
-      this.error.handle(error);
-    }
-  }
-
-  async handleBuy(upgrade: IUpgrade) {
-    try {
-      await this.session.handleBuy(upgrade);
-      this.sound.play('buy');
     } catch (error) {
       this.error.handle(error);
     }
@@ -89,7 +61,7 @@ export class GameService {
   }
 
   handleLogout() {
-    if (this.ws.connected) this.ws.close();
+    if (this.passive.connectedToSocket) this.passive.closeSocket();
     this.authService.logout();
   }
 

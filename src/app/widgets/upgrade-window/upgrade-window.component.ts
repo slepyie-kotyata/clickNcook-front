@@ -11,9 +11,10 @@ import {
 import { UpgradeButtonComponent } from '../../shared/ui/upgrade-button/upgrade-button.component';
 import { IUpgrade } from '../../entities/game';
 import { NgForOf } from '@angular/common';
-import { GameService } from '../../shared/lib/services/game.service';
-import { GameSessionService } from '../../shared/lib/services/game-session.service';
+import { GameService } from '../../shared/lib/services/game/game.service';
+import { SessionService } from '../../shared/lib/services/game/session.service';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { SoundService } from '../../shared/lib/services/game/sound.service';
 
 @Component({
   selector: 'app-upgrade-window',
@@ -24,8 +25,6 @@ import { toObservable } from '@angular/core/rxjs-interop';
 })
 export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-  protected gameService = inject(GameService);
-  protected session = inject(GameSessionService);
   protected availableUpgrades: IUpgrade[] = [];
   protected isAtTop = true;
   protected isAtBottom = false;
@@ -34,13 +33,20 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   protected readonly Math = Math;
   private injector = inject(Injector);
 
+  constructor(
+    protected session: SessionService,
+    private game: GameService,
+    private sound: SoundService,
+  ) {}
+
   handleBuy(id: number) {
     let upgrade = this.availableUpgrades.find((x) => x.id == id);
 
     if (upgrade) {
-      this.gameService
-        .handleBuy(upgrade)
-        .then(() => this.refreshUpgradesList());
+      this.session.handleBuy(upgrade).then(() => {
+        this.sound.play('buy');
+        this.refreshUpgradesList();
+      });
     }
   }
 
@@ -49,7 +55,7 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
       .sessionUpgradesSignal()
       .filter(
         (u) =>
-          u.upgrade_type === this.gameService.menu.value &&
+          u.upgrade_type === this.game.menu.value &&
           u.access_level <= this.session.levelSignal().rank,
       );
 
@@ -106,7 +112,7 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
       });
     });
 
-    this.gameService.menu.subscribe(() => {
+    this.game.menu.subscribe(() => {
       this.refreshUpgradesList();
     });
   }

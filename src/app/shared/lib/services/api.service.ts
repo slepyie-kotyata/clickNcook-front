@@ -6,7 +6,7 @@ import { ISession, IUpgrade } from '../../../entities/game';
 @Injectable({
   providedIn: 'root',
 })
-export class GameApiService {
+export class ApiService {
   private readonly api = import.meta.env.NG_APP_API;
   private httpClient = inject(HttpClient);
 
