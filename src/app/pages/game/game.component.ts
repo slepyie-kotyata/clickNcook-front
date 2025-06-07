@@ -47,6 +47,8 @@ export class GameComponent implements OnInit {
   protected sound = inject(GameSoundService);
   protected showLevelUpNotification: boolean = false;
   protected showVolumeSlider = false;
+  protected isCooking = false;
+  protected isSelling = false;
 
   protected get playerLvlPercentage(): number {
     let percentage = parseFloat(
@@ -132,17 +134,21 @@ export class GameComponent implements OnInit {
     }
   }
 
-  protected handleCook(): void {
+  protected async handleCook() {
     if (!this.session.upgradesSignal().find((u) => u.upgrade_type === 'dish'))
       return;
 
-    this.gameService.handleCook();
+    this.isCooking = true;
+    await this.gameService.handleCook();
+    this.isCooking = false;
   }
 
-  protected handleSell(): void {
+  protected async handleSell() {
     if (this.session.dishesSignal() <= 0) return;
 
-    this.gameService.handleSell();
+    this.isSelling = true;
+    await this.gameService.handleSell();
+    this.isSelling = false;
   }
 
   protected toggleVolumeSlider() {
