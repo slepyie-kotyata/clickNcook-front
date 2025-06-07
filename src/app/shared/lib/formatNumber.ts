@@ -1,5 +1,6 @@
 export default function formatNumber(num: number): string {
-  if (num < 1000) return num.toString();
+  if (num === 0) return '0';
+  if (num < 1000) return num.toFixed(1);
 
   const suffixes = [
     '',
