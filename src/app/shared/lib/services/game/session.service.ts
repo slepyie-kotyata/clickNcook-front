@@ -1,9 +1,9 @@
-import { Injectable, signal } from '@angular/core';
-import { firstValueFrom, Subject } from 'rxjs';
-import { AuthService } from '../auth.service';
-import { ApiService } from '../api.service';
-import { ILevel, IUpgrade, upgradeTypeOrder } from '../../../../entities/game';
-import { ErrorService } from './error.service';
+import {Injectable, signal} from '@angular/core';
+import {firstValueFrom, Subject} from 'rxjs';
+import {AuthService} from '../auth.service';
+import {ApiService} from '../api.service';
+import {ILevel, IUpgrade, upgradeTypeOrder} from '../../../../entities/game';
+import {ErrorService} from './error.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +12,7 @@ export class SessionService {
   private money = signal(0);
   private dishes = signal(0);
   private xp = signal(0);
-  private level = signal<ILevel>({ rank: 0, xp: 0 });
+  private level = signal<ILevel>({rank: 0, xp: 0});
   private prestigeLevel = signal(0);
   private accumulatedPrestigeLvl = signal(0);
   private userUpgrades = signal<IUpgrade[]>([]);
@@ -25,7 +25,8 @@ export class SessionService {
     private auth: AuthService,
     private api: ApiService,
     private error: ErrorService,
-  ) {}
+  ) {
+  }
 
   get moneySignal() {
     return this.money;
@@ -65,7 +66,7 @@ export class SessionService {
 
   async loadData() {
     try {
-      const response = await firstValueFrom(this.api.init);
+      const response = await firstValueFrom(this.api.sessions);
 
       this.money.set(response.session.money);
       this.dishes.set(response.session.dishes);
@@ -100,10 +101,10 @@ export class SessionService {
         if (existing) {
           newUpgrades = upgrades.map((u) =>
             u.id === upgrade.id
-              ? { ...u, times_bought: u.times_bought + 1 }
+              ? {...u, times_bought: u.times_bought + 1}
               : u,
           );
-        } else newUpgrades = [...upgrades, { ...upgrade, times_bought: 1 }];
+        } else newUpgrades = [...upgrades, {...upgrade, times_bought: 1}];
         return newUpgrades.sort(
           (a, b) =>
             upgradeTypeOrder.indexOf(a.upgrade_type) -
@@ -126,7 +127,7 @@ export class SessionService {
       }
     }
 
-    this.level.set({ rank: this.level().rank, xp: xp });
+    this.level.set({rank: this.level().rank, xp: xp});
     return Promise.resolve();
   }
 
@@ -134,8 +135,8 @@ export class SessionService {
     if (this.level().rank === 100) return;
 
     try {
-      const response = await firstValueFrom(this.api.levelUp());
-      this.level.set({ rank: response.current_rank, xp: response.current_xp });
+      const response = await firstValueFrom(this.api.level());
+      this.level.set({rank: response.current_rank, xp: response.current_xp});
       if (response.next_xp) this.xp.set(response.next_xp);
       this.levelUpSubject.next();
       return Promise.resolve();
@@ -146,7 +147,7 @@ export class SessionService {
 
   async getLevelInfoAsync() {
     try {
-      const response = await firstValueFrom(this.api.level);
+      const response = await firstValueFrom(this.api.levels);
       this.level.set({
         rank: response.current_rank,
         xp: response.current_xp,

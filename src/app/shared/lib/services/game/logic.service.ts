@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { SessionService } from './session.service';
-import { delay, firstValueFrom } from 'rxjs';
-import { ApiService } from '../api.service';
+import {Injectable} from '@angular/core';
+import {SessionService} from './session.service';
+import {delay, firstValueFrom} from 'rxjs';
+import {ApiService} from '../api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +10,8 @@ export class LogicService {
   constructor(
     private api: ApiService,
     private session: SessionService,
-  ) {}
+  ) {
+  }
 
   async cook() {
     try {
@@ -37,7 +38,7 @@ export class LogicService {
 
   async prestige() {
     try {
-      await firstValueFrom(this.api.prestige());
+      await firstValueFrom(this.api.reset());
       await delay(1100);
       window.location.reload();
       return Promise.resolve();

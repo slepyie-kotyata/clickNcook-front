@@ -1,7 +1,7 @@
-import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { ISession, IUpgrade } from '../../../entities/game';
+import {inject, Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {ISession, IUpgrade} from '../../../entities/game';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +10,7 @@ export class ApiService {
   private readonly api = import.meta.env.NG_APP_API;
   private httpClient = inject(HttpClient);
 
-  get init(): Observable<{
+  get sessions(): Observable<{
     session: ISession;
     status: number;
     upgrades: IUpgrade[];
@@ -19,7 +19,7 @@ export class ApiService {
       session: ISession;
       status: number;
       upgrades: IUpgrade[];
-    }>(this.api + 'game/init');
+    }>(this.api + 'game/sessions');
   }
 
   get upgrades(): Observable<{
@@ -32,7 +32,7 @@ export class ApiService {
     }>(this.api + 'game/upgrades');
   }
 
-  get level(): Observable<{
+  get levels(): Observable<{
     current_rank: number;
     current_xp: number;
     needed_xp: number;
@@ -51,7 +51,7 @@ export class ApiService {
       dishes: number;
       status: number;
       xp: number;
-    }>(this.api + 'game/cook', {});
+    }>(this.api + 'game/sessions/cook', {});
   }
 
   sell(): Observable<{
@@ -65,7 +65,7 @@ export class ApiService {
       money: number;
       status: number;
       xp: number;
-    }>(this.api + 'game/sell', {});
+    }>(this.api + 'game/sessions/sell', {});
   }
 
   buy(id: number): Observable<{ status: number; money: number; xp: number }> {
@@ -73,17 +73,17 @@ export class ApiService {
       status: number;
       money: number;
       xp: number;
-    }>(this.api + 'game/buy/' + id, {});
+    }>(this.api + 'game/upgrades/' + id, {});
   }
 
-  prestige(): Observable<{ message: string; status: number }> {
+  reset(): Observable<{ message: string; status: number }> {
     return this.httpClient.patch<{ message: string; status: number }>(
-      this.api + 'game/reset',
+      this.api + 'game/sessions/reset',
       {},
     );
   }
 
-  levelUp(): Observable<{
+  level(): Observable<{
     current_rank: number;
     current_xp: number;
     next_xp: number;
