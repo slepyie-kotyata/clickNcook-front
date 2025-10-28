@@ -8,20 +8,20 @@
       Кулинарных звезд. Чем больше Кулинарных звезд накоплено - тем выше бонус дохода монет после сброса!</p>
     <section class="flex flex-col mt-4 w-full">
       <p class="text-white text-xl whitespace-nowrap">Накоплено всего: <span
-        class="font-bold text-yellow-500">{{ formatNumber(this.session.prestigeSignal()) }}<img
+        class="font-bold text-yellow-500">{{ formatNumber(this.api.Session.prestige()) }}<img
         class="h-7 inline mb-2" src="/icons/star.svg"></span></p>
       <p class="text-white text-xl whitespace-nowrap">Текущий бонус: ×<span
         class="font-bold text-green-400">{{ currentPrestigeMultiplier }}</span></p>
     </section>
     <section *ngIf="accumulatedPrestigeMultiplier>1" class="flex flex-col w-full mt-2">
       <p class="text-white text-xl whitespace-nowrap">Накоплено за сессию: <span
-        class="font-bold text-yellow-500">{{ formatNumber(this.session.accumulatedPrestigeSignal()) }}<img
+        class="font-bold text-yellow-500">{{ formatNumber(this.api.Session.accumulatedPrestige()) }}<img
         class="h-7 inline mb-2" src="/icons/star.svg"></span></p>
       <p class="text-white text-xl whitespace-nowrap">Бонус после сброса: ×<span
         class="font-bold text-green-400">{{ accumulatedPrestigeMultiplier }}</span></p>
     </section>
     <button (click)="handlePrestige()" *ngIf="accumulatedPrestigeMultiplier>1"
-            [disabled]="this.session.accumulatedPrestigeSignal()<1 || isProcessing"
+            [disabled]="this.api.Session.accumulatedPrestige()<1 || isProcessing"
             class="bg-secondary disabled:bg-secondary/45 border-2 border-black mt-[2.5dvh] rounded-2xl px-[8.5dvw] py-[1.25dvh]">
       Сбросить
     </button>

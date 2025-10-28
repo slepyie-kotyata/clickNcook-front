@@ -1,11 +1,11 @@
-<div *ngIf="this.game.isLoaded && !showResolutionWarning"
+<div *ngIf="this.api.isLoaded"
      class="z-30 overscroll-none scrollbar-hide font-tektur">
   <app-game-header (openPrestige)="toggleModal('prestige',true)" (openProfile)="toggleModal('profile', true)"
                    [levelPercentage]="playerLvlPercentage()"
-                   [level]="this.session.levelSignal().rank"
+                   [level]="this.api.Session.level().rank"
                    [prestige]="prestige()"></app-game-header>
   <app-game-buttons (cook)="handleCook()" (sell)="handleSell()" [isCooking]="isCooking"
-                    [isSelling]="isSelling" [level]="this.session.levelSignal().rank"></app-game-buttons>
+                    [isSelling]="isSelling" [level]="this.api.Session.level().rank"></app-game-buttons>
   <app-menu></app-menu>
 </div>
 
@@ -28,7 +28,7 @@
            [border_size]="16"
            [closeOnBackdrop]="true"
            [show]="profileWindowToggle">
-  <app-profile (logoutEvent)="toggleModal('logout',$event)" [email]="session.email"></app-profile>
+  <app-profile (logoutEvent)="toggleModal('logout',$event)" email="example@email.com"></app-profile>
 </app-modal>
 
 <app-modal (close)="toggleModal('logout',false)" [background]="'bg-secondary'"
@@ -73,18 +73,11 @@
   />
 </div>
 
-<div *ngIf="showResolutionWarning"
-     class="fixed inset-0 bg-black text-white z-max flex items-center justify-center overscroll-none">
-  <p class="text-2xl text-center px-10 cursor-default select-none font-tektur">Пожалуйста, измените размер окна для
-    корректной
-    работы сайта</p>
-</div>
-
 <div
   *ngIf="showLevelUpNotification"
   class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-2xl text-lg shadow-lg transition-opacity duration-500 opacity-100 z-50"
 >
-  🎉 Уровень повышен до {{ this.session.levelSignal().rank }}!
+  Уровень повышен до {{ this.api.Session.level().rank }}!
 </div>
 
-<app-loading *ngIf="!this.game.isLoaded"></app-loading>
+<app-loading *ngIf="!this.api.isLoaded"></app-loading>

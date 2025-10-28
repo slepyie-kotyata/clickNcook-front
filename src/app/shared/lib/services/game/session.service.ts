@@ -1,7 +1,5 @@
 import {Injectable, signal} from '@angular/core';
-import {firstValueFrom, Subject} from 'rxjs';
-import {AuthService} from '../auth.service';
-import {ApiService} from '../api.service';
+import {Subject} from 'rxjs';
 import {ILevel, IUpgrade, upgradeTypeOrder} from '../../../../entities/game';
 import {ErrorService} from './error.service';
 
@@ -22,8 +20,6 @@ export class SessionService {
   public readonly levelUp$ = this.levelUpSubject.asObservable();
 
   constructor(
-    private auth: AuthService,
-    private api: ApiService,
     private error: ErrorService,
   ) {
   }
@@ -64,35 +60,15 @@ export class SessionService {
     return this.userEmail;
   }
 
-  async loadData() {
-    try {
-      const response = await firstValueFrom(this.api.sessions);
-
-      this.money.set(response.session.money);
-      this.dishes.set(response.session.dishes);
-      this.userUpgrades.set(response.upgrades);
-      this.level.set(response.session.level);
-      this.prestigeLevel.set(response.session.prestige_value);
-      this.accumulatedPrestigeLvl.set(response.session.prestige.current_value);
-      this.userEmail = response.session.user_email;
-
-      await this.getLevelInfoAsync();
-      await this.getAvailableUpgradesAsync();
-
-      return Promise.resolve();
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  }
-
+  //TODO: WS in api.service.ts
   async handleBuy(upgrade: IUpgrade) {
     if (!upgrade || upgrade.id < 0) return;
 
     try {
-      const response = await firstValueFrom(this.api.buy(upgrade.id));
+      // const response = await firstValueFrom(this.api.buy(upgrade.id));
 
-      this.money.set(response.money);
-      await this.updatePlayerXP(response.xp);
+      // this.money.set(response.money);
+      // await this.updatePlayerXP(response.xp);
       await this.getAvailableUpgradesAsync();
       this.userUpgrades.update((upgrades) => {
         const existing = upgrades.find((u) => u.id === upgrade.id);
@@ -117,6 +93,7 @@ export class SessionService {
     }
   }
 
+  //TODO: WS in api.service.ts
   async updatePlayerXP(xp: number) {
     if (xp >= this.xp()) {
       try {
@@ -131,13 +108,14 @@ export class SessionService {
     return Promise.resolve();
   }
 
+  //TODO: WS in api.service.ts
   async levelUp() {
     if (this.level().rank === 100) return;
 
     try {
-      const response = await firstValueFrom(this.api.level());
-      this.level.set({rank: response.current_rank, xp: response.current_xp});
-      if (response.next_xp) this.xp.set(response.next_xp);
+      // const response = await firstValueFrom(this.api.level());
+      // this.level.set({rank: response.current_rank, xp: response.current_xp});
+      // if (response.next_xp) this.xp.set(response.next_xp);
       this.levelUpSubject.next();
       return Promise.resolve();
     } catch (error) {
@@ -145,24 +123,26 @@ export class SessionService {
     }
   }
 
+  //TODO: WS in api.service.ts
   async getLevelInfoAsync() {
     try {
-      const response = await firstValueFrom(this.api.levels);
-      this.level.set({
-        rank: response.current_rank,
-        xp: response.current_xp,
-      });
-      this.xp.set(response.needed_xp);
+      // const response = await firstValueFrom(this.api.levels);
+      // this.level.set({
+        // rank: response.current_rank,
+        // xp: response.current_xp,
+      // });
+      // this.xp.set(response.needed_xp);
       return Promise.resolve();
     } catch (error) {
       return Promise.reject(error);
     }
   }
 
+  //TODO: WS in api.service.ts
   private async getAvailableUpgradesAsync() {
     try {
-      const response = await firstValueFrom(this.api.upgrades);
-      this.sessionUpgrades.set(response.upgrades);
+      // const response = await firstValueFrom(this.api.upgrades);
+      // this.sessionUpgrades.set(response.upgrades);
       return Promise.resolve();
     } catch (error) {
       return Promise.reject(error);

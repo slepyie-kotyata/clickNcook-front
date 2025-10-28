@@ -18,6 +18,8 @@ import { GameHeaderComponent } from '../../widgets/game-header/game-header.compo
 import { GameButtonsComponent } from '../../widgets/game-buttons/game-buttons.component';
 import { LogicService } from '../../shared/lib/services/game/logic.service';
 import { ErrorService } from '../../shared/lib/services/game/error.service';
+import {ApiService} from '../../shared/lib/services/api.service';
+import {AuthService} from '../../shared/lib/services/auth.service';
 
 @Component({
   selector: 'app-game',
@@ -53,19 +55,18 @@ export class GameComponent implements OnInit {
   protected isCooking = false;
   protected isSelling = false;
   protected readonly prestige = computed(() =>
-    formatNumber(this.session.prestigeSignal()),
+    formatNumber(this.api.Session.prestige()),
   );
   protected readonly playerLvlPercentage = computed(() => {
-    const xp = this.session.levelSignal().xp;
-    const next = this.session.nextLevelXp;
-    return +Math.max((xp / next) * 100, 0).toFixed(1);
+    const xp = this.api.Session.level().xp;
+    // const next = this.api.Session.nextLevelXp;
+    return +Math.max((xp / 100) * 100, 0).toFixed(1);
   });
 
   constructor(
-    protected session: SessionService,
     protected sound: SoundService,
-    protected game: GameService,
-    private logic: LogicService,
+    protected api: ApiService,
+    private auth: AuthService,
     private error: ErrorService,
   ) {}
 
@@ -74,7 +75,7 @@ export class GameComponent implements OnInit {
     imgSrc?: string;
     imgClass?: string;
   } {
-    const rank = this.session.levelSignal().rank;
+    const rank = this.api.Session.level().rank;
     if (rank < 10) {
       return {
         component: 'track',
@@ -99,16 +100,16 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.game.loadData().then(() => {
+    this.api.loadData().then(() => {
       this.onResize();
 
-      this.session.levelUp$.subscribe(() => {
-        this.showLevelUpNotification = true;
-
-        setTimeout(() => {
-          this.showLevelUpNotification = false;
-        }, 3000);
-      });
+      // this.api.Session.levelUp$.subscribe(() => {
+      //   this.showLevelUpNotification = true;
+      //
+      //   setTimeout(() => {
+      //     this.showLevelUpNotification = false;
+      //   }, 3000);
+      // });
     });
   }
 
@@ -131,12 +132,12 @@ export class GameComponent implements OnInit {
   }
 
   protected async handleCook() {
-    if (!this.session.upgradesSignal().find((u) => u.upgrade_type === 'dish'))
+    if (!this.api.Session.upgrades().find((u) => u.upgrade_type === 'dish'))
       return;
 
     this.isCooking = true;
     try {
-      await this.logic.cook();
+      this.api.cook();
       this.sound.play('cook');
     } catch (error) {
       this.error.handle(error);
@@ -145,11 +146,11 @@ export class GameComponent implements OnInit {
   }
 
   protected async handleSell() {
-    if (this.session.dishesSignal() <= 0) return;
+    if (this.api.Session.dishes() <= 0) return;
 
     this.isSelling = true;
     try {
-      await this.logic.sell();
+      this.api.sell();
       this.sound.play('sell');
     } catch (error) {
       this.error.handle(error);
@@ -167,7 +168,7 @@ export class GameComponent implements OnInit {
   }
 
   protected logout() {
-    this.game.handleLogout();
+    this.auth.logout();
   }
 
   @HostListener('window:load', ['$event'])

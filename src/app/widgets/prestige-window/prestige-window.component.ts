@@ -4,6 +4,7 @@ import { GameService } from '../../shared/lib/services/game/game.service';
 import { SessionService } from '../../shared/lib/services/game/session.service';
 import formatNumber from '../../shared/lib/formatNumber';
 import { NgIf } from '@angular/common';
+import {ApiService} from '../../shared/lib/services/api.service';
 
 @Component({
   selector: 'app-prestige-window',
@@ -16,20 +17,19 @@ export class PrestigeWindowComponent {
   @Input({ required: true }) enabled: boolean = false;
   @Output() closeEvent = new EventEmitter<boolean>();
 
-  protected gameService = inject(GameService);
-  protected session = inject(SessionService);
+  protected api = inject(ApiService);
   protected isProcessing: boolean = false;
   protected readonly parseFloat = parseFloat;
   protected readonly formatNumber = formatNumber;
 
   protected get accumulatedPrestigeMultiplier(): number {
     return parseFloat(
-      (1 + this.session.accumulatedPrestigeSignal() * 0.5).toFixed(2),
+      (1 + this.api.Session.accumulatedPrestige() * 0.5).toFixed(2),
     );
   }
 
   protected get currentPrestigeMultiplier(): number {
-    return parseFloat((1 + this.session.prestigeSignal() * 0.5).toFixed(2));
+    return parseFloat((1 + this.api.Session.prestige() * 0.5).toFixed(2));
   }
 
   protected close() {
@@ -38,6 +38,6 @@ export class PrestigeWindowComponent {
 
   protected handlePrestige() {
     this.isProcessing = true;
-    this.gameService.handlePrestige();
+    this.api.prestige();
   }
 }

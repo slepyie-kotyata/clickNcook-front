@@ -1,97 +1,89 @@
-import {inject, Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import {inject, Injectable, signal} from '@angular/core';
+import {BehaviorSubject, delay, Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {ISession, IUpgrade} from '../../../entities/game';
+import {WebSocketService} from './web-socket.service';
+import {SessionService} from './game/session.service';
+import {Upgrade} from '../../../entities/types';
+import {AuthService} from './auth.service';
+import {SoundService} from './game/sound.service';
+import {ErrorService} from './game/error.service';
+import {IMessage} from '../types';
+import {Session} from '../session';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  private readonly api = import.meta.env.NG_APP_API;
-  private httpClient = inject(HttpClient);
+  private loaded = signal(false);
+  private _session = inject(Session);
 
-  get sessions(): Observable<{
-    session: ISession;
-    status: number;
-    upgrades: IUpgrade[];
-  }> {
-    return this.httpClient.get<{
-      session: ISession;
-      status: number;
-      upgrades: IUpgrade[];
-    }>(this.api + 'game/sessions');
+  get Session(){
+    return this._session;
   }
 
-  get upgrades(): Observable<{
-    status: number;
-    upgrades: IUpgrade[];
-  }> {
-    return this.httpClient.get<{
-      status: number;
-      upgrades: IUpgrade[];
-    }>(this.api + 'game/upgrades');
+  constructor(
+    private ws: WebSocketService,
+    private sound: SoundService,
+    private error: ErrorService,
+  ) {}
+
+  get isLoaded() {
+    return this.loaded();
   }
 
-  get levels(): Observable<{
-    current_rank: number;
-    current_xp: number;
-    needed_xp: number;
-    status: number;
-  }> {
-    return this.httpClient.get<{
-      current_rank: number;
-      current_xp: number;
-      needed_xp: number;
-      status: number;
-    }>(this.api + 'game/levels');
+  async loadData() {
+    this.loaded.set(false);
+    try {
+      if(this.ws.connected)
+        this.ws.close();
+
+      await this.ws.connect().then(()=>{
+        this.ws.message.subscribe((msg) => {
+          this.newMessage(msg);
+        });
+      });
+
+
+      this.sound.load();
+      this.loaded.set(true);
+    } catch (error) {
+      this.error.handle(error);
+    }
   }
 
-  cook(): Observable<{ dishes: number; status: number; xp: number }> {
-    return this.httpClient.patch<{
-      dishes: number;
-      status: number;
-      xp: number;
-    }>(this.api + 'game/sessions/cook', {});
+  async newMessage(msg: IMessage){
+    console.log("Response from WS:");
+    console.log("Action: " + msg.Action);
+    console.log("Data: " + msg.Data);
   }
 
-  sell(): Observable<{
-    dishes: number;
-    money: number;
-    status: number;
-    xp: number;
-  }> {
-    return this.httpClient.patch<{
-      dishes: number;
-      money: number;
-      status: number;
-      xp: number;
-    }>(this.api + 'game/sessions/sell', {});
+  cook(){
+    this.ws.send({Action:"cook", Data: ""})
   }
 
-  buy(id: number): Observable<{ status: number; money: number; xp: number }> {
-    return this.httpClient.patch<{
-      status: number;
-      money: number;
-      xp: number;
-    }>(this.api + 'game/upgrades/' + id, {});
+  sell() {
+    this.ws.send({Action:"sell", Data:""})
   }
 
-  reset(): Observable<{ message: string; status: number }> {
-    return this.httpClient.patch<{ message: string; status: number }>(
-      this.api + 'game/sessions/reset',
-      {},
-    );
+  buy(id: number){
+    this.ws.send({Action:"buy", Data:`id:${id}`})
   }
 
-  level(): Observable<{
-    current_rank: number;
-    current_xp: number;
-    next_xp: number;
-  }> {
-    return this.httpClient.patch<{
-      current_rank: number;
-      current_xp: number;
-      next_xp: number;
-    }>(this.api + 'game/levels', {});
+  list(){
+    this.ws.send({Action:"list", Data:""})
   }
+
+  update_session(){
+    this.ws.send({Action:"session", Data:""})
+  }
+
+  levelUp(){
+    this.ws.send({Action:"level_up", Data: ""})
+  }
+
+  async prestige(){
+    this.ws.send({Action:"reset",Data:""});
+  }
+
 }
