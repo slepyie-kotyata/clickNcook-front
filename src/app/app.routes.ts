@@ -4,7 +4,6 @@ import { LoginLayoutComponent } from './shared/ui/login-layout/login-layout.comp
 import { RegComponent } from './pages/reg/reg.component';
 import { authGuard } from './shared/lib/guards/auth.guard';
 import { GameComponent } from './pages/game/game.component';
-import { MobileNotSupportedComponent } from './pages/mobile-not-supported/mobile-not-supported.component';
 import { mobileGuard } from './shared/lib/guards/mobile.guard';
 
 export const routes: Routes = [
@@ -20,7 +19,6 @@ export const routes: Routes = [
     children: [
       { path: 'auth', component: AuthComponent },
       { path: 'reg', component: RegComponent },
-      { path: 'mobile-not-supported', component: MobileNotSupportedComponent },
     ],
   },
 ];
