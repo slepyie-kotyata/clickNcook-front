@@ -1,6 +1,6 @@
 <div
   *ngIf="this.api.isLoaded"
-  class="relative flex flex-col min-h-screen font-tektur overflow-hidden pb-[320px] sm:pb-[280px] lg:pb-0"
+  class="relative z-30 flex flex-col min-h-screen font-tektur overscroll-none scrollbar-hide overflow-hidden pb-[320px] sm:pb-[280px] lg:min-h-0 lg:pb-0"
 >
   <app-game-header
     (openPrestige)="toggleModal('prestige',true)"
@@ -10,24 +10,8 @@
     [prestige]="prestige()"
   ></app-game-header>
 
-  <div class="relative flex-1 w-full">
-    <div [ngSwitch]="locationConfig.component" class="h-full w-full">
-      <app-track *ngSwitchCase="'track'" [decorCount]="4"></app-track>
-      <app-cafe *ngSwitchCase="'cafe'"></app-cafe>
-      <app-restaurant *ngSwitchCase="'restaurant'"></app-restaurant>
-      <app-gastro-restaurant *ngSwitchCase="'gastro'"></app-gastro-restaurant>
-      <app-final *ngSwitchCase="'final'"></app-final>
-    </div>
-    <img
-      *ngIf="locationConfig.imgSrc"
-      [ngClass]="locationConfig.imgClass"
-      [src]="locationConfig.imgSrc"
-      class="pointer-events-none select-none hidden xl:block absolute lg:fixed bottom-[5dvh] left-[10dvw] z-max"
-    />
-  </div>
-
   <div
-    class="fixed inset-x-0 bottom-0 z-max flex flex-col gap-4 px-4 pb-4 sm:px-6 sm:pb-6 lg:static lg:relative lg:px-0 lg:pb-0 lg:min-h-[60dvh]"
+    class="fixed inset-x-0 bottom-0 z-max flex flex-col gap-4 px-4 pb-4 sm:px-6 sm:pb-6 lg:static lg:relative lg:px-0 lg:pb-0 lg:min-h-0"
   >
     <app-game-buttons
       (cook)="handleCook()"
@@ -39,6 +23,21 @@
     <app-menu></app-menu>
   </div>
 </div>
+
+<div [ngSwitch]="locationConfig.component">
+  <app-track *ngSwitchCase="'track'" [decorCount]="4"></app-track>
+  <app-cafe *ngSwitchCase="'cafe'"></app-cafe>
+  <app-restaurant *ngSwitchCase="'restaurant'"></app-restaurant>
+  <app-gastro-restaurant *ngSwitchCase="'gastro'"></app-gastro-restaurant>
+  <app-final *ngSwitchCase="'final'"></app-final>
+</div>
+
+<img
+  *ngIf="locationConfig.imgSrc"
+  [ngClass]="locationConfig.imgClass"
+  [src]="locationConfig.imgSrc"
+  class="pointer-events-none select-none hidden xl:block lg:fixed bottom-[5dvh] left-[10dvw] z-max"
+/>
 
 <app-modal
   (close)="toggleModal('profile',false)"

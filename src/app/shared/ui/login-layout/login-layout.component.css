@@ -12,3 +12,10 @@
     background-size: 100% auto;
   }
 }
+
+@media (min-width: 1024px) {
+  .background {
+    width: 100vw;
+    min-height: 100vh;
+  }
+}
