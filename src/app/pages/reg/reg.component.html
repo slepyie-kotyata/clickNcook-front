@@ -1,21 +1,53 @@
-<form (ngSubmit)="submitForm()" [formGroup]="regForm" class="flex flex-col gap-[3dvh] items-center text-primary">
+<form
+  (ngSubmit)="submitForm()"
+  [formGroup]="regForm"
+  class="flex flex-col gap-6 items-center text-primary w-full"
+>
   <h1
-    class="bg-primary/45 border-primary border rounded-xxl text-center text-primary text-2xl font-bold px-[3dvw] py-[0.625dvh] mb-[4dvh] my-[2dvh] shadow-black">
-    Регистрация</h1>
-  <app-auth-input [control]="emailControl" [id]="'email'" [name]="'email'" [placeholder]="'Почта'"
-                  [required]="true" [type]="'email'"></app-auth-input>
-  <app-auth-input [control]="passwordControl" [id]="'password'" [name]="'password'" [placeholder]="'Пароль'"
-                  [required]="true"
-                  [type]="'text'"></app-auth-input>
-  <app-auth-input [control]="repeatPasswordControl" [id]="'repeat_password'" [name]="'repeat_password'"
-                  [placeholder]="'Повторите пароль'"
-                  [required]="true"
-                  [type]="'text'"></app-auth-input>
+    class="bg-primary/45 border border-primary rounded-3xl text-center text-primary text-2xl font-bold w-full max-w-xs sm:max-w-sm px-6 py-3 shadow-black/40 shadow-md"
+  >
+    Регистрация
+  </h1>
+  <div class="w-full flex flex-col items-center gap-4">
+    <app-auth-input
+      [control]="emailControl"
+      [id]="'email'"
+      [name]="'email'"
+      [placeholder]="'Почта'"
+      [required]="true"
+      [type]="'email'"
+      class="w-full"
+    ></app-auth-input>
+    <app-auth-input
+      [control]="passwordControl"
+      [id]="'password'"
+      [name]="'password'"
+      [placeholder]="'Пароль'"
+      [required]="true"
+      [type]="'text'"
+      class="w-full"
+    ></app-auth-input>
+    <app-auth-input
+      [control]="repeatPasswordControl"
+      [id]="'repeat_password'"
+      [name]="'repeat_password'"
+      [placeholder]="'Повторите пароль'"
+      [required]="true"
+      [type]="'text'"
+      class="w-full"
+    ></app-auth-input>
+  </div>
   <button
-    class="bg-primary/45 border-primary border rounded-xxl w-16 h-14 px-3.5 py-1.5 mt-[5.375dvh] drop-shadow-lg"
-    type="submit"><img
-    src="/icons/Arrow%20right-circle.svg"></button>
-  <a class="bg-primary/45 border-primary border rounded-xxl px-[1.5dvw] py-[0.625dvh] text-center align-middle"
-     href="/auth">у меня уже есть
-    аккаунт</a>
+    class="bg-primary text-white font-semibold border border-primary rounded-3xl w-full max-w-xs sm:max-w-sm h-14 flex items-center justify-center gap-3 mt-4 shadow-lg active:scale-[0.98] transition-transform"
+    type="submit"
+  >
+    <span>Создать аккаунт</span>
+    <img alt="Создать аккаунт" class="h-6 w-6" src="/icons/Arrow%20right-circle.svg" />
+  </button>
+  <a
+    class="bg-primary/30 border border-primary rounded-3xl w-full max-w-xs sm:max-w-sm px-6 py-3 text-center text-sm sm:text-base"
+    href="/auth"
+  >
+    У меня уже есть аккаунт
+  </a>
 </form>

@@ -1,68 +1,95 @@
-<div *ngIf="this.api.isLoaded"
-     class="z-30 overscroll-none scrollbar-hide font-tektur">
-  <app-game-header (openPrestige)="toggleModal('prestige',true)" (openProfile)="toggleModal('profile', true)"
-                   [levelPercentage]="playerLvlPercentage()"
-                   [level]="this.api.Session.level().rank"
-                   [prestige]="prestige()"></app-game-header>
-  <app-game-buttons (cook)="handleCook()" (sell)="handleSell()" [isCooking]="isCooking"
-                    [isSelling]="isSelling" [level]="this.api.Session.level().rank"></app-game-buttons>
-  <app-menu></app-menu>
+<div
+  *ngIf="this.api.isLoaded"
+  class="relative flex flex-col min-h-screen font-tektur overflow-hidden pb-[320px] sm:pb-[280px] lg:pb-0"
+>
+  <app-game-header
+    (openPrestige)="toggleModal('prestige',true)"
+    (openProfile)="toggleModal('profile', true)"
+    [levelPercentage]="playerLvlPercentage()"
+    [level]="this.api.Session.level().rank"
+    [prestige]="prestige()"
+  ></app-game-header>
+
+  <div class="relative flex-1 w-full">
+    <div [ngSwitch]="locationConfig.component" class="h-full w-full">
+      <app-track *ngSwitchCase="'track'" [decorCount]="4"></app-track>
+      <app-cafe *ngSwitchCase="'cafe'"></app-cafe>
+      <app-restaurant *ngSwitchCase="'restaurant'"></app-restaurant>
+      <app-gastro-restaurant *ngSwitchCase="'gastro'"></app-gastro-restaurant>
+      <app-final *ngSwitchCase="'final'"></app-final>
+    </div>
+    <img
+      *ngIf="locationConfig.imgSrc"
+      [ngClass]="locationConfig.imgClass"
+      [src]="locationConfig.imgSrc"
+      class="pointer-events-none select-none hidden xl:block absolute lg:fixed bottom-[5dvh] left-[10dvw] z-max"
+    />
+  </div>
+
+  <div
+    class="fixed inset-x-0 bottom-0 z-max flex flex-col gap-4 px-4 pb-4 sm:px-6 sm:pb-6 lg:static lg:relative lg:px-0 lg:pb-0 lg:min-h-[60dvh]"
+  >
+    <app-game-buttons
+      (cook)="handleCook()"
+      (sell)="handleSell()"
+      [isCooking]="isCooking"
+      [isSelling]="isSelling"
+      [level]="this.api.Session.level().rank"
+    ></app-game-buttons>
+    <app-menu></app-menu>
+  </div>
 </div>
 
-<div [ngSwitch]="locationConfig.component">
-  <app-track *ngSwitchCase="'track'" [decorCount]="4"></app-track>
-  <app-cafe *ngSwitchCase="'cafe'"></app-cafe>
-  <app-restaurant *ngSwitchCase="'restaurant'"></app-restaurant>
-  <app-gastro-restaurant *ngSwitchCase="'gastro'"></app-gastro-restaurant>
-  <app-final *ngSwitchCase="'final'"></app-final>
-</div>
-
-<img
-  *ngIf="locationConfig.imgSrc"
-  [ngClass]="locationConfig.imgClass"
-  [src]="locationConfig.imgSrc"
-  class="fixed bottom-[5dvh] left-[10dvw] z-max hidden xl:block"
-/>
-
-<app-modal (close)="toggleModal('profile',false)" [background]="'bg-secondary'" [border_color]="'primary'"
-           [border_size]="16"
-           [closeOnBackdrop]="true"
-           [show]="profileWindowToggle">
+<app-modal
+  (close)="toggleModal('profile',false)"
+  [background]="'bg-secondary'"
+  [border_color]="'primary'"
+  [border_size]="16"
+  [closeOnBackdrop]="true"
+  [show]="profileWindowToggle"
+>
   <app-profile (logoutEvent)="toggleModal('logout',$event)" email="example@email.com"></app-profile>
 </app-modal>
 
-<app-modal (close)="toggleModal('logout',false)" [background]="'bg-secondary'"
-           [border_color]="'primary'"
-           [border_size]="16"
-           [closeOnBackdrop]="true"
-           [show]="logoutWindowToggle">
+<app-modal
+  (close)="toggleModal('logout',false)"
+  [background]="'bg-secondary'"
+  [border_color]="'primary'"
+  [border_size]="16"
+  [closeOnBackdrop]="true"
+  [show]="logoutWindowToggle"
+>
   <div class="flex flex-col items-center font-tektur py-[3.5dvh] px-[8.5dvw] drop-shadow-md">
-    <h2 class="text-white text-center md:text-4xl drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,1)]">Вы уверены, <br>что
-      хотите выйти?</h2>
+    <h2 class="text-white text-center md:text-4xl drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,1)]">
+      Вы уверены, <br />что хотите выйти?
+    </h2>
     <section class="flex flex-row gap-5">
-      <button (click)="logout()"
-              class="bg-green-600 border-2 border-black mt-[2.5dvh] rounded-2xl px-[4.5dvw] py-[1.25dvh] font-bold text-2xl text-white">
+      <button
+        (click)="logout()"
+        class="bg-green-600 border-2 border-black mt-[2.5dvh] rounded-2xl px-[4.5dvw] py-[1.25dvh] font-bold text-2xl text-white"
+      >
         Да
       </button>
-      <button (click)="toggleModal('logout',false)"
-              class="bg-red border-2 border-black mt-[2.5dvh] rounded-2xl px-[4.5dvw] py-[1.25dvh] font-bold text-2xl text-white">
+      <button
+        (click)="toggleModal('logout',false)"
+        class="bg-red border-2 border-black mt-[2.5dvh] rounded-2xl px-[4.5dvw] py-[1.25dvh] font-bold text-2xl text-white"
+      >
         Нет
       </button>
     </section>
   </div>
 </app-modal>
 
-<app-prestige-window (closeEvent)="toggleModal('prestige',$event)"
-                     [enabled]="prestigeWindowToggle"></app-prestige-window>
+<app-prestige-window
+  (closeEvent)="toggleModal('prestige',$event)"
+  [enabled]="prestigeWindowToggle"
+></app-prestige-window>
 
 <button (click)="toggleVolumeSlider()" class="fixed bottom-0 left-0 px-4 py-4 z-max">
-  <img [src]="sound.currentVolume > 0 ? '/icons/sound-on.svg' : '/icons/sound-off.svg'"/>
+  <img [src]="sound.currentVolume > 0 ? '/icons/sound-on.svg' : '/icons/sound-off.svg'" />
 </button>
 
-<div
-  *ngIf="showVolumeSlider"
-  class="fixed left-5 bottom-20 z-max p-2"
->
+<div *ngIf="showVolumeSlider" class="fixed left-5 bottom-24 sm:bottom-28 z-max p-2">
   <input
     (input)="onVolumeChange($event)"
     [value]="sound.currentVolume"
@@ -75,7 +102,7 @@
 
 <div
   *ngIf="showLevelUpNotification"
-  class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-2xl text-lg shadow-lg transition-opacity duration-500 opacity-100 z-50"
+  class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-2xl text-lg shadow-lg transition-opacity duration-500 opacity-100 z-50"
 >
   Уровень повышен до {{ this.api.Session.level().rank }}!
 </div>

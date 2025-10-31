@@ -1,5 +1,6 @@
 <div
-  class="flex flex-row gap-1 bg-primary/45 md:rounded-xxl rounded-3xl xl:w-[20dvw] px-5 w-[70dvw] xl:h-[4dvh] h-[8dvh] shadow-black text-white drop-shadow-lg placeholder-primary focus:outline-none">
+  class="flex w-full max-w-sm sm:max-w-md md:max-w-lg gap-3 bg-primary/45 rounded-3xl px-4 sm:px-5 py-3 sm:py-4 text-white drop-shadow-lg shadow-black/40"
+>
   <input
     [attr.disabled]="disabled"
     [formControl]="control"
@@ -8,9 +9,19 @@
     [placeholder]="placeholder"
     [required]="required"
     [type]="type !== 'password' ? type : showPassword ? 'text' : 'password'"
-    class="bg-primary/0 md:rounded-xxl rounded-3xl w-full py-2.5 text-white placeholder-primary focus:outline-none">
-  <button (click)="togglePasswordVisibility()" *ngIf="type==='password'" type="button"><img
-    [ngSrc]="this.showPassword ? '/icons/hide.png' : '/icons/view.png'" class="showHideIcon md:h-[24px] md:w-[24px]"
-    height="36" width="36">
+    class="bg-transparent rounded-3xl w-full text-base sm:text-lg placeholder-primary focus:outline-none"
+  />
+  <button
+    (click)="togglePasswordVisibility()"
+    *ngIf="type==='password'"
+    class="flex items-center justify-center"
+    type="button"
+  >
+    <img
+      [ngSrc]="this.showPassword ? '/icons/hide.png' : '/icons/view.png'"
+      class="showHideIcon h-7 w-7 sm:h-8 sm:w-8"
+      height="36"
+      width="36"
+    />
   </button>
 </div>
