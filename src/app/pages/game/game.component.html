@@ -1,21 +1,20 @@
 <div *ngIf="this.api.isLoaded"
      class="z-30 overscroll-none scrollbar-hide font-tektur flex min-h-[100dvh] flex-col gap-4 pb-24 pt-[env(safe-area-inset-top,0px)] sm:gap-6 sm:pb-12 xl:gap-0 xl:pb-0">
   <app-game-header (openPrestige)="toggleModal('prestige',true)" (openProfile)="toggleModal('profile', true)"
-                   [levelPercentage]="playerLvlPercentage()"
-                   [level]="this.api.Session.level().rank"
-                   [prestige]="prestige()"></app-game-header>
-  <div class="!z-max flex w-full flex-col gap-4 px-4 sm:px-6 xl:flex-1 xl:flex-row xl:items-end xl:justify-between xl:gap-0 xl:px-0">
-    <div class="w-full xl:w-auto">
-      <app-game-buttons (cook)="handleCook()" (sell)="handleSell()" [isCooking]="isCooking"
-                        [isSelling]="isSelling" [level]="this.api.Session.level().rank"></app-game-buttons>
+                   [session]="this.api.Session"></app-game-header>
+  <div
+    class="!z-max flex w-full flex-col gap-4 px-4 sm:px-6 xl:flex-1 xl:flex-row xl:items-end xl:justify-between xl:gap-0 xl:px-0">
+    <div class="fixed bottom-14 w-auto">
       <button
         (click)="toggleMobileUpgrades(true)"
         class="z-max mt-4 flex w-full items-center justify-center gap-2 rounded-3xl border-2 border-black bg-secondary px-4 py-3 text-lg font-bold text-black shadow-[0_6px_0_rgba(0,0,0,0.15)] transition active:scale-95 xl:hidden"
         type="button"
       >
-        <img alt="" class="h-6 w-6" src="/icons/upgrades.svg" />
+        <img alt="" class="h-6 w-6" src="/icons/upgrades.svg"/>
         Улучшения
       </button>
+      <app-game-buttons (cook)="handleCook()" (sell)="handleSell()" [isCooking]="isCooking"
+                        [isSelling]="isSelling" [level]="this.api.Session.level().rank"></app-game-buttons>
     </div>
     <div class="hidden w-full xl:block xl:w-auto">
       <app-menu></app-menu>
@@ -69,7 +68,8 @@
 <app-prestige-window (closeEvent)="toggleModal('prestige',$event)"
                      [enabled]="prestigeWindowToggle"></app-prestige-window>
 
-<button (click)="toggleVolumeSlider()" class="fixed bottom-0 left-0 px-4 py-4 pb-[env(safe-area-inset-bottom,0px)] z-max">
+<button (click)="toggleVolumeSlider()"
+        class="fixed bottom-0 left-0 px-4 py-4 pb-[env(safe-area-inset-bottom,0px)] z-max">
   <img [src]="sound.currentVolume > 0 ? '/icons/sound-on.svg' : '/icons/sound-off.svg'"/>
 </button>
 
