@@ -27,3 +27,45 @@ progress::-moz-progress-bar {
   height: 150px;
 }
 
+@media (max-width: 1023px) {
+  .volume-slider {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    writing-mode: horizontal-tb;
+    width: min(70vw, 320px);
+    height: 12px;
+  }
+
+  .volume-slider::-webkit-slider-runnable-track {
+    height: 12px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #6F56FF 0%, #FFEB9C 100%);
+  }
+
+  .volume-slider::-moz-range-track {
+    height: 12px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #6F56FF 0%, #FFEB9C 100%);
+  }
+
+  .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #000000;
+    margin-top: -6px;
+  }
+
+  .volume-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #000000;
+  }
+}
+
