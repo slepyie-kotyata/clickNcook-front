@@ -7,10 +7,16 @@ module.exports = {
         tektur: ['"Tektur"', "sans-serif"],
       },
       colors: {
-        primary: "#6F56FF",
-        secondary: "#FFEB9C",
-        red: "#CB3D3D",
-        sky: "#89E4FF",
+        brand: "#57BFF5",
+        "brand-light": "rgba(87,191,245,0.5)",
+        "brand-disabled": "rgba(87,191,245,0.30)",
+        secondary: "#F5C458",
+        outline: "rgba(0,0,0,0.1)",
+        disabled: "rgba(0,0,0,0.35)",
+        text: "#34454D",
+        dark: "#000000",
+        light: "#FFFFFF",
+        sky: "#60e3ff"
       },
       borderWidth: {
         12: "12px",

@@ -1,10 +1,10 @@
 <form
   (ngSubmit)="submitForm()"
   [formGroup]="authForm"
-  class="flex flex-col items-center text-primary w-full gap-6 lg:gap-[3dvh] lg:w-auto"
+  class="flex flex-col items-center text-text w-full gap-6 lg:gap-[3dvh] lg:w-auto"
 >
   <h1
-    class="bg-primary/45 border border-primary rounded-3xl text-center text-primary text-2xl font-bold w-full max-w-xs sm:max-w-sm px-6 py-3 shadow-black/40 shadow-md lg:w-auto lg:max-w-none lg:rounded-xxl lg:px-[3dvw] lg:py-[0.625dvh] lg:mb-[4dvh] lg:my-[2dvh] lg:shadow-black"
+    class="bg-brand/45 border border-outline rounded-3xl text-center text-text text-2xl font-bold w-full max-w-xs sm:max-w-sm px-6 py-3 shadow-black/40 shadow-md lg:w-auto lg:max-w-none lg:rounded-xxl lg:px-[3dvw] lg:py-[0.625dvh] lg:mb-[4dvh] lg:my-[2dvh] lg:shadow-black"
   >
     Авторизация
   </h1>
@@ -29,17 +29,16 @@
     ></app-auth-input>
   </div>
   <button
-    class="bg-primary text-white font-semibold border border-primary rounded-3xl w-full max-w-xs sm:max-w-sm h-14 flex items-center justify-center gap-3 mt-4 shadow-lg drop-shadow-lg active:scale-[0.98] transition-transform lg:w-16 lg:h-14 lg:max-w-none lg:bg-primary/45 lg:border-primary lg:rounded-xxl lg:px-3.5 lg:py-1.5 lg:mt-[5.375dvh] lg:gap-0 lg:shadow-none"
+    class="bg-brand text-text font-semibold border border-outline rounded-3xl w-full max-w-xs sm:max-w-sm h-14 flex items-center justify-center gap-3 mt-4 shadow-lg drop-shadow-lg active:scale-[0.98] transition-transform lg:w-16 lg:h-14 lg:max-w-none lg:bg-brand/45 lg:border-brand lg:rounded-xxl lg:px-3.5 lg:py-1.5 lg:mt-[5.375dvh] lg:gap-0 lg:shadow-none"
     type="submit"
   >
     <span class="lg:hidden">Войти</span>
-    <img alt="Войти" class="h-6 w-6 lg:h-full lg:w-full" src="/icons/Arrow%20right-circle.svg" />
+    <img alt="Войти" class="h-6 w-6 lg:h-full lg:w-full" src="/icons/Arrow%20right-circle.svg"/>
   </button>
   <a
-    class="bg-primary/30 border border-primary rounded-3xl w-full max-w-xs sm:max-w-sm px-6 py-3 text-center text-sm sm:text-base lg:w-auto lg:max-w-none lg:bg-primary/45 lg:px-[1.5dvw] lg:py-[0.625dvh] lg:rounded-xxl"
+    class="bg-brand-light border border-dark rounded-3xl w-full max-w-xs sm:max-w-sm px-6 py-3 text-center text-sm sm:text-base lg:w-auto lg:max-w-none lg:px-[1.5dvw] lg:py-[0.625dvh] lg:rounded-xxl"
     href="/reg"
   >
-    <span class="lg:hidden">У меня еще нет аккаунта</span>
-    <span class="hidden lg:inline">у меня еще нет аккаунта</span>
+    <span class="lg:inline">У меня еще нет аккаунта</span>
   </a>
 </form>

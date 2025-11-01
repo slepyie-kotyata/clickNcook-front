@@ -2,7 +2,7 @@
   class="z-10 w-full max-w-3xl px-4 py-4 sm:px-6 sm:py-6 lg:px-[5.5dvw] lg:py-[5.5dvh] lg:left-[7dvw] lg:absolute lg:bottom-0 lg:w-[65dvw] xl:max-w-none mx-auto"
 >
   <div
-    class="w-full flex flex-row flex-wrap items-stretch justify-center gap-4 sm:gap-6 sm:justify-between bg-primary/40 border border-black rounded-3xl shadow-[0_10px_25px_rgba(0,0,0,0.3)] p-4 lg:flex-row lg:gap-6 lg:justify-end lg:items-center lg:bg-transparent lg:border-none lg:shadow-none lg:p-0"
+    class="w-full flex flex-row flex-wrap items-stretch justify-center gap-4 sm:gap-6 sm:justify-between bg-brand/40 border border-black rounded-3xl shadow-[0_10px_25px_rgba(0,0,0,0.3)] p-4 lg:flex-row lg:gap-6 lg:justify-end lg:items-center lg:bg-transparent lg:border-none lg:shadow-none lg:p-0"
   >
     <div
       class="flex flex-1 min-w-[140px] max-w-[180px] flex-col items-center justify-center gap-3 sm:max-w-[200px] lg:flex-none lg:min-w-0 lg:max-w-none">
@@ -10,7 +10,7 @@
       <button
         (click)="cook.emit()"
         [disabled]="isCooking"
-        class="active:scale-95 z-max bg-primary rounded-xxl border border-black w-full h-16 sm:h-20 md:h-24 lg:w-28 lg:h-24 flex justify-center items-center shadow-md disabled:opacity-60 transition-transform"
+        class="active:scale-95 z-max bg-brand rounded-xxl border border-black w-full h-16 sm:h-20 md:h-24 lg:w-28 lg:h-24 flex justify-center items-center shadow-md disabled:opacity-60 transition-transform"
       >
         <img class="h-full max-h-16" src="/icons/cook.svg"/>
       </button>
@@ -21,7 +21,7 @@
       <button
         (click)="sell.emit()"
         [disabled]="isSelling"
-        class="active:scale-95 bg-primary rounded-xxl border border-black w-full h-16 sm:h-20 md:h-24 lg:w-28 lg:h-24 flex justify-center items-center shadow-md disabled:opacity-60 transition-transform"
+        class="active:scale-95 bg-brand rounded-xxl border border-black w-full h-16 sm:h-20 md:h-24 lg:w-28 lg:h-24 flex justify-center items-center shadow-md disabled:opacity-60 transition-transform"
       >
         <img class="h-full max-h-16" src="/icons/sell.svg"/>
       </button>

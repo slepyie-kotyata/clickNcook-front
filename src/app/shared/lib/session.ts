@@ -8,17 +8,17 @@ export class Session {
   private moneySignal = signal(0);
   private dishesSignal = signal(0);
   private xpSignal = signal(0);
-  private levelSignal = signal<ILevel>({rank: 1, xp: 47});
+  private levelSignal = signal<ILevel>({rank: 1, xp: 48});
   private prestigeLevelSignal = signal(0);
   private accumulatedPrestigeLvlSignal = signal(0);
   private userUpgradesSignal = signal<IUpgrade[]>([]);
   private sessionUpgradesSignal = signal<IUpgrade[]>([]);
 
-  get money(){
+  get money() {
     return this.moneySignal;
   }
 
-  get dishes(){
+  get dishes() {
     return this.dishesSignal;
   }
 

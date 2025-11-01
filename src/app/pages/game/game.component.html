@@ -37,7 +37,7 @@
   class="fixed bottom-[5dvh] left-[10dvw] z-max hidden xl:block"
 />
 
-<app-modal (close)="toggleModal('profile',false)" [background]="'bg-secondary'" [border_color]="'primary'"
+<app-modal (close)="toggleModal('profile',false)" [background]="'bg-secondary'" [border_color]="'brand'"
            [border_size]="16"
            [closeOnBackdrop]="true"
            [show]="profileWindowToggle">
@@ -45,7 +45,7 @@
 </app-modal>
 
 <app-modal (close)="toggleModal('logout',false)" [background]="'bg-secondary'"
-           [border_color]="'primary'"
+           [border_color]="'brand'"
            [border_size]="16"
            [closeOnBackdrop]="true"
            [show]="logoutWindowToggle">
