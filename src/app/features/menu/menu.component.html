@@ -1,30 +1,53 @@
 <div
-  class="z-10 bg-primary/45 border-black border-2 w-full max-w-full overflow-hidden overscroll-none rounded-3xl shadow-[0_12px_30px_rgba(0,0,0,0.35)] flex-shrink-0 lg:shadow-none lg:rounded-none lg:bg-primary/45 lg:border-2 lg:w-[520px] lg:h-full lg:absolute lg:right-0 lg:bottom-0"
+  class="relative z-10 bg-primary/45 backdrop-blur-md border-black border-2 w-full max-w-3xl mx-auto overflow-hidden overscroll-none rounded-3xl shadow-[0_12px_30px_rgba(0,0,0,0.35)] flex-shrink-0 pb-[calc(env(safe-area-inset-bottom,0px)+0.75rem)] lg:mx-0 lg:backdrop-blur-0 lg:shadow-none lg:rounded-none lg:bg-primary/45 lg:border-2 lg:w-[520px] lg:h-full lg:absolute lg:right-0 lg:bottom-0 lg:pb-0"
 >
-  <section class="bg-primary min-h-[56px] sm:min-h-[80px] border-b-2 border-black flex flex-row items-center px-4 gap-4 lg:h-14 xl:h-20">
-    <span class="hidden sm:flex-1 sm:block lg:flex lg:flex-1"></span>
+  <section
+    class="bg-primary min-h-[56px] sm:min-h-[80px] border-b-2 border-black flex xl:hidden flex-row items-center justify-between px-4 py-2 gap-4 lg:h-14 xl:h-20">
+
+    <div
+      class="flex items-center gap-2 rounded-2xl border border-transparent bg-transparent px-4 py-2 text-base font-semibold text-black">
+      <img alt="" class="h-6 w-6" src="/icons/upgrades.svg"/>
+      Улучшения
+    </div>
+
+    <button
+      (click)="onClose()"
+      *ngIf="showCloseButton"
+      class="flex items-center gap-2 rounded-2xl border border-black bg-secondary px-4 py-2 text-base font-semibold text-black shadow-sm transition active:scale-95"
+      type="button"
+    >
+      Закрыть
+    </button>
+  </section>
+  <section
+    class="bg-primary min-h-[56px] sm:min-h-[80px] border-b-2 border-black hidden xl:flex flex-row items-center justify-between px-4 gap-4 lg:h-14 xl:h-20">
+    <span class="sm:flex-1 sm:block flex lg:flex-1"></span>
     <p class="text-lg sm:text-2xl font-semibold lg:text-xl xl:text-2xl">{{ dishCount }}</p>
-    <span class="bg-secondary rounded-xxl size-12 sm:size-14 flex items-center justify-center lg:w-12 lg:h-10 xl:w-16 xl:h-14">
-      <img class="w-full h-full" src="/icons/dishes.svg" />
+    <span
+      class="bg-secondary rounded-xxl size-12 sm:size-14 flex items-center justify-center lg:w-12 lg:h-10 xl:w-16 xl:h-14">
+      <img class="w-full h-full" src="/icons/dishes.svg"/>
     </span>
   </section>
-  <section class="bg-primary min-h-[56px] sm:min-h-[80px] border-b-2 border-black flex flex-row items-center px-4 gap-4 justify-end lg:h-14 xl:h-20">
+  <section
+    class="bg-primary min-h-[56px] sm:min-h-[80px] border-b-2 border-black hidden xl:flex flex-row items-center justify-between px-4 gap-4 sm:justify-end lg:h-14 xl:h-20">
     <p class="text-lg sm:text-2xl font-semibold lg:text-xl xl:text-2xl">{{ cashCount }}</p>
-    <span class="bg-secondary rounded-xxl size-12 sm:size-14 flex items-center justify-center lg:w-12 lg:h-10 xl:w-16 xl:h-14">
-      <img class="w-full h-full" src="/icons/money.svg" />
+    <span
+      class="bg-secondary rounded-xxl size-12 sm:size-14 flex items-center justify-center lg:w-12 lg:h-10 xl:w-16 xl:h-14">
+      <img class="w-full h-full" src="/icons/money.svg"/>
     </span>
   </section>
-  <div class="max-h-[45vh] sm:max-h-[55vh] lg:max-h-none overflow-y-auto">
+  <div class="max-h-[50vh] sm:max-h-[55vh] lg:max-h-none overflow-y-auto">
     <app-upgrade-window></app-upgrade-window>
   </div>
-  <section class="flex flex-row w-full justify-between gap-2 px-2 pb-3 lg:absolute lg:-bottom-1.5 lg:w-fit lg:px-0 lg:pb-0">
+  <section
+    class="flex flex-row flex-wrap w-full justify-between gap-2 px-2 pb-3 sm:flex-nowrap lg:pb-0 lg:absolute lg:bottom-3">
     <app-menu-button
       (onClick)="selectMenu(button.type)"
       *ngFor="let button of menuButtons"
-      [disabled]="button.disabled || session.levelSignal().rank < button.requiredRank"
+      [disabled]="button.disabled || session.level().rank < button.requiredRank"
       [iconSource]="button.icon"
       [type]="button.type"
-      class="border-black flex-1 lg:flex-none"
+      class="border-black flex-1"
     ></app-menu-button>
   </section>
 </div>
