@@ -37,7 +37,7 @@
   class="fixed bottom-[5dvh] left-[10dvw] z-max hidden xl:block"
 />
 
-<app-modal (close)="toggleModal('profile',false)" [background]="'bg-secondary'" [border_color]="'primary'"
+<app-modal (close)="toggleModal('profile',false)" [background]="'bg-secondary'" [border_color]="'brand'"
            [border_size]="16"
            [closeOnBackdrop]="true"
            [show]="profileWindowToggle">
@@ -45,7 +45,7 @@
 </app-modal>
 
 <app-modal (close)="toggleModal('logout',false)" [background]="'bg-secondary'"
-           [border_color]="'primary'"
+           [border_color]="'brand'"
            [border_size]="16"
            [closeOnBackdrop]="true"
            [show]="logoutWindowToggle">
@@ -68,24 +68,38 @@
 <app-prestige-window (closeEvent)="toggleModal('prestige',$event)"
                      [enabled]="prestigeWindowToggle"></app-prestige-window>
 
-<button (click)="toggleVolumeSlider()"
-        class="fixed bottom-0 left-0 px-4 py-4 pb-[env(safe-area-inset-bottom,0px)] z-max">
-  <img [src]="sound.currentVolume > 0 ? '/icons/sound-on.svg' : '/icons/sound-off.svg'"/>
-</button>
+<div class="fixed z-max sound-control">
+  <button
+    #soundButton
+    (click)="toggleVolumeSlider()"
+    class="sound-btn border-2 border-black rounded-full bg-secondary shadow-[0_6px_0_rgba(0,0,0,0.15)] active:scale-95 transition"
+    type="button"
+  >
+    <img
+      [src]="sound.currentVolume > 0 ? '/icons/sound-on.svg' : '/icons/sound-off.svg'"
+      alt="Звук"
+      class="w-7 h-7"
+    />
+  </button>
 
-<div
-  *ngIf="showVolumeSlider"
-  class="fixed left-1/2 bottom-24 -translate-x-1/2 z-max p-2 sm:left-5 sm:bottom-20 sm:translate-x-0"
->
-  <input
-    (input)="onVolumeChange($event)"
-    [value]="sound.currentVolume"
-    class="volume-slider"
-    max="100"
-    min="0"
-    type="range"
-  />
+  <div
+    *ngIf="showVolumeSlider"
+    [ngClass]="{ 'animate-fade-in': !isClosingVolumeSlider, 'animate-fade-out': isClosingVolumeSlider }"
+    class="volume-slider-popover"
+  >
+    <input
+      (input)="onVolumeChange($event); resetVolumeCloseTimer()"
+      (pointerdown)="resetVolumeCloseTimer()"
+      (pointerup)="resetVolumeCloseTimer()"
+      [value]="sound.currentVolume"
+      class="volume-slider"
+      max="100"
+      min="0"
+      type="range"
+    />
+  </div>
 </div>
+
 
 <div
   *ngIf="showMobileUpgrades"

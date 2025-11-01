@@ -1,11 +1,5 @@
-import {
-  Component,
-  EventEmitter,
-  HostListener,
-  Input,
-  Output,
-} from '@angular/core';
-import { NgClass, NgIf } from '@angular/common';
+import {Component, EventEmitter, HostListener, Input, Output,} from '@angular/core';
+import {NgClass, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-modal',
@@ -17,7 +11,7 @@ import { NgClass, NgIf } from '@angular/common';
 export class ModalComponent {
   @Input() border_size: number = 2;
   @Input() border_color: string = 'black';
-  @Input() background: string = 'bg-primary';
+  @Input() background: string = 'bg-brand';
   @Input() show: boolean = false;
   @Input() closeOnBackdrop: boolean = true;
   @Output() close = new EventEmitter();

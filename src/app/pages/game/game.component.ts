@@ -1,23 +1,19 @@
-import { Component, computed, HostListener, OnInit } from '@angular/core';
-import { MenuComponent } from '../../features/menu/menu.component';
+import {Component, computed, HostListener, OnInit} from '@angular/core';
+import {MenuComponent} from '../../features/menu/menu.component';
 import formatNumber from '../../shared/lib/formatNumber';
-import { ModalComponent } from '../../shared/ui/modal/modal.component';
-import { GameService } from '../../shared/lib/services/game/game.service';
-import { TrackComponent } from '../../shared/ui/locations/track/track.component';
-import { NgClass, NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
-import { LoadingComponent } from '../../shared/ui/loading/loading.component';
-import { CafeComponent } from '../../shared/ui/locations/cafe/cafe.component';
-import { RestaurantComponent } from '../../shared/ui/locations/restaurant/restaurant.component';
-import { GastroRestaurantComponent } from '../../shared/ui/locations/gastro-restaurant/gastro-restaurant.component';
-import { PrestigeWindowComponent } from '../../widgets/prestige-window/prestige-window.component';
-import { FinalComponent } from '../../shared/ui/locations/final/final.component';
-import { SessionService } from '../../shared/lib/services/game/session.service';
-import { SoundService } from '../../shared/lib/services/game/sound.service';
-import { ProfileComponent } from '../../widgets/profile/profile.component';
-import { GameHeaderComponent } from '../../widgets/game-header/game-header.component';
-import { GameButtonsComponent } from '../../widgets/game-buttons/game-buttons.component';
-import { LogicService } from '../../shared/lib/services/game/logic.service';
-import { ErrorService } from '../../shared/lib/services/game/error.service';
+import {ModalComponent} from '../../shared/ui/modal/modal.component';
+import {TrackComponent} from '../../shared/ui/locations/track/track.component';
+import {NgClass, NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
+import {CafeComponent} from '../../shared/ui/locations/cafe/cafe.component';
+import {RestaurantComponent} from '../../shared/ui/locations/restaurant/restaurant.component';
+import {GastroRestaurantComponent} from '../../shared/ui/locations/gastro-restaurant/gastro-restaurant.component';
+import {PrestigeWindowComponent} from '../../widgets/prestige-window/prestige-window.component';
+import {FinalComponent} from '../../shared/ui/locations/final/final.component';
+import {SoundService} from '../../shared/lib/services/game/sound.service';
+import {ProfileComponent} from '../../widgets/profile/profile.component';
+import {GameHeaderComponent} from '../../widgets/game-header/game-header.component';
+import {GameButtonsComponent} from '../../widgets/game-buttons/game-buttons.component';
+import {ErrorService} from '../../shared/lib/services/game/error.service';
 import {ApiService} from '../../shared/lib/services/api.service';
 import {AuthService} from '../../shared/lib/services/auth.service';
 
@@ -29,7 +25,6 @@ import {AuthService} from '../../shared/lib/services/auth.service';
     ModalComponent,
     TrackComponent,
     NgIf,
-    LoadingComponent,
     CafeComponent,
     RestaurantComponent,
     GastroRestaurantComponent,
@@ -55,6 +50,8 @@ export class GameComponent implements OnInit {
   protected showMobileUpgrades = false;
   protected isCooking = false;
   protected isSelling = false;
+  protected volumeHideTimeout: any = null;
+  protected isClosingVolumeSlider = false;
   protected readonly prestige = computed(() =>
     formatNumber(this.api.Session.prestige()),
   );
@@ -69,7 +66,8 @@ export class GameComponent implements OnInit {
     protected api: ApiService,
     private auth: AuthService,
     private error: ErrorService,
-  ) {}
+  ) {
+  }
 
   protected get locationConfig(): {
     component: string;
@@ -92,12 +90,12 @@ export class GameComponent implements OnInit {
       };
     }
     if (rank < 40) {
-      return { component: 'restaurant' };
+      return {component: 'restaurant'};
     }
     if (rank < 70) {
-      return { component: 'gastro' };
+      return {component: 'gastro'};
     }
-    return { component: 'final' };
+    return {component: 'final'};
   }
 
   ngOnInit(): void {
@@ -160,7 +158,32 @@ export class GameComponent implements OnInit {
   }
 
   protected toggleVolumeSlider() {
-    this.showVolumeSlider = !this.showVolumeSlider;
+    this.sound.play('click');
+
+    if (this.showVolumeSlider && !this.isClosingVolumeSlider) {
+      this.isClosingVolumeSlider = true;
+      clearTimeout(this.volumeHideTimeout);
+      setTimeout(() => {
+        this.showVolumeSlider = false;
+        this.isClosingVolumeSlider = false;
+      }, 180);
+      return;
+    }
+
+    this.showVolumeSlider = true;
+    this.isClosingVolumeSlider = false;
+    this.resetVolumeCloseTimer();
+  }
+
+  protected resetVolumeCloseTimer() {
+    clearTimeout(this.volumeHideTimeout);
+    this.volumeHideTimeout = setTimeout(() => {
+      this.isClosingVolumeSlider = true;
+      setTimeout(() => {
+        this.showVolumeSlider = false;
+        this.isClosingVolumeSlider = false;
+      }, 180);
+    }, 2500);
   }
 
   protected onVolumeChange(event: any) {

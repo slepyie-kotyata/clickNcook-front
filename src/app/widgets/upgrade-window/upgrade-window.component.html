@@ -1,7 +1,7 @@
 <div class="px-4 py-4 lg:px-5 lg:py-5 lg:pr-16 h-[45vh] sm:h-[55vh] lg:h-[70dvh]">
   <div
     #scrollContainer
-    class="bg-primary rounded-2xl border-2 border-black px-4 sm:px-5 py-4 sm:py-5 flex flex-col gap-5 h-full overflow-y-scroll scrollbar-hide"
+    class="bg-brand rounded-2xl border-2 border-black px-4 sm:px-5 py-4 sm:py-5 flex flex-col gap-5 h-full overflow-y-scroll scrollbar-hide"
   >
     <app-upgrade-button
       (buyEvent)="handleBuy($event)"
@@ -19,12 +19,12 @@
   <button
     (click)="scrollUp()"
     [disabled]="disableAllScrollButtons || isAtTop"
-    class="w-0 h-0 border-l-[15px] border-r-[15px] border-t-0 border-b-[50px] border-l-transparent border-r-transparent border-b-primary disabled:border-b-primary/45 my-32 border-black border-2"
+    class="w-0 h-0 border-l-[15px] border-r-[15px] border-t-0 border-b-[50px] border-l-transparent border-r-transparent border-b-brand disabled:border-b-brand/45 my-32 border-black border-2"
   ></button>
 
   <button
     (click)="scrollDown()"
     [disabled]="disableAllScrollButtons || isAtBottom"
-    class="w-0 h-0 border-l-[15px] border-r-[15px] border-t-[50px] border-b-0 border-l-transparent border-r-transparent border-t-primary disabled:border-t-primary/45 my-32"
+    class="w-0 h-0 border-l-[15px] border-r-[15px] border-t-[50px] border-b-0 border-l-transparent border-r-transparent border-t-brand disabled:border-t-brand/45 my-32"
   ></button>
 </div>
