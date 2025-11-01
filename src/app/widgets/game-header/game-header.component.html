@@ -1,23 +1,43 @@
-<section class="z-max fixed flex flex-row items-center gap-[1.5dvw] my-[1.5dvh] mx-[1.5dvw]">
-  <button (click)="openProfile.emit()"
-          class="max-w-14 max-h-14 rounded-xxl border border-black items-center flex justify-center bg-primary/45 p-[0.75dvh]">
-    <img
-      src="/icons/logout.svg"></button>
-  <button (click)="openPrestige.emit()"
-          class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary max-w-14 max-h-14">
-    <img src="/icons/star.svg">
-    <p
-      class="absolute text-black font-bold text-base leading-none overflow-hidden text-ellipsis whitespace-nowrap">{{ prestige }}</p>
-  </button>
-  <div class="relative w-[200px] sm:w-[330px] h-[35px] hidden sm:block">
+<section
+  class="z-max sticky top-0 left-0 w-full flex flex-col sm:flex-row items-center gap-3 sm:gap-[1.5dvw] px-4 py-4 sm:py-[1.5dvh] sm:px-[1.5dvw] backdrop-blur-md bg-primary/70 shadow-lg border border-black/25 rounded-b-3xl lg:fixed lg:flex-row lg:items-center lg:gap-[1.5dvw] lg:px-0 lg:py-0 lg:w-auto lg:backdrop-blur-0 lg:bg-transparent lg:shadow-none lg:border-none lg:rounded-none lg:top-[1.5dvh] lg:left-[1.5dvw]"
+>
+  <div class="flex w-full sm:w-auto justify-between sm:justify-start items-center gap-3">
+    <button
+      (click)="openProfile.emit()"
+      class="size-12 sm:size-14 rounded-xxl border border-black flex items-center justify-center bg-primary/45 p-2 lg:max-w-14 lg:max-h-14 lg:p-[0.75dvh]"
+    >
+      <img src="/icons/logout.svg"/>
+    </button>
+    <p class="text-lg sm:text-2xl font-semibold lg:text-xl xl:text-2xl xl:hidden">
+      {{ session.dishes() }}
+      <img class="inline w-8 h-8" src="/icons/dishes.svg">
+    </p>
+    <p class="text-lg sm:text-2xl font-semibold lg:text-xl xl:text-2xl xl:hidden">
+      {{ session.money() }}
+      <img class="inline w-8 h-8" src="/icons/money.svg">
+    </p>
+    <button
+      (click)="openPrestige.emit()"
+      class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary size-12 sm:size-14 lg:max-w-14 lg:max-h-14"
+    >
+      <img src="/icons/star.svg"/>
+      <p
+        class="absolute text-black font-bold text-xs sm:text-base leading-none overflow-hidden text-ellipsis whitespace-nowrap">
+        {{ session.prestige() }}
+      </p>
+    </button>
+  </div>
+  <div
+    class="relative w-full max-w-xs sm:max-w-none sm:w-[330px] h-6 sm:h-[35px] lg:w-[200px] xl:w-[330px] lg:h-[35px]">
     <progress
-      [value]="levelPercentage"
+      [value]="session.accumulatedPrestige()"
       class="w-full h-full rounded-full overflow-hidden border border-black bg-secondary appearance-none"
-      max="100">
+      max="100"
+    >
     </progress>
-    <p class="absolute right-3 top-1/2 transform -translate-y-1/2 text-black font-bold text-xl">
-      {{ levelPercentage }}%
+    <p class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-black font-bold text-sm sm:text-xl">
+      {{ session.accumulatedPrestige() }}%
     </p>
   </div>
-  <p class="relative text-3xl text-center">LVL {{ level }}</p>
+  <p class="relative text-xl sm:text-3xl text-center w-full sm:w-auto lg:text-3xl">LVL {{ session.level().rank }}</p>
 </section>

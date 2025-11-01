@@ -1,12 +1,12 @@
 <div
-  class="flex flex-col gap-2.5 font-tektur justify-between items-center pt-[10dvh] pb-[2.5dvh] px-[1.5dvw] min-w-[40dvw] min-h-[70dvh]">
+  class="flex w-full max-w-md sm:max-w-none sm:min-w-[40dvw] flex-col gap-4 font-tektur justify-between items-center pt-10 pb-6 px-6 sm:pt-[10dvh] sm:pb-[2.5dvh] sm:px-[1.5dvw] min-h-[70dvh]">
   <section
     class="bg-secondary bg-yellow-300/40 border-primary border-2 rounded-xl text-center drop-shadow-md px-16 py-3.5">
     <p
       class="text-white text-3xl font-bold text-center drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">{{ email }}</p>
   </section>
   <section
-    class="clickable bg-primary rounded-2xl border-2 border-black px-5 py-5 flex flex-col gap-5 h-[38dvh] w-full overflow-y-scroll custom-scroll">
+    class="clickable bg-primary rounded-2xl border-2 border-black px-5 py-5 flex flex-col gap-5 h-[38dvh] w-full max-h-[45dvh] overflow-y-scroll custom-scroll">
     <app-upgrade-button *ngFor="let upgrade of session.upgradesSignal()"
                         [blocked]="false"
                         [type]="'profile'"
@@ -14,7 +14,7 @@
     <p *ngIf="session.upgradesSignal().length===0" class="text-white text-2xl">Нет купленных улучшений</p>
   </section>
   <button (click)="openLogoutWindow()"
-          class="font-tektur text-white font-bold text-xl bg-primary px-16 py-3.5 text-center rounded-2xl border-black/85 border">
+          class="font-tektur text-white font-bold text-xl bg-primary px-10 py-3.5 text-center rounded-2xl border-black/85 border w-full sm:w-auto">
     ВЫХОД
   </button>
 </div>

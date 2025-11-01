@@ -48,6 +48,9 @@ export class WebSocketService {
           this.isConnected = false;
         },
       });
+      //TEMP
+      this.isConnected = true;
+      resolve();
     });
   }
 

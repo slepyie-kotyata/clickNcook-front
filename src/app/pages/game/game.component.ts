@@ -52,6 +52,7 @@ export class GameComponent implements OnInit {
   protected profileWindowToggle: boolean = false;
   protected showLevelUpNotification: boolean = false;
   protected showVolumeSlider = false;
+  protected showMobileUpgrades = false;
   protected isCooking = false;
   protected isSelling = false;
   protected readonly prestige = computed(() =>
@@ -165,6 +166,10 @@ export class GameComponent implements OnInit {
   protected onVolumeChange(event: any) {
     const volume = +event.target.value;
     this.sound.setVolume(volume);
+  }
+
+  protected toggleMobileUpgrades(value: boolean) {
+    this.showMobileUpgrades = value;
   }
 
   protected logout() {
