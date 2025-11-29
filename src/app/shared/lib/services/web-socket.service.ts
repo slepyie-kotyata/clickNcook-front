@@ -54,6 +54,12 @@ export class WebSocketService {
     });
   }
 
+  /*
+  Отправка запроса на сервер и ожидание ответа
+  @param payload - данные запроса
+  @returns Promise с ответными данными
+  @template T - тип данных ответа
+   */
   sendRequest<T = any>(payload: any): Promise<T> {
     return new Promise(async (resolve, reject) => {
       if (!this.isConnected) {
