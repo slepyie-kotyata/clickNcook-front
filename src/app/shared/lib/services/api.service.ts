@@ -1,15 +1,9 @@
 import {inject, Injectable, signal} from '@angular/core';
-import {BehaviorSubject, delay, Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
-import {ISession, IUpgrade} from '../../../entities/game';
 import {WebSocketService} from './web-socket.service';
-import {SessionService} from './game/session.service';
-import {Upgrade} from '../../../entities/types';
-import {AuthService} from './auth.service';
 import {SoundService} from './game/sound.service';
 import {ErrorService} from './game/error.service';
-import {IMessage} from '../types';
 import {Session} from '../session';
+import {IMessage} from '../../../entities/api';
 
 @Injectable({
   providedIn: 'root',
@@ -49,41 +43,42 @@ export class ApiService {
       this.loaded.set(true);
     } catch (error) {
       this.error.handle(error);
+      console.log("error by api service");
     }
   }
 
   async newMessage(msg: IMessage){
     console.log("Response from WS:");
-    console.log("Action: " + msg.Action);
-    console.log("Data: " + msg.Data);
+    console.log("Action: " + msg.message_type);
+    console.log("Data: " + JSON.stringify(msg.data));
   }
 
   cook(){
-    this.ws.send({Action:"cook", Data: ""})
+    this.ws.send({message_type:"request", data: {}})
   }
 
   sell() {
-    this.ws.send({Action:"sell", Data:""})
+    this.ws.send({message_type:"request", data: {}})
   }
 
   buy(id: number){
-    this.ws.send({Action:"buy", Data:`id:${id}`})
+    this.ws.send({message_type:"request", data: {}})
   }
 
   list(){
-    this.ws.send({Action:"list", Data:""})
+    this.ws.send({message_type:"request", data: {}})
   }
 
   update_session(){
-    this.ws.send({Action:"session", Data:""})
+    this.ws.send({message_type:"request", data: {}})
   }
 
   levelUp(){
-    this.ws.send({Action:"level_up", Data: ""})
+    this.ws.send({message_type:"request", data: {}})
   }
 
   async prestige(){
-    this.ws.send({Action:"reset",Data:""});
+    this.ws.send({message_type:"request",data:{}});
   }
 
 }

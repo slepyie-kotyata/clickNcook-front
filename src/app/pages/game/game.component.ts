@@ -140,6 +140,7 @@ export class GameComponent implements OnInit {
       this.sound.play('cook');
     } catch (error) {
       this.error.handle(error);
+      console.log("error by game component");
     }
     this.isCooking = false;
   }
@@ -153,6 +154,8 @@ export class GameComponent implements OnInit {
       this.sound.play('sell');
     } catch (error) {
       this.error.handle(error);
+      console.log("error by game component 2");
+
     }
     this.isSelling = false;
   }

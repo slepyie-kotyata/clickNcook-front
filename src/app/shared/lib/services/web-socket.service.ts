@@ -2,15 +2,15 @@ import { Injectable } from '@angular/core';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { ReplaySubject } from 'rxjs';
 import { ErrorService } from './game/error.service';
-import {IMessage} from '../types';
+import { IMessage } from '../../../entities/api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WebSocketService {
-  private isConnected: boolean = false;
-  private socket$!: WebSocketSubject<any>;
-  private msg = new ReplaySubject<IMessage>(1);
+  private isConnected = false;
+  private socket$!: WebSocketSubject<IMessage>;
+  private msg$ = new ReplaySubject<IMessage>(1);
   private readonly socketURL = import.meta.env.NG_APP_WEBSOCKET_API;
 
   constructor(private error: ErrorService) {}
@@ -20,13 +20,18 @@ export class WebSocketService {
   }
 
   get message() {
-    return this.msg.asObservable();
+    return this.msg$.asObservable();
   }
 
   async connect(): Promise<void> {
+    if (this.isConnected && this.socket$) {
+      return;
+    }
+
     return new Promise((resolve, reject) => {
       const token = localStorage.getItem('accessToken');
-      this.socket$ = webSocket(`${this.socketURL}${token}`);
+
+      this.socket$ = webSocket<IMessage>(`${this.socketURL}${token}`);
 
       this.socket$.subscribe({
         next: (msg: IMessage) => {
@@ -34,32 +39,29 @@ export class WebSocketService {
             this.isConnected = true;
             resolve();
           }
-          this.msg.next(msg);
-          let success = JSON.stringify({Action: "success", Data: ""});
-          this.socket$.next(success);
+          this.msg$.next(msg);
         },
         error: (error) => {
           this.isConnected = false;
+          console.log('error by ws service');
           this.error.handle(error);
-          this.close();
           reject(error);
         },
         complete: () => {
           this.isConnected = false;
         },
       });
-      //TEMP
-      this.isConnected = true;
-      resolve();
     });
   }
 
-  send(msg: IMessage){
-    let message = JSON.stringify(msg);
-    this.socket$.next(message);
+  send(msg: IMessage) {
+    this.socket$.next(msg);
   }
 
   close() {
-    this.socket$.complete();
+    if (this.socket$) {
+      this.socket$.complete();
+    }
+    this.isConnected = false;
   }
 }

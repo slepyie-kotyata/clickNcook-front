@@ -90,6 +90,7 @@ export class SessionService {
       return Promise.resolve();
     } catch (error) {
       this.error.handle(error);
+      console.log("error by session service");
     }
   }
 
