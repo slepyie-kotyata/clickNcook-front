@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Session} from '../../shared/lib/session';
+import {ISession} from '../../entities/game';
 
 @Component({
   selector: 'app-game-header',
@@ -9,7 +9,7 @@ import {Session} from '../../shared/lib/session';
   styleUrl: './game-header.component.css',
 })
 export class GameHeaderComponent {
-  @Input({required: true}) session: Session;
+  @Input({required: true}) session: ISession;
 
   @Output() openProfile = new EventEmitter<void>();
   @Output() openPrestige = new EventEmitter<void>();

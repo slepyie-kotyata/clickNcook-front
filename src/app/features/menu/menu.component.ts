@@ -6,7 +6,7 @@ import {GameService} from '../../shared/lib/services/game/game.service';
 import {Upgrade} from '../../entities/types';
 import {NgForOf, NgIf} from '@angular/common';
 import {ApiService} from '../../shared/lib/services/api.service';
-import {Session} from '../../shared/lib/session';
+import {ISession} from '../../entities/game';
 
 @Component({
   selector: 'app-menu',
@@ -38,18 +38,18 @@ export class MenuComponent {
     {type: 'point', icon: '/icons/map.svg', requiredRank: 70},
   ];
   protected gameService = inject(GameService);
-  protected session: Session;
+  protected session: ISession;
 
   constructor(private api: ApiService) {
     this.session = this.api.Session;
   }
 
   get dishCount() {
-    return formatNumber(this.session.dishes());
+    return formatNumber(this.session.dishes);
   }
 
   get cashCount() {
-    return formatNumber(this.session.money());
+    return formatNumber(this.session.money);
   }
 
   selectMenu(value: Upgrade) {

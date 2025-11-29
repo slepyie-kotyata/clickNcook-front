@@ -1,3 +1,4 @@
+// Форматирует число, добавляя суффиксы для больших чисел (K, M, B и т.д.)
 export default function formatNumber(num: number): string {
   if (num === 0) return '0';
   if (num < 1000) return Number.isInteger(num) ? `${num}` : num.toFixed(1);

@@ -15,7 +15,6 @@ import {GameHeaderComponent} from '../../widgets/game-header/game-header.compone
 import {GameButtonsComponent} from '../../widgets/game-buttons/game-buttons.component';
 import {ErrorService} from '../../shared/lib/services/game/error.service';
 import {ApiService} from '../../shared/lib/services/api.service';
-import {AuthService} from '../../shared/lib/services/auth.service';
 
 @Component({
   selector: 'app-game',
@@ -53,10 +52,10 @@ export class GameComponent implements OnInit {
   protected volumeHideTimeout: any = null;
   protected isClosingVolumeSlider = false;
   protected readonly prestige = computed(() =>
-    formatNumber(this.api.Session.prestige()),
+    formatNumber(this.api.Session.prestige_value),
   );
   protected readonly playerLvlPercentage = computed(() => {
-    const xp = this.api.Session.level().xp;
+    const xp = this.api.Session.level.xp;
     // const next = this.api.Session.nextLevelXp;
     return +Math.max((xp / 100) * 100, 0).toFixed(1);
   });
@@ -64,7 +63,6 @@ export class GameComponent implements OnInit {
   constructor(
     protected sound: SoundService,
     protected api: ApiService,
-    private auth: AuthService,
     private error: ErrorService,
   ) {
   }
@@ -74,7 +72,7 @@ export class GameComponent implements OnInit {
     imgSrc?: string;
     imgClass?: string;
   } {
-    const rank = this.api.Session.level().rank;
+    const rank = this.api.Session.level.rank;
     if (rank < 10) {
       return {
         component: 'track',
@@ -131,12 +129,12 @@ export class GameComponent implements OnInit {
   }
 
   protected async handleCook() {
-    if (!this.api.Session.upgrades().find((u) => u.upgrade_type === 'dish'))
-      return;
+    // if (!this.api.Session.upgrades().find((u) => u.upgrade_type === 'dish'))
+    //   return;
 
     this.isCooking = true;
     try {
-      this.api.cook();
+      await this.api.cook();
       this.sound.play('cook');
     } catch (error) {
       this.error.handle(error);
@@ -146,11 +144,11 @@ export class GameComponent implements OnInit {
   }
 
   protected async handleSell() {
-    if (this.api.Session.dishes() <= 0) return;
+    if (this.api.Session.dishes <= 0) return;
 
     this.isSelling = true;
     try {
-      this.api.sell();
+      await this.api.sell();
       this.sound.play('sell');
     } catch (error) {
       this.error.handle(error);
@@ -199,7 +197,7 @@ export class GameComponent implements OnInit {
   }
 
   protected logout() {
-    this.auth.logout();
+    this.api.logout();
   }
 
   @HostListener('window:load', ['$event'])

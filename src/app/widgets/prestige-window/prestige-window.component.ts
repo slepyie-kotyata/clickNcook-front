@@ -1,9 +1,7 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { ModalComponent } from '../../shared/ui/modal/modal.component';
-import { GameService } from '../../shared/lib/services/game/game.service';
-import { SessionService } from '../../shared/lib/services/game/session.service';
+import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {ModalComponent} from '../../shared/ui/modal/modal.component';
 import formatNumber from '../../shared/lib/formatNumber';
-import { NgIf } from '@angular/common';
+import {NgIf} from '@angular/common';
 import {ApiService} from '../../shared/lib/services/api.service';
 
 @Component({
@@ -14,7 +12,7 @@ import {ApiService} from '../../shared/lib/services/api.service';
   styleUrl: './prestige-window.component.css',
 })
 export class PrestigeWindowComponent {
-  @Input({ required: true }) enabled: boolean = false;
+  @Input({required: true}) enabled: boolean = false;
   @Output() closeEvent = new EventEmitter<boolean>();
 
   protected api = inject(ApiService);
@@ -24,12 +22,12 @@ export class PrestigeWindowComponent {
 
   protected get accumulatedPrestigeMultiplier(): number {
     return parseFloat(
-      (1 + this.api.Session.accumulatedPrestige() * 0.5).toFixed(2),
+      (1 + this.api.Session.prestige.current_value * 0.5).toFixed(2),
     );
   }
 
   protected get currentPrestigeMultiplier(): number {
-    return parseFloat((1 + this.api.Session.prestige() * 0.5).toFixed(2));
+    return parseFloat((1 + this.api.Session.prestige.current_value * 0.5).toFixed(2));
   }
 
   protected close() {
