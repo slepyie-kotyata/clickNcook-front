@@ -8,14 +8,14 @@ import {ToastrService} from 'ngx-toastr';
 @Injectable({
   providedIn: 'root',
 })
-/* Сервис для аутентификации пользователя
-@module AuthService
-@description Этот сервис предоставляет методы для регистрации, аутентификации, обновления токенов и выхода пользователя из системы.
-@example
-const authService = new AuthService();
-authService.auth(formData).subscribe(response => {
-  console.log(response.tokens);
-});
+/** Сервис для аутентификации пользователя
+ @module AuthService
+ @description Этот сервис предоставляет методы для регистрации, аутентификации, обновления токенов и выхода пользователя из системы.
+ @example
+ const authService = new AuthService();
+ authService.auth(formData).subscribe(response => {
+ console.log(response.tokens);
+ });
  */
 export class AuthService {
   private readonly api = import.meta.env.NG_APP_API;
@@ -27,10 +27,10 @@ export class AuthService {
     return !!localStorage.getItem('accessToken');
   }
 
-  /*
-  Регистрация нового пользователя
-  @param data - данные формы регистрации
-  @returns Observable с токенами и статусом
+  /**
+   Регистрация нового пользователя
+   @param data - данные формы регистрации
+   @returns Observable с токенами и статусом
    */
   register(data: FormData): Observable<{ tokens: ITokens; status: number }> {
     return this.httpClient.post<{ tokens: ITokens; status: number }>(
@@ -39,10 +39,10 @@ export class AuthService {
     );
   }
 
-  /*
-  Аутентификация пользователя
-  @param data - данные формы аутентификации
-  @returns Observable с токенами и статусом
+  /**
+   Аутентификация пользователя
+   @param data - данные формы аутентификации
+   @returns Observable с токенами и статусом
    */
   auth(data: FormData): Observable<{ tokens: ITokens; status: number }> {
     return this.httpClient.post<{ tokens: ITokens; status: number }>(
@@ -51,9 +51,9 @@ export class AuthService {
     );
   }
 
-  /*
-  Обновление токенов доступа
-  @returns Observable с новым статусом и токенами
+  /**
+   Обновление токенов доступа
+   @returns Observable с новым статусом и токенами
    */
   refreshToken(): Observable<{ status: string; tokens: ITokens }> {
     return this.httpClient.post<{ status: string; tokens: ITokens }>(
@@ -67,9 +67,9 @@ export class AuthService {
     );
   }
 
-  /*
-  Выход пользователя из системы
-  @param reason - причина выхода (необязательно)
+  /**
+   Выход пользователя из системы
+   @param reason - причина выхода (необязательно)
    */
   logout(reason?: string) {
     localStorage.removeItem('accessToken');

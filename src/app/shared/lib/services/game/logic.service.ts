@@ -1,11 +1,15 @@
 import {Injectable} from '@angular/core';
 import {SessionService} from './session.service';
-import {delay, firstValueFrom} from 'rxjs';
+import {delay} from 'rxjs';
 import {ApiService} from '../api.service';
 
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * Сервис для игровой логики, такой как готовка, продажа и престиж
+ * @deprecated будет удален в пользу ApiService и WebSocket
+ */
 export class LogicService {
   constructor(
     private api: ApiService,
@@ -13,7 +17,11 @@ export class LogicService {
   ) {
   }
 
-  //TODO: WS in api.service.ts
+  /**
+   Оповещает сервер о готовке блюд, чтобы начислить награды
+   @returns Promise<void>
+   @deprecated будет удален в пользу ApiService и WebSocket
+   */
   async cook() {
     try {
       // const response = await firstValueFrom(this.api.cook());
@@ -25,7 +33,11 @@ export class LogicService {
     }
   }
 
-  //TODO: WS in api.service.ts
+  /**
+   Сообщает серверу о продаже блюд и синхронизирует ресурсы
+   @returns Promise<void>
+   @deprecated будет удален в пользу ApiService и WebSocket
+   */
   async sell() {
     try {
       // const response = await firstValueFrom(this.api.sell());
@@ -38,7 +50,11 @@ export class LogicService {
     }
   }
 
-  //TODO: WS in api.service.ts
+  /**
+   Инициирует процедуру престижа и перезагружает окно игры
+   @returns Promise<void>
+   @deprecated будет удален в пользу ApiService и WebSocket
+   */
   async prestige() {
     try {
       // await firstValueFrom(this.api.reset());

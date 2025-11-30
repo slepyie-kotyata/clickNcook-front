@@ -11,7 +11,7 @@ import {RequestType} from '../../../entities/types';
 @Injectable({
   providedIn: 'root',
 })
-// API сервис для общения с бэкендом
+/** API сервис для общения с бэкендом */
 export class ApiService {
   private loaded = signal(false);
   private _session?: ISession;
@@ -24,7 +24,7 @@ export class ApiService {
   ) {
   }
 
-  // Текущая сессия пользователя
+  /** Возвращает текущую сессию пользователя или заглушку по умолчанию */
   get Session() {
     return this._session ?? {
       money: 0,
@@ -42,16 +42,19 @@ export class ApiService {
     };
   }
 
+  /** Флаг загрузки данных, чтобы UI мог реагировать на состояние */
   get isLoaded() {
     return this.loaded();
   }
 
-  // Токен доступа из локального хранилища
+  /** Токен доступа из локального хранилища */
   private get token(): string {
     return localStorage.getItem("accessToken") || "";
   }
 
-  // Загрузка данных пользователя и установка соединения по WebSocket
+  /**
+   Загружает пользовательские данные и открывает WebSocket соединение
+   */
   async loadData() {
     this.loaded.set(false);
 
@@ -78,36 +81,56 @@ export class ApiService {
     }
   }
 
+  /**
+   Логирует новое сообщение из WS для отладки
+   @param msg - ответ сервера, пришедший по сокету
+   */
   async newMessage(msg: IMessage) {
     console.log("Response from WS:");
     console.log("Action: " + msg.message_type);
     console.log("Data: " + JSON.stringify(msg.data));
   }
 
+  /**
+   Отправляет событие приготовления блюда на сервер, чтобы обновить прогресс
+   */
   async cook() {
     await this.sendWithAuthRetry(
       this.buildRequest("cook")
     )
   }
 
+  /**
+   Сообщает серверу о продаже текущих блюд и ожидает обновлённый баланс
+   */
   async sell() {
     await this.sendWithAuthRetry(
       this.buildRequest("sell")
     )
   }
 
+  /**
+   Покупает улучшение у бэкенда
+   @param id - идентификатор апгрейда, который нужно приобрести
+   */
   async buy(id: number) {
     await this.sendWithAuthRetry(
       this.buildRequest("upgrade_buy", {upgrade_id: id})
     )
   }
 
+  /**
+   Получает свежий список доступных улучшений для отображения в UI
+   */
   async list() {
     await this.sendWithAuthRetry(
       this.buildRequest("upgrade_list")
     )
   }
 
+  /**
+   Обнуляет локальный кеш сессии и повторно загружает данные у сервера
+   */
   async update_session() {
     this._session = undefined;
     await this.sendWithAuthRetry(
@@ -115,27 +138,34 @@ export class ApiService {
     )
   }
 
+  /**
+   Запрашивает повышение уровня у сервера и синхронизирует состояние
+   */
   async levelUp() {
     await this.sendWithAuthRetry(
       this.buildRequest("level_up")
     )
   }
 
+  /**
+   Запускает процедуру престижа с полной синхронизацией прогресса
+   */
   async prestige() {
     await this.sendWithAuthRetry(
       this.buildRequest("session_reset")
     )
   }
 
-  // Выход пользователя из системы
+  /** Выход пользователя из системы */
   logout() {
     this.ws.close();
     this.auth.logout();
   }
 
-  /* Построение запроса с типом и данными
-      @param type - тип запроса
-      @param data - дополнительные данные для запроса
+  /**
+   Построение запроса с типом и данными
+   @param type - тип запроса
+   @param data - дополнительные данные для запроса
    */
   private buildRequest(type: RequestType, data: any = {}): IMessage {
     return {
@@ -148,9 +178,10 @@ export class ApiService {
     };
   }
 
-  /* Отправка запроса с повторной аутентификацией при необходимости
-      @param request - запрос для отправки
-      @returns ответ на запрос
+  /**
+   Отправка запроса с повторной аутентификацией при необходимости
+   @param request - запрос для отправки
+   @returns ответ на запрос
    */
   private async sendWithAuthRetry(request: IMessage): Promise<IMessage> {
     try {

@@ -6,7 +6,7 @@ import {IMessage} from '../../../entities/api';
 @Injectable({
   providedIn: 'root',
 })
-// WebSocket сервис для общения с бэкендом
+/** WebSocket сервис для общения с бэкендом */
 export class WebSocketService {
   private socket$!: WebSocketSubject<IMessage>;
   private isConnected = false;
@@ -54,11 +54,11 @@ export class WebSocketService {
     });
   }
 
-  /*
-  Отправка запроса на сервер и ожидание ответа
-  @param payload - данные запроса
-  @returns Promise с ответными данными
-  @template T - тип данных ответа
+  /**
+   Отправка запроса на сервер и ожидание ответа
+   @param payload - данные запроса
+   @returns Promise с ответными данными
+   @template T - тип данных ответа
    */
   sendRequest<T = any>(payload: any): Promise<T> {
     return new Promise(async (resolve, reject) => {
@@ -89,7 +89,9 @@ export class WebSocketService {
     });
   }
 
-
+  /**
+   Корректно закрывает текущее WebSocket соединение и очищает очередь сообщений
+   */
   close() {
     if (!this.socket$) return;
 

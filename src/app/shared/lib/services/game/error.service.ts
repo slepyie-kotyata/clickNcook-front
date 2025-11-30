@@ -1,10 +1,14 @@
-import { DestroyRef, inject, Injectable } from '@angular/core';
-import { AuthService } from '../auth.service';
-import { Subject, takeUntil, tap, timer } from 'rxjs';
+import {DestroyRef, inject, Injectable} from '@angular/core';
+import {AuthService} from '../auth.service';
+import {Subject, takeUntil, tap, timer} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * Сервис для обработки ошибок HTTP и WebSocket с ограничением количества ошибок
+ * и автоматическим выходом при превышении лимита
+ */
 export class ErrorService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly destroy$ = new Subject<void>();
@@ -37,6 +41,15 @@ export class ErrorService {
       .subscribe();
   }
 
+  /**
+   * Обрабатывает ошибку HTTP или WebSocket
+   * @param error - объект ошибки для обработки
+   * @return void
+   * @remarks
+   * Если ошибка является HTTP ошибкой, проверяет статус и при необходимости выполняет выход из системы.
+   * Если ошибка является WebSocket ошибкой, проверяет код и при необходимости выполняет выход из системы.
+   * Если ошибка неизвестного типа, выполняет выход из системы с сообщением о непредвиденной ошибке.
+   * */
   public handle(error: any) {
     if (this.isHttpError(error)) {
       let logout = false;

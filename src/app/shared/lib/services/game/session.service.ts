@@ -6,6 +6,10 @@ import {ErrorService} from './error.service';
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * Сервис для управления сессией игрока, включая деньги, опыт, уровень и апгрейды
+ * @deprecated будет удален в пользу ApiService и WebSocket
+ */
 export class SessionService {
   private money = signal(0);
   private dishes = signal(0);
@@ -60,7 +64,12 @@ export class SessionService {
     return this.userEmail;
   }
 
-  //TODO: WS in api.service.ts
+  /**
+   Обрабатывает покупку апгрейда и обновляет локальные сигналы
+   @param upgrade - объект улучшения, которое нужно купить
+   @returns Promise<void>
+   @deprecated будет удален в пользу ApiService и WebSocket
+   */
   async handleBuy(upgrade: IUpgrade) {
     if (!upgrade || upgrade.id < 0) return;
 
@@ -94,7 +103,12 @@ export class SessionService {
     }
   }
 
-  //TODO: WS in api.service.ts
+  /**
+   Проверяет, достаточно ли опыта для апа, и либо повышает уровень, либо просто обновляет XP
+   @param xp - новое значение опыта
+   @returns Promise<void>
+   @deprecated будет удален в пользу ApiService и WebSocket
+   */
   async updatePlayerXP(xp: number) {
     if (xp >= this.xp()) {
       try {
@@ -109,7 +123,10 @@ export class SessionService {
     return Promise.resolve();
   }
 
-  //TODO: WS in api.service.ts
+  /**
+   Отвечает за повышение уровня и дергает слушателей события levelUp
+   @deprecated будет удален в пользу ApiService и WebSocket
+   */
   async levelUp() {
     if (this.level().rank === 100) return;
 
@@ -124,13 +141,16 @@ export class SessionService {
     }
   }
 
-  //TODO: WS in api.service.ts
+  /**
+   Тянет с сервера актуальные данные об уровне игрока и нужном опыте
+   @deprecated будет удален в пользу ApiService и WebSocket
+   */
   async getLevelInfoAsync() {
     try {
       // const response = await firstValueFrom(this.api.levels);
       // this.level.set({
-        // rank: response.current_rank,
-        // xp: response.current_xp,
+      // rank: response.current_rank,
+      // xp: response.current_xp,
       // });
       // this.xp.set(response.needed_xp);
       return Promise.resolve();
@@ -139,7 +159,10 @@ export class SessionService {
     }
   }
 
-  //TODO: WS in api.service.ts
+  /**
+   Запрашивает список доступных апгрейдов для витрины
+   @deprecated будет удален в пользу ApiService и WebSocket
+   */
   private async getAvailableUpgradesAsync() {
     try {
       // const response = await firstValueFrom(this.api.upgrades);
