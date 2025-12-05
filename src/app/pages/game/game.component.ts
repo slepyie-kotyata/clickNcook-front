@@ -1,23 +1,21 @@
-import { Component, computed, HostListener, OnInit } from '@angular/core';
-import { MenuComponent } from '../../features/menu/menu.component';
+import {Component, computed, HostListener, OnInit} from '@angular/core';
+import {MenuComponent} from '../../features/menu/menu.component';
 import formatNumber from '../../shared/lib/formatNumber';
-import { ModalComponent } from '../../shared/ui/modal/modal.component';
-import { GameService } from '../../shared/lib/services/game/game.service';
-import { TrackComponent } from '../../shared/ui/locations/track/track.component';
-import { NgClass, NgIf, NgSwitch, NgSwitchCase } from '@angular/common';
-import { LoadingComponent } from '../../shared/ui/loading/loading.component';
-import { CafeComponent } from '../../shared/ui/locations/cafe/cafe.component';
-import { RestaurantComponent } from '../../shared/ui/locations/restaurant/restaurant.component';
-import { GastroRestaurantComponent } from '../../shared/ui/locations/gastro-restaurant/gastro-restaurant.component';
-import { PrestigeWindowComponent } from '../../widgets/prestige-window/prestige-window.component';
-import { FinalComponent } from '../../shared/ui/locations/final/final.component';
-import { SessionService } from '../../shared/lib/services/game/session.service';
-import { SoundService } from '../../shared/lib/services/game/sound.service';
-import { ProfileComponent } from '../../widgets/profile/profile.component';
-import { GameHeaderComponent } from '../../widgets/game-header/game-header.component';
-import { GameButtonsComponent } from '../../widgets/game-buttons/game-buttons.component';
-import { LogicService } from '../../shared/lib/services/game/logic.service';
-import { ErrorService } from '../../shared/lib/services/game/error.service';
+import {ModalComponent} from '../../shared/ui/modal/modal.component';
+import {TrackComponent} from '../../shared/ui/locations/track/track.component';
+import {NgClass, NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
+import {CafeComponent} from '../../shared/ui/locations/cafe/cafe.component';
+import {RestaurantComponent} from '../../shared/ui/locations/restaurant/restaurant.component';
+import {GastroRestaurantComponent} from '../../shared/ui/locations/gastro-restaurant/gastro-restaurant.component';
+import {PrestigeWindowComponent} from '../../widgets/prestige-window/prestige-window.component';
+import {FinalComponent} from '../../shared/ui/locations/final/final.component';
+import {SoundService} from '../../shared/lib/services/game/sound.service';
+import {ProfileComponent} from '../../widgets/profile/profile.component';
+import {GameHeaderComponent} from '../../widgets/game-header/game-header.component';
+import {GameButtonsComponent} from '../../widgets/game-buttons/game-buttons.component';
+import {ApiService} from '../../shared/lib/services/api.service';
+import {GameStore} from '../../shared/lib/stores/gameStore';
+import {LoadingComponent} from '../../shared/ui/loading/loading.component';
 
 @Component({
   selector: 'app-game',
@@ -27,7 +25,6 @@ import { ErrorService } from '../../shared/lib/services/game/error.service';
     ModalComponent,
     TrackComponent,
     NgIf,
-    LoadingComponent,
     CafeComponent,
     RestaurantComponent,
     GastroRestaurantComponent,
@@ -39,6 +36,7 @@ import { ErrorService } from '../../shared/lib/services/game/error.service';
     ProfileComponent,
     GameHeaderComponent,
     GameButtonsComponent,
+    LoadingComponent,
   ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',
@@ -50,31 +48,31 @@ export class GameComponent implements OnInit {
   protected profileWindowToggle: boolean = false;
   protected showLevelUpNotification: boolean = false;
   protected showVolumeSlider = false;
-  protected isCooking = false;
-  protected isSelling = false;
+  protected showMobileUpgrades = false;
+  protected volumeHideTimeout: any = null;
+  protected isClosingVolumeSlider = false;
   protected readonly prestige = computed(() =>
-    formatNumber(this.session.prestigeSignal()),
+    formatNumber(this.store.session()?.prestige.current_value ?? 0),
   );
   protected readonly playerLvlPercentage = computed(() => {
-    const xp = this.session.levelSignal().xp;
-    const next = this.session.nextLevelXp;
-    return +Math.max((xp / next) * 100, 0).toFixed(1);
+    const xp = this.store.session()?.level.xp ?? 0;
+    // const next = this.api.Session.nextLevelXp;
+    return +Math.max((xp / 100) * 100, 0).toFixed(1);
   });
 
   constructor(
-    protected session: SessionService,
     protected sound: SoundService,
-    protected game: GameService,
-    private logic: LogicService,
-    private error: ErrorService,
-  ) {}
+    protected api: ApiService,
+    protected store: GameStore,
+  ) {
+  }
 
   protected get locationConfig(): {
     component: string;
     imgSrc?: string;
     imgClass?: string;
   } {
-    const rank = this.session.levelSignal().rank;
+    const rank = this.store.session()?.level.rank ?? 0;
     if (rank < 10) {
       return {
         component: 'track',
@@ -90,25 +88,19 @@ export class GameComponent implements OnInit {
       };
     }
     if (rank < 40) {
-      return { component: 'restaurant' };
+      return {component: 'restaurant'};
     }
     if (rank < 70) {
-      return { component: 'gastro' };
+      return {component: 'gastro'};
     }
-    return { component: 'final' };
+    return {component: 'final'};
   }
 
   ngOnInit(): void {
-    this.game.loadData().then(() => {
+    this.api.loadData().then(() => {
       this.onResize();
 
-      this.session.levelUp$.subscribe(() => {
-        this.showLevelUpNotification = true;
-
-        setTimeout(() => {
-          this.showLevelUpNotification = false;
-        }, 3000);
-      });
+      // TODO: showLevelUpNotification
     });
   }
 
@@ -131,34 +123,45 @@ export class GameComponent implements OnInit {
   }
 
   protected async handleCook() {
-    if (!this.session.upgradesSignal().find((u) => u.upgrade_type === 'dish'))
+    if (!this.store.session()?.upgrades.current.find((u) => u.upgrade_type === 'dish'))
       return;
 
-    this.isCooking = true;
-    try {
-      await this.logic.cook();
-      this.sound.play('cook');
-    } catch (error) {
-      this.error.handle(error);
-    }
-    this.isCooking = false;
+    this.api.cook();
   }
 
   protected async handleSell() {
-    if (this.session.dishesSignal() <= 0) return;
+    if ((this.store.session()?.dishes ?? 0) <= 0) return;
 
-    this.isSelling = true;
-    try {
-      await this.logic.sell();
-      this.sound.play('sell');
-    } catch (error) {
-      this.error.handle(error);
-    }
-    this.isSelling = false;
+    this.api.sell();
   }
 
   protected toggleVolumeSlider() {
-    this.showVolumeSlider = !this.showVolumeSlider;
+    this.sound.play('click');
+
+    if (this.showVolumeSlider && !this.isClosingVolumeSlider) {
+      this.isClosingVolumeSlider = true;
+      clearTimeout(this.volumeHideTimeout);
+      setTimeout(() => {
+        this.showVolumeSlider = false;
+        this.isClosingVolumeSlider = false;
+      }, 180);
+      return;
+    }
+
+    this.showVolumeSlider = true;
+    this.isClosingVolumeSlider = false;
+    this.resetVolumeCloseTimer();
+  }
+
+  protected resetVolumeCloseTimer() {
+    clearTimeout(this.volumeHideTimeout);
+    this.volumeHideTimeout = setTimeout(() => {
+      this.isClosingVolumeSlider = true;
+      setTimeout(() => {
+        this.showVolumeSlider = false;
+        this.isClosingVolumeSlider = false;
+      }, 180);
+    }, 2500);
   }
 
   protected onVolumeChange(event: any) {
@@ -166,8 +169,14 @@ export class GameComponent implements OnInit {
     this.sound.setVolume(volume);
   }
 
+  protected toggleMobileUpgrades(value: boolean) {
+    this.sound.play('click');
+    this.showMobileUpgrades = value;
+  }
+
   protected logout() {
-    this.game.handleLogout();
+    this.sound.play('click');
+    this.api.logout();
   }
 
   @HostListener('window:load', ['$event'])

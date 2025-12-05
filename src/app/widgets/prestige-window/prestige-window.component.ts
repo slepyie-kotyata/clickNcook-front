@@ -1,9 +1,9 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { ModalComponent } from '../../shared/ui/modal/modal.component';
-import { GameService } from '../../shared/lib/services/game/game.service';
-import { SessionService } from '../../shared/lib/services/game/session.service';
+import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {ModalComponent} from '../../shared/ui/modal/modal.component';
 import formatNumber from '../../shared/lib/formatNumber';
-import { NgIf } from '@angular/common';
+import {NgIf} from '@angular/common';
+import {GameStore} from '../../shared/lib/stores/gameStore';
+import {ApiService} from '../../shared/lib/services/api.service';
 
 @Component({
   selector: 'app-prestige-window',
@@ -13,23 +13,23 @@ import { NgIf } from '@angular/common';
   styleUrl: './prestige-window.component.css',
 })
 export class PrestigeWindowComponent {
-  @Input({ required: true }) enabled: boolean = false;
+  @Input({required: true}) enabled: boolean = false;
   @Output() closeEvent = new EventEmitter<boolean>();
 
-  protected gameService = inject(GameService);
-  protected session = inject(SessionService);
+  protected store = inject(GameStore);
+  protected api = inject(ApiService);
   protected isProcessing: boolean = false;
   protected readonly parseFloat = parseFloat;
   protected readonly formatNumber = formatNumber;
 
   protected get accumulatedPrestigeMultiplier(): number {
     return parseFloat(
-      (1 + this.session.accumulatedPrestigeSignal() * 0.5).toFixed(2),
+      (1 + (this.store.session()?.prestige.accumulated_value ?? 0) * 0.5).toFixed(2),
     );
   }
 
   protected get currentPrestigeMultiplier(): number {
-    return parseFloat((1 + this.session.prestigeSignal() * 0.5).toFixed(2));
+    return parseFloat((1 + (this.store.session()?.prestige.current_boost_value ?? 0) * 0.5).toFixed(2));
   }
 
   protected close() {
@@ -38,6 +38,6 @@ export class PrestigeWindowComponent {
 
   protected handlePrestige() {
     this.isProcessing = true;
-    this.gameService.handlePrestige();
+    this.api.session_reset();
   }
 }

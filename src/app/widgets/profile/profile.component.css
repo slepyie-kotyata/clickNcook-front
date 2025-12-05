@@ -4,6 +4,12 @@
   --size: 46px;
 }
 
+@media (max-width: 1023px) {
+  .custom-scroll {
+    --size: 18px;
+  }
+}
+
 .custom-scroll::-webkit-scrollbar {
   width: var(--size);
 }

@@ -1,20 +1,9 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  inject,
-  Injector,
-  OnInit,
-  runInInjectionContext,
-  ViewChild,
-} from '@angular/core';
-import { UpgradeButtonComponent } from '../../shared/ui/upgrade-button/upgrade-button.component';
-import { IUpgrade } from '../../entities/game';
-import { NgForOf } from '@angular/common';
-import { GameService } from '../../shared/lib/services/game/game.service';
-import { SessionService } from '../../shared/lib/services/game/session.service';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { SoundService } from '../../shared/lib/services/game/sound.service';
+import {AfterViewInit, Component, ElementRef, inject, Injector, ViewChild,} from '@angular/core';
+import {UpgradeButtonComponent} from '../../shared/ui/upgrade-button/upgrade-button.component';
+import {IUpgrade} from '../../entities/game';
+import {NgForOf} from '@angular/common';
+import {GameStore} from '../../shared/lib/stores/gameStore';
+import {ApiService} from '../../shared/lib/services/api.service';
 
 @Component({
   selector: 'app-upgrade-window',
@@ -23,9 +12,8 @@ import { SoundService } from '../../shared/lib/services/game/sound.service';
   templateUrl: './upgrade-window.component.html',
   styleUrl: './upgrade-window.component.css',
 })
-export class UpgradeWindowComponent implements OnInit, AfterViewInit {
+export class UpgradeWindowComponent implements AfterViewInit {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-  protected availableUpgrades: IUpgrade[] = [];
   protected isAtTop = true;
   protected isAtBottom = false;
   protected scrollItemHeight = 115;
@@ -33,33 +21,18 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
   protected readonly Math = Math;
   private injector = inject(Injector);
 
-  constructor(
-    protected session: SessionService,
-    private game: GameService,
-    private sound: SoundService,
-  ) {}
-
-  handleBuy(id: number) {
-    let upgrade = this.availableUpgrades.find((x) => x.id == id);
-
-    if (upgrade) {
-      this.session.handleBuy(upgrade).then(() => {
-        this.sound.play('buy');
-        this.refreshUpgradesList();
-      });
-    }
+  constructor(protected store: GameStore, private api: ApiService) {
   }
 
-  refreshUpgradesList() {
-    this.availableUpgrades = this.session
-      .sessionUpgradesSignal()
-      .filter(
-        (u) =>
-          u.upgrade_type === this.game.menu.value &&
-          u.access_level <= this.session.levelSignal().rank,
-      );
+  get upgrades() {
+    return this.store.availableUpgrades();
+  }
 
-    setTimeout(() => this.updateScrollButtons(), 10);
+  handleBuy(id: number) {
+    let upgrade = this.store.availableUpgrades().find((x: IUpgrade) => x.id == id);
+    if (!upgrade) return;
+
+    this.api.upgrade_buy(upgrade.id)
   }
 
   scrollUp(): void {
@@ -99,22 +72,6 @@ export class UpgradeWindowComponent implements OnInit, AfterViewInit {
 
     this.isAtTop = scrollTop <= 1;
     this.isAtBottom = scrollHeight - scrollTop - clientHeight <= 1;
-  }
-
-  ngOnInit(): void {
-    runInInjectionContext(this.injector, () => {
-      toObservable(this.session.levelSignal).subscribe(() => {
-        this.refreshUpgradesList();
-      });
-
-      toObservable(this.session.sessionUpgradesSignal).subscribe(() => {
-        this.refreshUpgradesList();
-      });
-    });
-
-    this.game.menu.subscribe(() => {
-      this.refreshUpgradesList();
-    });
   }
 
   ngAfterViewInit(): void {

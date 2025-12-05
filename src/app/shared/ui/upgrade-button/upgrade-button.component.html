@@ -7,9 +7,9 @@
       'disabled:bg-black/70':type ==='shop'
     }"
     class="active:scale-95 bg-black/25 rounded-2xl flex flex-row gap-2.5 w-full px-4 py-2.5 items-center justify-between">
-    <img [src]="icon()" alt="" class="hidden sm:block bg-primary w-16 h-16 rounded-2xl flex-none"/>
+    <img [src]="icon()" alt="" class="block bg-brand w-14 h-14 rounded-2xl flex-none sm:w-16 sm:h-16"/>
     <p
-      class="text-secondary text-start break-words leading-tight sm:max-w-[16dvw] md:max-w-full 2xl:max-w-[7dvw] text-xs md:text-base">
+      class="text-secondary text-start break-words leading-tight sm:max-w-[16dvw] md:max-w-full 2xl:max-w-[7dvw] text-sm md:text-base">
       {{ upgrade.name }}
       <span *ngIf="type ==='profile' && upgrade.times_bought > 1">x{{ upgrade.times_bought }}</span>
     </p>
@@ -18,15 +18,15 @@
     <img *ngIf="type === 'shop'"
          [ngClass]="{
       'opacity-70': blocked,
-      'bg-primary': !blocked,
+      'bg-brand': !blocked,
       }" alt=""
          class="hidden sm:block w-16 h-16 rounded-2xl border-2 border-secondary group-hover:bg-secondary group-active:bg-secondary flex-none"
          src="/icons/sell.svg"/>
     <div *ngIf="showTooltip && type === 'shop'"
-         class="absolute right-1/3 px-3 py-2 rounded-2xl bg-primary border-black border-2 text-xs text-white md:text-base shadow z-max">
+         class="absolute right-1/3 px-3 py-2 rounded-2xl bg-brand border-black border-2 text-xs text-white md:text-base shadow z-max">
       {{ boostDisplay() }}
     </div>
     <p *ngIf="type === 'profile'"
-       class="text-secondary text-start break-words leading-tight sm:max-w-[16dvw] md:max-w-full 2xl:max-w-[7dvw] text-xs md:text-base">{{ boostDisplay() }}</p>
+       class="text-secondary text-start break-words leading-tight sm:max-w-[16dvw] md:max-w-full 2xl:max-w-[7dvw] text-sm md:text-base">{{ boostDisplay() }}</p>
   </button>
 </div>

@@ -1,8 +1,12 @@
-<button (click)="handleClick()" [disabled]="disabled"
-        [ngClass]="{
-          'bg-primary':!selected,
-          'bg-secondary':selected
-          }"
-        class="border-t-2 border-black disabled:bg-black/45">
-  <img [alt]="type" [height]="90" [ngSrc]="iconSource" [width]="90" class="p-3">
+<button
+  (click)="handleClick()"
+  [disabled]="disabled"
+  [ngClass]="{
+    'bg-brand': !selected,
+    'bg-secondary': selected
+  }"
+  class="border-2 border-black disabled:bg-black/45 w-full flex justify-center rounded-2xl"
+>
+  <img [alt]="type" [height]="90" [ngSrc]="iconSource" [width]="90"
+       class="p-3 w-16 h-16 sm:w-[72px] sm:h-[72px] "/>
 </button>

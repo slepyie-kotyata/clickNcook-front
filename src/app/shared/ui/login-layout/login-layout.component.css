@@ -1,19 +1,21 @@
 .background {
   background-image: url("/backgrounds/auth.png");
   background-repeat: repeat-y;
-  background-size: 100% auto;
+  background-size: cover;
   background-position: center;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100dvh;
 }
 
-.logo {
-  width: 468px;
-  height: auto;
+@media (min-width: 768px) {
+  .background {
+    background-size: 100% auto;
+  }
 }
 
-@media (max-width: 468px) {
-  .logo {
-    width: 264px;
+@media (min-width: 1024px) {
+  .background {
+    width: 100vw;
+    min-height: 100vh;
   }
 }

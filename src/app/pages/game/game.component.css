@@ -4,26 +4,213 @@ progress {
 }
 
 progress::-webkit-progress-bar {
-  background-color: #FFEB9C;
+  background-color: #F5C458;
   border-radius: 9999px;
 }
 
 progress::-webkit-progress-value {
-  background-color: #6F56FF;
+  background-color: #57BFF5;
   border-radius: 9999px;
 }
 
 progress::-moz-progress-bar {
-  background-color: #6F56FF;
+  background-color: #57BFF5;
   border-radius: 9999px;
 }
 
 .volume-slider {
-  -webkit-appearance: slider-vertical;
-  -moz-appearance: slider-vertical;
-  appearance: slider-vertical;
-  writing-mode: bt-lr;
-  width: 45px;
-  height: 150px;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 160px;
+  height: 40px;
+  border-radius: 9999px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  display: block;
+  margin: 0 auto;
+  touch-action: none;
 }
 
+/* Трек */
+.volume-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 12px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #57BFF5 0%, #F5C458 100%);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
+}
+
+.volume-slider::-moz-range-track {
+  width: 100%;
+  height: 12px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #57BFF5 0%, #F5C458 100%);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
+}
+
+/* Ползунок */
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid #000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s ease;
+  margin-top: -8px;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid #000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover,
+.volume-slider::-moz-range-thumb:hover {
+  transform: scale(1.1);
+}
+
+.volume-slider:active::-webkit-slider-thumb,
+.volume-slider:active::-moz-range-thumb {
+  transform: scale(1.15);
+}
+
+.sound-control {
+  position: fixed;
+  left: 1rem;
+  bottom: 1rem;
+}
+
+.sound-btn {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.volume-slider-popover {
+  position: absolute;
+  bottom: 250%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  pointer-events: auto;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.18s ease-out forwards;
+}
+
+.animate-fade-out {
+  animation: fadeOut 0.18s ease-in forwards;
+}
+
+@media (max-width: 768px) {
+  .sound-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .sound-control {
+    position: fixed;
+    left: 1rem;
+    bottom: 1rem;
+  }
+
+  .volume-slider-popover {
+    position: absolute;
+    bottom: 0;
+    left: 53dvw;
+    width: calc(100vw - 1rem - 44px - 14px - max(12px, env(safe-area-inset-right, 0px)));
+    height: 40px;
+    display: flex;
+    align-items: center;
+    transform: none;
+    z-index: 100;
+    pointer-events: auto;
+    overflow: visible;
+  }
+
+  .volume-slider {
+    transform: rotate(0deg);
+    transform-origin: left;
+    width: 100%;
+    height: 40px;
+    margin: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 9999px;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+    touch-action: none;
+  }
+
+  /* Трек */
+  .volume-slider::-webkit-slider-runnable-track,
+  .volume-slider::-moz-range-track {
+    width: 100%;
+    height: 12px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #57BFF5 0%, #F5C458 100%);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Бегунок */
+  .volume-slider::-webkit-slider-thumb,
+  .volume-slider::-moz-range-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid #000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: transform 0.15s ease;
+    margin-top: -8px;
+  }
+
+  .volume-slider::-webkit-slider-thumb:hover,
+  .volume-slider::-moz-range-thumb:hover {
+    transform: scale(1.1);
+  }
+
+  .volume-slider:active::-webkit-slider-thumb,
+  .volume-slider:active::-moz-range-thumb {
+    transform: scale(1.15);
+  }
+}

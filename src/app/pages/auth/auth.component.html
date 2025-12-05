@@ -1,16 +1,44 @@
-<form (ngSubmit)="submitForm()" [formGroup]="authForm" class="flex flex-col gap-[3dvh] items-center text-primary">
+<form
+  (ngSubmit)="submitForm()"
+  [formGroup]="authForm"
+  class="flex flex-col items-center text-text w-full gap-6 lg:gap-[3dvh] lg:w-auto"
+>
   <h1
-    class="bg-primary/45 border-primary border rounded-xxl text-center text-primary text-2xl font-bold px-[3dvw] py-[0.625dvh] mb-[4dvh] my-[2dvh] shadow-black">
-    Авторизация</h1>
-  <app-auth-input [control]="emailControl" [id]="'email'" [name]="'email'" [placeholder]="'Почта'" [required]="true"
-                  [type]="'email'"></app-auth-input>
-  <app-auth-input [control]="passwordControl" [id]="'password'" [name]="'password'" [placeholder]="'Пароль'"
-                  [required]="true"
-                  [type]="'password'"></app-auth-input>
-  <button class="bg-primary/45 border-primary border rounded-xxl w-16 h-14 px-3.5 py-1.5 mt-[5.375dvh] drop-shadow-lg"
-          type="submit"><img
-    src="/icons/Arrow%20right-circle.svg"></button>
-  <a class="bg-primary/45 border-primary border rounded-xxl px-[1.5dvw] py-[0.625dvh] text-center align-middle"
-     href="/reg">у меня еще нет
-    аккаунта</a>
+    class="bg-brand/45 border border-outline rounded-3xl text-center text-text text-2xl font-bold w-full max-w-xs sm:max-w-sm px-6 py-3 shadow-black/40 shadow-md lg:w-auto lg:max-w-none lg:rounded-xxl lg:px-[3dvw] lg:py-[0.625dvh] lg:mb-[4dvh] lg:my-[2dvh] lg:shadow-black"
+  >
+    Авторизация
+  </h1>
+  <div class="w-full flex flex-col items-center gap-4 lg:w-auto lg:gap-[3dvh]">
+    <app-auth-input
+      [control]="emailControl"
+      [id]="'email'"
+      [name]="'email'"
+      [placeholder]="'Почта'"
+      [required]="true"
+      [type]="'email'"
+      class="w-full lg:w-auto"
+    ></app-auth-input>
+    <app-auth-input
+      [control]="passwordControl"
+      [id]="'password'"
+      [name]="'password'"
+      [placeholder]="'Пароль'"
+      [required]="true"
+      [type]="'password'"
+      class="w-full lg:w-auto"
+    ></app-auth-input>
+  </div>
+  <button
+    class="bg-brand text-text font-semibold border border-outline rounded-3xl w-full max-w-xs sm:max-w-sm h-14 flex items-center justify-center gap-3 mt-4 shadow-lg drop-shadow-lg active:scale-[0.98] transition-transform lg:w-16 lg:h-14 lg:max-w-none lg:bg-brand/45 lg:border-brand lg:rounded-xxl lg:px-3.5 lg:py-1.5 lg:mt-[5.375dvh] lg:gap-0 lg:shadow-none"
+    type="submit"
+  >
+    <span class="lg:hidden">Войти</span>
+    <img alt="Войти" class="h-6 w-6 lg:h-full lg:w-full" src="/icons/Arrow%20right-circle.svg"/>
+  </button>
+  <a
+    class="bg-brand-light border border-dark rounded-3xl w-full max-w-xs sm:max-w-sm px-6 py-3 text-center text-sm sm:text-base lg:w-auto lg:max-w-none lg:px-[1.5dvw] lg:py-[0.625dvh] lg:rounded-xxl"
+    href="/reg"
+  >
+    <span class="lg:inline">У меня еще нет аккаунта</span>
+  </a>
 </form>

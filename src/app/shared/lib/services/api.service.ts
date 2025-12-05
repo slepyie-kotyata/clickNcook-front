@@ -1,97 +1,200 @@
-import {inject, Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
-import {ISession, IUpgrade} from '../../../entities/game';
+import {Injectable} from '@angular/core';
+import {WebSocketService} from './web-socket.service';
+import {SoundService} from './game/sound.service';
+import {ErrorService} from './game/error.service';
+import {IMessage} from '../../../entities/api';
+import {AuthService} from './auth.service';
+import {firstValueFrom} from 'rxjs';
+import {RequestType} from '../../../entities/types';
+import {GameStore} from '../stores/gameStore';
 
 @Injectable({
   providedIn: 'root',
 })
+/** API сервис для общения с бэкендом */
 export class ApiService {
-  private readonly api = import.meta.env.NG_APP_API;
-  private httpClient = inject(HttpClient);
-
-  get sessions(): Observable<{
-    session: ISession;
-    status: number;
-    upgrades: IUpgrade[];
-  }> {
-    return this.httpClient.get<{
-      session: ISession;
-      status: number;
-      upgrades: IUpgrade[];
-    }>(this.api + 'game/sessions');
+  constructor(
+    private ws: WebSocketService,
+    private auth: AuthService,
+    private sound: SoundService,
+    private error: ErrorService,
+    private store: GameStore
+  ) {
   }
 
-  get upgrades(): Observable<{
-    status: number;
-    upgrades: IUpgrade[];
-  }> {
-    return this.httpClient.get<{
-      status: number;
-      upgrades: IUpgrade[];
-    }>(this.api + 'game/upgrades');
+  /** Токен доступа из локального хранилища */
+  private get token(): string {
+    return localStorage.getItem("accessToken") || "";
   }
 
-  get levels(): Observable<{
-    current_rank: number;
-    current_xp: number;
-    needed_xp: number;
-    status: number;
-  }> {
-    return this.httpClient.get<{
-      current_rank: number;
-      current_xp: number;
-      needed_xp: number;
-      status: number;
-    }>(this.api + 'game/levels');
+  /**
+   Загружает пользовательские данные и открывает WebSocket соединение
+   */
+  async loadData() {
+    this.store.isLoaded.set(false);
+
+    await new Promise(res => setTimeout(res, 30));
+
+    try {
+      if (this.ws.connected)
+        this.ws.close();
+      await this.ws.connect().then(() => {
+        this.ws.message.subscribe((msg) => {
+          this.newMessage(msg);
+        });
+      })
+        .then(() => this.sound.load());
+
+    } catch (error) {
+      this.error.handle(error);
+    }
   }
 
-  cook(): Observable<{ dishes: number; status: number; xp: number }> {
-    return this.httpClient.patch<{
-      dishes: number;
-      status: number;
-      xp: number;
-    }>(this.api + 'game/sessions/cook', {});
+  /**
+   Обрабатывает новое сообщение от сервера
+   @param msg - сообщение
+   */
+  async newMessage(msg: IMessage) {
+    switch (msg.request_type) {
+      case "error":
+        await this.tryRefreshAndRetry(msg);
+        break;
+      case "session":
+        if (msg.data?.['session']) {
+          this.store.session.set(msg.data['session']);
+        }
+        if (!this.store.isLoaded()) {
+          this.store.isLoaded.set(true);
+        }
+        break;
+      case "cook":
+        this.sound.play('cook');
+        //TODO: увеличивать блюда
+        break;
+      case "sell":
+        this.sound.play('sell');
+        //TODO: увеличивать монеты и уменьшать блюда
+        break;
+      case "passive":
+      case "level_check":
+      case "level_up":
+      case "session_reset":
+      case "upgrade_buy":
+      case "upgrade_list":
+      default:
+        console.log(msg.data);
+    }
   }
 
-  sell(): Observable<{
-    dishes: number;
-    money: number;
-    status: number;
-    xp: number;
-  }> {
-    return this.httpClient.patch<{
-      dishes: number;
-      money: number;
-      status: number;
-      xp: number;
-    }>(this.api + 'game/sessions/sell', {});
+  /** Выход пользователя из системы */
+  logout() {
+    this.store.isLoaded.set(false);
+    this.ws.close();
+    this.auth.logout();
   }
 
-  buy(id: number): Observable<{ status: number; money: number; xp: number }> {
-    return this.httpClient.patch<{
-      status: number;
-      money: number;
-      xp: number;
-    }>(this.api + 'game/upgrades/' + id, {});
+  cook() {
+    let request = this.buildRequest("cook");
+    this.sendWithAuthRetry(request);
   }
 
-  reset(): Observable<{ message: string; status: number }> {
-    return this.httpClient.patch<{ message: string; status: number }>(
-      this.api + 'game/sessions/reset',
-      {},
-    );
+  sell() {
+    let request = this.buildRequest("sell");
+    this.sendWithAuthRetry(request);
   }
 
-  level(): Observable<{
-    current_rank: number;
-    current_xp: number;
-    next_xp: number;
-  }> {
-    return this.httpClient.patch<{
-      current_rank: number;
-      current_xp: number;
-      next_xp: number;
-    }>(this.api + 'game/levels', {});
+  upgrade_buy(id: number) {
+    let request = this.buildRequest("upgrade_buy", {upgrade_id: id});
+    this.sendWithAuthRetry(request);
   }
+
+  upgrade_list() {
+    let request = this.buildRequest("upgrade_list");
+    this.sendWithAuthRetry(request);
+  }
+
+  level_up() {
+    let request = this.buildRequest("level_up");
+    this.sendWithAuthRetry(request);
+  }
+
+  level_check() {
+    let request = this.buildRequest("level_check");
+    this.sendWithAuthRetry(request);
+  }
+
+  session_reset() {
+    let request = this.buildRequest("session_reset");
+    this.sendWithAuthRetry(request);
+  }
+
+  private async tryRefreshAndRetry(msg: IMessage) {
+    const failedId = msg.request_id;
+    if (!failedId) return;
+
+    const pending = this.ws.pendingMap.get(failedId);
+    if (!pending) return;
+
+    try {
+      const data = await firstValueFrom(this.auth.refreshToken());
+      localStorage.setItem("accessToken", data.tokens.access_token);
+      localStorage.setItem("refreshToken", data.tokens.refresh_token);
+
+      pending.payload.data.token = data.tokens.access_token;
+
+      const result = await this.ws.sendRequest(pending.payload);
+
+      pending.resolve(result);
+
+    } catch (err) {
+      pending.reject("Refresh failed");
+      this.logout();
+    } finally {
+      this.ws.pendingMap.delete(failedId);
+    }
+  }
+
+
+  /**
+   Построение запроса с типом и данными
+   @param type - тип запроса
+   @param data - дополнительные данные для запроса
+   */
+  private buildRequest(type: RequestType, data: any = {}): IMessage {
+    return {
+      message_type: "request",
+      request_type: type,
+      data: {
+        token: this.token,
+        ...data
+      }
+    };
+  }
+
+  /**
+   Отправка запроса с повторной аутентификацией при необходимости
+   @param request - запрос для отправки
+   @returns ответ на запрос
+   */
+  private async sendWithAuthRetry(request: IMessage): Promise<IMessage> {
+    try {
+      return await this.ws.sendRequest(request);
+    } catch (error) {
+      try {
+        const data = await firstValueFrom(this.auth.refreshToken());
+
+        localStorage.setItem("accessToken", data.tokens.access_token);
+        localStorage.setItem("refreshToken", data.tokens.refresh_token);
+
+        request.data.token = data.tokens.access_token;
+
+        return await this.ws.sendRequest(request);
+
+      } catch (refreshErr) {
+        this.logout();
+        throw refreshErr;
+      }
+    }
+  }
+
 }
