@@ -5,7 +5,7 @@ import {UpgradeWindowComponent} from '../../widgets/upgrade-window/upgrade-windo
 import {GameService} from '../../shared/lib/services/game/game.service';
 import {Upgrade} from '../../entities/types';
 import {NgForOf, NgIf} from '@angular/common';
-import {GameStore} from '../../shared/lib/Stores/GameStore';
+import {GameStore} from '../../shared/lib/stores/gameStore';
 
 @Component({
   selector: 'app-menu',

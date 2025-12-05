@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {NgIf} from '@angular/common';
-import {GameStore} from '../../../lib/Stores/GameStore';
+import {GameStore} from '../../../lib/stores/gameStore';
 
 @Component({
   selector: 'app-final',

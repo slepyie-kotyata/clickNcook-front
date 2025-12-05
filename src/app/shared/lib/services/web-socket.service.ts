@@ -2,17 +2,24 @@ import {Injectable} from '@angular/core';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {ReplaySubject} from 'rxjs';
 import {IMessage} from '../../../entities/api';
+import {AuthService} from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 /** WebSocket сервис для общения с бэкендом */
 export class WebSocketService {
+  pendingMap = new Map<string, { payload: any, resolve: (v: any) => void, reject: (e: any) => void }>();
   private socket$!: WebSocketSubject<IMessage>;
   private isConnected = false;
   private msg$ = new ReplaySubject<IMessage>(1);
+  private readonly maxReconnectAttempts = 3;
+  private reconnectAttempts = 0;
 
   private readonly socketURL = import.meta.env.NG_APP_WEBSOCKET_API;
+
+  constructor(private auth: AuthService) {
+  }
 
   get connected() {
     return this.isConnected;
@@ -31,25 +38,33 @@ export class WebSocketService {
         openObserver: {
           next: () => {
             this.isConnected = true;
+            this.reconnectAttempts = 0;
+
+            this.sendRequest({
+              message_type: "request",
+              request_type: "session",
+              data: {token: localStorage.getItem("accessToken") ?? ""}
+            });
+
             resolve();
           }
         },
         closeObserver: {
-          next: () => {
+          next: (event) => {
+            console.warn("[WS CLOSED]", event.code, event.reason);
             this.isConnected = false;
+
+            if (event.code !== 1000) {
+              this.reconnect();
+            }
           }
-        },
+        }
       });
 
       this.socket$.subscribe({
-        next: (msg) => this.msg$.next(msg),
-        error: (err) => {
-          this.isConnected = false;
-          reject(err);
-        },
-        complete: () => {
-          this.isConnected = false;
-        }
+        next: msg => this.msg$.next(msg),
+        error: err => reject(err),
+        complete: () => this.isConnected = false
       });
     });
   }
@@ -62,32 +77,32 @@ export class WebSocketService {
    */
   sendRequest<T = any>(payload: any): Promise<T> {
     return new Promise(async (resolve, reject) => {
-      if (!this.isConnected) {
-        try {
-          await this.connect();
-        } catch (e) {
-          return reject(e);
-        }
-      }
+      if (!this.isConnected) await this.connect().catch(() => null);
 
       const requestId = crypto.randomUUID();
       payload.request_id = requestId;
 
+      this.pendingMap.set(requestId, {payload, resolve, reject});
+
       const sub = this.message.subscribe((msg: any) => {
-        if (msg.request_id === requestId) {
-          sub.unsubscribe();
+        if (msg.request_id !== requestId) return;
+        sub.unsubscribe();
 
-          if (msg.request_type === 'error') {
-            return reject(msg.data.error);
-          }
+        if (msg.request_type === "error") return;
 
-          resolve(msg.data);
-        }
+        this.pendingMap.delete(requestId);
+        resolve(msg.data);
       });
 
-      this.socket$.next(payload);
+      try {
+        this.socket$.next(payload);
+      } catch {
+        this.pendingMap.delete(requestId);
+        reject("Send failed");
+      }
     });
   }
+
 
   /**
    Корректно закрывает текущее WebSocket соединение и очищает очередь сообщений
@@ -103,10 +118,25 @@ export class WebSocketService {
       this.socket$.complete();
       this.socket$.unsubscribe();
     } catch (e) {
-      console.error("WS close error:", e);
+      console.error("[WS] Close error:", e);
     }
 
     this.isConnected = false;
     this.msg$ = new ReplaySubject<IMessage>(1);
   }
+
+  reconnect() {
+    setTimeout(() => {
+      try {
+        this.connect();
+      } catch (err) {
+        this.reconnectAttempts++;
+        if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+          this.auth.logout("Сессия истекла");
+          return;
+        }
+      }
+    }, 1000);
+  }
+
 }

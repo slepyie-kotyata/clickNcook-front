@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {NgForOf, NgIf} from '@angular/common';
 import {UpgradeButtonComponent} from '../../shared/ui/upgrade-button/upgrade-button.component';
-import {GameStore} from '../../shared/lib/Stores/GameStore';
+import {GameStore} from '../../shared/lib/stores/gameStore';
 
 @Component({
   selector: 'app-profile',

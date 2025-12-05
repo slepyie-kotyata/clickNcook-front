@@ -2,7 +2,7 @@ import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {ModalComponent} from '../../shared/ui/modal/modal.component';
 import formatNumber from '../../shared/lib/formatNumber';
 import {NgIf} from '@angular/common';
-import {GameStore} from '../../shared/lib/Stores/GameStore';
+import {GameStore} from '../../shared/lib/stores/gameStore';
 import {ApiService} from '../../shared/lib/services/api.service';
 
 @Component({

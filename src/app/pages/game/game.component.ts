@@ -14,7 +14,7 @@ import {ProfileComponent} from '../../widgets/profile/profile.component';
 import {GameHeaderComponent} from '../../widgets/game-header/game-header.component';
 import {GameButtonsComponent} from '../../widgets/game-buttons/game-buttons.component';
 import {ApiService} from '../../shared/lib/services/api.service';
-import {GameStore} from '../../shared/lib/Stores/GameStore';
+import {GameStore} from '../../shared/lib/stores/gameStore';
 
 @Component({
   selector: 'app-game',
@@ -125,7 +125,6 @@ export class GameComponent implements OnInit {
       return;
 
     this.api.cook();
-    this.sound.play('cook');
   }
 
   protected async handleSell() {

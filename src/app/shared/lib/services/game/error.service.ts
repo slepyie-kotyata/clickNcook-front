@@ -71,22 +71,16 @@ export class ErrorService {
       }
     } else if (this.isWebSocketError(error)) {
       switch (error.code) {
-        case 1006:
-          console.warn(
-            '[WebSocket] Соединение закрыто: вход с другого устройства',
-          );
-          this.auth.logout('Вход на другом устройстве');
-          return;
         default:
           console.error(
-            `[WebSocket ERROR ${error.code}]:`,
+            `[WS ERROR ${error.code}]:`,
             error.reason ?? 'Неизвестная причина',
           );
           this.auth.logout('Ошибка подключения к серверу');
           return;
       }
     } else {
-      console.error('[ERROR UNKNOWN]: \n ', error);
+      console.error('[UNKNOWN ERROR]: \n ', error);
       this.auth.logout('Непредвиденная ошибка');
       return;
     }

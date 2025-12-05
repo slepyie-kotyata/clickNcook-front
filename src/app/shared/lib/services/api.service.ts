@@ -6,7 +6,7 @@ import {IMessage} from '../../../entities/api';
 import {AuthService} from './auth.service';
 import {firstValueFrom} from 'rxjs';
 import {RequestType} from '../../../entities/types';
-import {GameStore} from '../Stores/GameStore';
+import {GameStore} from '../stores/gameStore';
 
 @Injectable({
   providedIn: 'root',
@@ -43,12 +43,10 @@ export class ApiService {
           this.newMessage(msg);
         });
       })
-        .then(() => this.sound.load())
-        .then(() => this.loadSession());
+        .then(() => this.sound.load());
 
     } catch (error) {
       this.error.handle(error);
-      console.log("error by api service");
     }
   }
 
@@ -57,8 +55,34 @@ export class ApiService {
    @param msg - сообщение
    */
   async newMessage(msg: IMessage) {
-    if (msg.request_type === "session" && msg.data?.['session']) {
-      this.store.session.set(msg.data['session']);
+    switch (msg.request_type) {
+      case "error":
+        await this.tryRefreshAndRetry(msg);
+        break;
+      case "session":
+        if (msg.data?.['session']) {
+          this.store.session.set(msg.data['session']);
+        }
+        if (!this.store.isLoaded()) {
+          this.store.isLoaded.set(true)
+        }
+        break;
+      case "cook":
+        this.sound.play('cook');
+        //TODO: увеличивать блюда
+        break;
+      case "sell":
+        this.sound.play('sell');
+        //TODO: увеличивать монеты и уменьшать блюда
+        break;
+      case "passive":
+      case "level_check":
+      case "level_up":
+      case "session_reset":
+      case "upgrade_buy":
+      case "upgrade_list":
+      default:
+        console.log(msg.data);
     }
   }
 
@@ -69,22 +93,13 @@ export class ApiService {
     this.auth.logout();
   }
 
-  loadSession() {
-    this.store.isLoaded.set(false);
-    let request = this.buildRequest("session");
-    this.sendWithAuthRetry(request).then((res: any) => {
-      this.store.session.set(res['session']);
-      this.store.isLoaded.set(true);
-    });
-  }
-
   cook() {
     let request = this.buildRequest("cook");
     this.sendWithAuthRetry(request);
   }
 
   sell() {
-    let request = this.buildRequest("cook");
+    let request = this.buildRequest("sell");
     this.sendWithAuthRetry(request);
   }
 
@@ -112,6 +127,33 @@ export class ApiService {
     let request = this.buildRequest("session_reset");
     this.sendWithAuthRetry(request);
   }
+
+  private async tryRefreshAndRetry(msg: IMessage) {
+    const failedId = msg.request_id;
+    if (!failedId) return;
+
+    const pending = this.ws.pendingMap.get(failedId);
+    if (!pending) return;
+
+    try {
+      const data = await firstValueFrom(this.auth.refreshToken());
+      localStorage.setItem("accessToken", data.tokens.access_token);
+      localStorage.setItem("refreshToken", data.tokens.refresh_token);
+
+      pending.payload.data.token = data.tokens.access_token;
+
+      const result = await this.ws.sendRequest(pending.payload);
+
+      pending.resolve(result);
+
+    } catch (err) {
+      pending.reject("Refresh failed");
+      this.logout();
+    } finally {
+      this.ws.pendingMap.delete(failedId);
+    }
+  }
+
 
   /**
    Построение запроса с типом и данными
