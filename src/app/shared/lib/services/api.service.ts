@@ -64,7 +64,7 @@ export class ApiService {
           this.store.session.set(msg.data['session']);
         }
         if (!this.store.isLoaded()) {
-          this.store.isLoaded.set(true)
+          this.store.isLoaded.set(true);
         }
         break;
       case "cook":

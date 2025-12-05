@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {NgForOf, NgIf} from '@angular/common';
 import {UpgradeButtonComponent} from '../../shared/ui/upgrade-button/upgrade-button.component';
 import {GameStore} from '../../shared/lib/stores/gameStore';
@@ -11,7 +11,6 @@ import {GameStore} from '../../shared/lib/stores/gameStore';
   styleUrl: './profile.component.css',
 })
 export class ProfileComponent {
-  @Input({required: true}) email: string;
   @Output() logoutEvent = new EventEmitter<boolean>();
 
   constructor(protected store: GameStore) {

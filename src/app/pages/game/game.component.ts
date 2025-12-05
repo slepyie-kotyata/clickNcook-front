@@ -133,7 +133,6 @@ export class GameComponent implements OnInit {
     if ((this.store.session()?.dishes ?? 0) <= 0) return;
 
     this.api.sell();
-    this.sound.play('sell');
   }
 
   protected toggleVolumeSlider() {
@@ -171,10 +170,12 @@ export class GameComponent implements OnInit {
   }
 
   protected toggleMobileUpgrades(value: boolean) {
+    this.sound.play('click');
     this.showMobileUpgrades = value;
   }
 
   protected logout() {
+    this.sound.play('click');
     this.api.logout();
   }
 

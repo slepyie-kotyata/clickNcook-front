@@ -42,7 +42,7 @@
              [border_size]="16"
              [closeOnBackdrop]="true"
              [show]="profileWindowToggle">
-    <app-profile (logoutEvent)="toggleModal('logout',$event)" email="example@email.com"></app-profile>
+    <app-profile (logoutEvent)="toggleModal('logout',$event)"></app-profile>
   </app-modal>
 
   <app-modal (close)="toggleModal('logout',false)" [background]="'bg-secondary'"

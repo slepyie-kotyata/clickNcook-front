@@ -29,7 +29,7 @@ export class PrestigeWindowComponent {
   }
 
   protected get currentPrestigeMultiplier(): number {
-    return parseFloat((1 + (this.store.session()?.prestige.current_value ?? 0) * 0.5).toFixed(2));
+    return parseFloat((1 + (this.store.session()?.prestige.current_boost_value ?? 0) * 0.5).toFixed(2));
   }
 
   protected close() {
