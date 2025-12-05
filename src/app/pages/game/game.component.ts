@@ -15,6 +15,7 @@ import {GameHeaderComponent} from '../../widgets/game-header/game-header.compone
 import {GameButtonsComponent} from '../../widgets/game-buttons/game-buttons.component';
 import {ApiService} from '../../shared/lib/services/api.service';
 import {GameStore} from '../../shared/lib/stores/gameStore';
+import {LoadingComponent} from '../../shared/ui/loading/loading.component';
 
 @Component({
   selector: 'app-game',
@@ -35,6 +36,7 @@ import {GameStore} from '../../shared/lib/stores/gameStore';
     ProfileComponent,
     GameHeaderComponent,
     GameButtonsComponent,
+    LoadingComponent,
   ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',
