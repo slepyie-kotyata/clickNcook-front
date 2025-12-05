@@ -24,7 +24,7 @@ export class PrestigeWindowComponent {
 
   protected get accumulatedPrestigeMultiplier(): number {
     return parseFloat(
-      (1 + (this.store.session()?.prestige.current_value ?? 0) * 0.5).toFixed(2),
+      (1 + (this.store.session()?.prestige.accumulated_value ?? 0) * 0.5).toFixed(2),
     );
   }
 
