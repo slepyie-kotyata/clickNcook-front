@@ -5,7 +5,7 @@
   <div
     class="flex w-full max-w-lg flex-col items-center font-tektur py-10 px-6 sm:max-w-none sm:py-[3.5dvh] sm:px-[8.5dvw]">
     <h2 class="text-white text-3xl sm:text-4xl mb-4 text-center">Кулинарные звезды</h2>
-    <p class="text-white text-base text-center max-w-xl sm:max-w-[30dvw]">Увеличивайте пассивный доход чтобы получать
+    <p class="text-white text-base text-center max-w-xl sm:max-w-[40dvw]">Увеличивайте пассивный доход чтобы получать
       больше
       Кулинарных звезд. Чем больше Кулинарных звезд накоплено - тем выше бонус дохода монет после сброса!</p>
     <section class="flex flex-col mt-4 w-full gap-1">
@@ -23,7 +23,7 @@
         class="font-bold text-green-400">{{ accumulatedPrestigeMultiplier }}</span></p>
     </section>
     <button (click)="handlePrestige()" *ngIf="accumulatedPrestigeMultiplier>1"
-            [disabled]="(this.store.session()?.prestige?.current_boost_value ?? 0)<1 || isProcessing"
+            [disabled]="(this.store.session()?.prestige?.accumulated_value ?? 0)<1 || isProcessing"
             class="bg-secondary disabled:bg-secondary/45 border-2 border-black mt-6 sm:mt-[2.5dvh] rounded-2xl px-6 py-3 text-lg sm:px-[8.5dvw] sm:py-[1.25dvh]">
       Сбросить
     </button>
