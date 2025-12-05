@@ -9,11 +9,11 @@
       <img src="/icons/logout.svg"/>
     </button>
     <p class="text-lg sm:text-2xl font-semibold lg:text-xl xl:text-2xl xl:hidden">
-      {{ session.dishes }}
+      {{ session?.dishes ?? 0 }}
       <img class="inline w-8 h-8" src="/icons/dishes.svg">
     </p>
     <p class="text-lg sm:text-2xl font-semibold lg:text-xl xl:text-2xl xl:hidden">
-      {{ session.money }}
+      {{ session?.money ?? 0 }}
       <img class="inline w-8 h-8" src="/icons/money.svg">
     </p>
     <button
@@ -23,21 +23,22 @@
       <img src="/icons/star.svg"/>
       <p
         class="absolute text-black font-bold text-xs sm:text-base leading-none overflow-hidden text-ellipsis whitespace-nowrap">
-        {{ session.prestige_value }}
+        {{ session?.prestige?.current_value ?? 0 }}
       </p>
     </button>
   </div>
   <div
     class="relative w-full max-w-xs sm:max-w-none sm:w-[330px] h-6 sm:h-[35px] lg:w-[200px] xl:w-[330px] lg:h-[35px]">
     <progress
-      [value]="session.level.xp"
+      [value]="session?.level?.xp ?? 0"
       class="w-full h-full rounded-full overflow-hidden border border-black bg-secondary appearance-none"
       max="100"
     >
     </progress>
     <p class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-black font-bold text-sm sm:text-xl">
-      {{ session.level.xp }}%
+      {{ session?.level?.xp ?? 0 }}%
     </p>
   </div>
-  <p class="relative text-xl sm:text-3xl text-center w-full sm:w-auto lg:text-3xl">LVL {{ session.level.rank }}</p>
+  <p class="relative text-xl sm:text-3xl text-center w-full sm:w-auto lg:text-3xl">
+    LVL {{ session?.level?.rank ?? 0 }}</p>
 </section>

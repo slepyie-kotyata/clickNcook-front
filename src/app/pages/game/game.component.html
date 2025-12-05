@@ -1,41 +1,49 @@
-<div *ngIf="this.api.isLoaded"
-     class="z-30 overscroll-none scrollbar-hide font-tektur flex min-h-[100dvh] flex-col gap-4 pb-24 pt-[env(safe-area-inset-top,0px)] sm:gap-6 sm:pb-12 xl:gap-0 xl:pb-0">
-  <app-game-header (openPrestige)="toggleModal('prestige',true)" (openProfile)="toggleModal('profile', true)"
-                   [session]="this.api.Session"></app-game-header>
+@if (this.store.isLoaded()) {
   <div
-    class="!z-max flex w-full flex-col gap-4 px-4 sm:px-6 xl:flex-1 xl:flex-row xl:items-end xl:justify-between xl:gap-0 xl:px-0">
-    <div class="fixed bottom-14 w-auto">
-      <button
-        (click)="toggleMobileUpgrades(true)"
-        class="z-max mt-4 flex w-full items-center justify-center gap-2 rounded-3xl border-2 border-black bg-secondary px-4 py-3 text-lg font-bold text-black shadow-[0_6px_0_rgba(0,0,0,0.15)] transition active:scale-95 xl:hidden"
-        type="button"
-      >
-        <img alt="" class="h-6 w-6" src="/icons/upgrades.svg"/>
-        Улучшения
-      </button>
-      <app-game-buttons (cook)="handleCook()" (sell)="handleSell()" [isCooking]="isCooking"
-                        [isSelling]="isSelling" [level]="this.api.Session.level.rank"></app-game-buttons>
-    </div>
-    <div class="hidden w-full xl:block xl:w-auto">
-      <app-menu></app-menu>
+    class="z-30 overscroll-none scrollbar-hide font-tektur flex min-h-[100dvh] flex-col gap-4 pb-24 pt-[env(safe-area-inset-top,0px)] sm:gap-6 sm:pb-12 xl:gap-0 xl:pb-0">
+    <app-game-header (openPrestige)="toggleModal('prestige',true)" (openProfile)="toggleModal('profile', true)"
+                     [session]="this.store.session()"></app-game-header>
+    <div
+      class="!z-max flex w-full flex-col gap-4 px-4 sm:px-6 xl:flex-1 xl:flex-row xl:items-end xl:justify-between xl:gap-0 xl:px-0">
+      <div class="fixed bottom-14 w-auto">
+        <button
+          (click)="toggleMobileUpgrades(true)"
+          class="z-max mt-4 flex w-full items-center justify-center gap-2 rounded-3xl border-2 border-black bg-secondary px-4 py-3 text-lg font-bold text-black shadow-[0_6px_0_rgba(0,0,0,0.15)] transition active:scale-95 xl:hidden"
+          type="button"
+        >
+          <img alt="" class="h-6 w-6" src="/icons/upgrades.svg"/>
+          Улучшения
+        </button>
+        <app-game-buttons (cook)="handleCook()" (sell)="handleSell()"
+                          [level]="this.store.session()?.level?.rank ?? 0"></app-game-buttons>
+      </div>
+      <div class="hidden w-full xl:block xl:w-auto">
+        <app-menu></app-menu>
+      </div>
     </div>
   </div>
-</div>
 
-<div [ngSwitch]="locationConfig.component">
-  <app-track *ngSwitchCase="'track'" [decorCount]="4"></app-track>
-  <app-cafe *ngSwitchCase="'cafe'"></app-cafe>
-  <app-restaurant *ngSwitchCase="'restaurant'"></app-restaurant>
-  <app-gastro-restaurant *ngSwitchCase="'gastro'"></app-gastro-restaurant>
-  <app-final *ngSwitchCase="'final'"></app-final>
-</div>
+  <div [ngSwitch]="locationConfig.component">
+    <app-track *ngSwitchCase="'track'" [decorCount]="4"></app-track>
+    <app-cafe *ngSwitchCase="'cafe'"></app-cafe>
+    <app-restaurant *ngSwitchCase="'restaurant'"></app-restaurant>
+    <app-gastro-restaurant *ngSwitchCase="'gastro'"></app-gastro-restaurant>
+    <app-final *ngSwitchCase="'final'"></app-final>
+  </div>
 
-<img
-  *ngIf="locationConfig.imgSrc"
-  [ngClass]="locationConfig.imgClass"
-  [src]="locationConfig.imgSrc"
-  class="fixed bottom-[5dvh] left-[10dvw] z-max hidden xl:block"
-/>
+  <img
+    *ngIf="locationConfig.imgSrc"
+    [ngClass]="locationConfig.imgClass"
+    [src]="locationConfig.imgSrc"
+    class="fixed bottom-[5dvh] left-[10dvw] z-max hidden xl:block"
+  />
+} @else {
+  ЗАГРУЗКА
+    <!--  <div class="flex min-h-screen w-full items-center justify-center bg-brand">-->
+    <!--    <img src="/icons/loading.svg" class="animate-spin w-16 h-16"/>-->
+    <!--  </div>-->
+}
+
 
 <app-modal (close)="toggleModal('profile',false)" [background]="'bg-secondary'" [border_color]="'brand'"
            [border_size]="16"
@@ -119,5 +127,5 @@
 <div
   *ngIf="showLevelUpNotification"
   class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-2xl text-lg shadow-lg transition-opacity duration-500 opacity-100 z-50">
-  Уровень повышен до {{ this.api.Session.level.rank }}!
+  Уровень повышен до {{ this.store.session()?.level?.rank ?? 0 }}!
 </div>

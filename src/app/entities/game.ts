@@ -26,28 +26,33 @@ export interface IBoost {
 
 /** Сессия пользователя, содержащая информацию о прогрессе в игре */
 export interface ISession {
+  user_id: number;
+  user_email: string;
   money: number;
   dishes: number;
-  prestige_value: number;
-  user_id: number;
   level: ILevel;
   prestige: IPrestige;
-  user_email: string;
+  upgrades: {
+    available: IUpgrade[],
+    current: IUpgrade[]
+  }
+
 }
 
-/** Параметры престижа игрока */
 export interface IPrestige {
-  /** Текущее значение престижа */
+  /** Текущее значение престижа (в звездах) */
   current_value: number;
+  /** Текущее значение множителя престижа, влияющее на доход */
+  current_boost_value: number;
+  /** Накопленное значение престижа за текущую сессию (будет добавлено к текущему после сброса) */
+  accumulated_value: number;
 }
 
-/** Уровень пользователя в игре, содержащий ранг и опыт */
 export interface ILevel {
   rank: number;
   xp: number;
 }
 
-/** Порядок отображения типов улучшений в меню */
 export const upgradeTypeOrder: Upgrade[] = [
   'dish',
   'equipment',

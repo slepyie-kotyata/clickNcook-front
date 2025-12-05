@@ -1,12 +1,11 @@
-import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import formatNumber from '../../shared/lib/formatNumber';
 import {MenuButtonComponent} from '../../shared/ui/menu-button/menu-button.component';
 import {UpgradeWindowComponent} from '../../widgets/upgrade-window/upgrade-window.component';
 import {GameService} from '../../shared/lib/services/game/game.service';
 import {Upgrade} from '../../entities/types';
 import {NgForOf, NgIf} from '@angular/common';
-import {ApiService} from '../../shared/lib/services/api.service';
-import {ISession} from '../../entities/game';
+import {GameStore} from '../../shared/lib/Stores/GameStore';
 
 @Component({
   selector: 'app-menu',
@@ -37,19 +36,16 @@ export class MenuComponent {
     },
     {type: 'point', icon: '/icons/map.svg', requiredRank: 70},
   ];
-  protected gameService = inject(GameService);
-  protected session: ISession;
 
-  constructor(private api: ApiService) {
-    this.session = this.api.Session;
+  constructor(protected store: GameStore, protected gameService: GameService) {
   }
 
   get dishCount() {
-    return formatNumber(this.session.dishes);
+    return formatNumber(this.store.session()?.dishes ?? 0);
   }
 
   get cashCount() {
-    return formatNumber(this.session.money);
+    return formatNumber(this.store.session()?.money ?? 0);
   }
 
   selectMenu(value: Upgrade) {

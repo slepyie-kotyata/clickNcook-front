@@ -2,6 +2,7 @@ import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {ModalComponent} from '../../shared/ui/modal/modal.component';
 import formatNumber from '../../shared/lib/formatNumber';
 import {NgIf} from '@angular/common';
+import {GameStore} from '../../shared/lib/Stores/GameStore';
 import {ApiService} from '../../shared/lib/services/api.service';
 
 @Component({
@@ -15,6 +16,7 @@ export class PrestigeWindowComponent {
   @Input({required: true}) enabled: boolean = false;
   @Output() closeEvent = new EventEmitter<boolean>();
 
+  protected store = inject(GameStore);
   protected api = inject(ApiService);
   protected isProcessing: boolean = false;
   protected readonly parseFloat = parseFloat;
@@ -22,12 +24,12 @@ export class PrestigeWindowComponent {
 
   protected get accumulatedPrestigeMultiplier(): number {
     return parseFloat(
-      (1 + this.api.Session.prestige.current_value * 0.5).toFixed(2),
+      (1 + (this.store.session()?.prestige.current_value ?? 0) * 0.5).toFixed(2),
     );
   }
 
   protected get currentPrestigeMultiplier(): number {
-    return parseFloat((1 + this.api.Session.prestige.current_value * 0.5).toFixed(2));
+    return parseFloat((1 + (this.store.session()?.prestige.current_value ?? 0) * 0.5).toFixed(2));
   }
 
   protected close() {
@@ -36,6 +38,6 @@ export class PrestigeWindowComponent {
 
   protected handlePrestige() {
     this.isProcessing = true;
-    this.api.prestige();
+    this.api.session_reset();
   }
 }

@@ -44,7 +44,7 @@
     <app-menu-button
       (onClick)="selectMenu(button.type)"
       *ngFor="let button of menuButtons"
-      [disabled]="button.disabled || session.level.rank < button.requiredRank"
+      [disabled]="button.disabled || (this.store.session()?.level?.rank ?? 0) < button.requiredRank"
       [iconSource]="button.icon"
       [type]="button.type"
       class="border-black flex-1"

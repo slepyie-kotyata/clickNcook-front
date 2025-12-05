@@ -8,7 +8,6 @@ import {Injectable, signal} from '@angular/core';
 
  @example
  // Установка громкости
- const soundService = new SoundService();
  soundService.setVolume(80);
 
  // Воспроизведение звука

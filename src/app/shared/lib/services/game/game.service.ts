@@ -1,5 +1,4 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
+import {Injectable, signal} from '@angular/core';
 import {Upgrade} from '../../../../entities/types';
 import {SoundService} from './sound.service';
 
@@ -10,17 +9,11 @@ import {SoundService} from './sound.service';
  * Сервис для управления состоянием игры, включая выбор меню улучшений
  */
 export class GameService {
-  private selectedMenuType: BehaviorSubject<Upgrade> =
-    new BehaviorSubject<Upgrade>('dish');
+  selectedMenuType = signal<Upgrade>('dish');
 
   constructor(
     private sound: SoundService,
   ) {
-  }
-
-  /** Текущее выбранное меню улучшений */
-  get menu() {
-    return this.selectedMenuType;
   }
 
   /**
@@ -28,9 +21,9 @@ export class GameService {
    @param type - новое значение меню, которое нужно отобразить
    */
   selectMenuType(type: Upgrade) {
-    if (type === this.selectedMenuType.value) return;
+    if (type === this.selectedMenuType()) return;
 
     this.sound.play('click');
-    this.selectedMenuType.next(type);
+    this.selectedMenuType.set(type);
   }
 }
