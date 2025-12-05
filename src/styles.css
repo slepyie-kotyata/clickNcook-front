@@ -5,7 +5,7 @@
 @tailwind components;
 @tailwind utilities;
 
-root {
+:root {
   --brand: #57BFF5;
   --brand-light: rgba(87, 191, 245, 0.5);
   --brand-disabled: rgba(87, 191, 245, 0.30);
