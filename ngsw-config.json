@@ -19,7 +19,19 @@
     {
       "name": "api",
       "urls": [
-        "https://clicker.enjine.ru/api/**"
+        "https://clicker-api.enjine.ru/**"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 10,
+        "maxAge": "1h",
+        "timeout": "5s"
+      }
+    },
+    {
+      "name": "ws",
+      "urls": [
+        "wss://clicker-api.enjine.ru/**"
       ],
       "cacheConfig": {
         "strategy": "freshness",
