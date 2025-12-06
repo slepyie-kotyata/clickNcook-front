@@ -1,11 +1,16 @@
-﻿FROM node:latest
-WORKDIR /src/app
+﻿# Build Angular
+FROM node:20-alpine as build
 
-COPY package*.json .
-RUN npm install -g @angular/cli
-RUN npm ci
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --legacy-peer-deps
 COPY . .
+RUN npm run build
 
-EXPOSE 4200
-CMD ["npm", "run", "start:prod"]
+# NGINX for Production
+FROM nginx:alpine
+COPY --from=build /app/dist/* /usr/share/nginx/html/
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
