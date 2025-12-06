@@ -34,7 +34,7 @@ export class RegComponent {
       {
         email: ['', [Validators.required, email]],
         password: ['', [Validators.required, password]],
-        repeat_password: [''],
+        repeat_password: ['', [Validators.required]],
       },
       { validator: passwordsMatch },
     );
@@ -65,10 +65,7 @@ export class RegComponent {
         },
         error: (error) => {
           if (error.status === 409) {
-            this.toastrService.error(
-              'Пользователь с такой почтой уже зарегистрирован',
-              'Ошибка регистрации',
-            );
+            this.regForm.get('email')?.setErrors({ alreadyExistsEmail: true });
           } else {
             this.toastrService.error(error.message, 'Ошибка регистрации');
             console.error(error);
@@ -78,37 +75,12 @@ export class RegComponent {
       return;
     }
 
-    const errors = [];
-
-    if (this.emailControl.hasError('required')) {
-      errors.push('Поле "Почта" обязательно для заполнения.');
-    }
-    if (this.emailControl.hasError('invalidEmail')) {
-      const errorText = this.emailControl.getError('invalidEmail');
-      errors.push(errorText);
-    }
-
-    if (this.passwordControl.hasError('required')) {
-      errors.push('Поле "Пароль" обязательно для заполнения.');
-    }
-    if (this.passwordControl.hasError('invalidPassword')) {
-      const errorText = this.passwordControl.getError('invalidPassword');
-      errors.push(errorText);
-    }
-
-    if (
-      this.repeatPasswordControl.hasError('required') &&
-      !this.regForm.hasError('passwordsMismatch')
-    ) {
-      errors.push('Поле "Повторите пароль" обязательно для заполнения.');
-    }
-    if (this.regForm.hasError('passwordsMismatch')) {
-      const errorText = this.regForm.getError('passwordsMismatch');
-      errors.push(errorText);
-    }
-
-    errors.forEach((error) => {
-      this.toastrService.error(error);
+    Object.values(this.regForm.controls).forEach(c => c.markAsTouched());
+    const inputs = document.querySelectorAll('app-auth-input div');
+    inputs.forEach(el=>{
+      el.classList.add('shake-input');
+      setTimeout(()=> el.classList.remove('shake-input'), 300);
     });
+
   }
 }

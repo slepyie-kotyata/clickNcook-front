@@ -4,6 +4,7 @@ import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, V
 import {ToastrService} from 'ngx-toastr';
 import {AuthService} from '../../shared/lib/services/auth.service';
 import {Router} from '@angular/router';
+import {email} from '../../shared/lib/formValidators';
 
 @Component({
   selector: 'app-auth',
@@ -24,9 +25,11 @@ export class AuthComponent {
 
   constructor(private fb: FormBuilder) {
     this.authForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, email]],
       password: ['', [Validators.required]],
     });
+
+    this.listenForInputResetWrongCredentials();
   }
 
   get emailControl(): FormControl {
@@ -53,32 +56,22 @@ export class AuthComponent {
         },
         error: (error) => {
           if (error.status === 401) {
-            this.toastrService.error(
-              'Неверная почта или пароль',
-              'Ошибка авторизации',
-            );
+            this.authForm.get('email')?.setErrors({wrongEmailOrPassword: true});
+            this.authForm.get('password')?.setErrors({wrongEmailOrPassword: true});
           } else {
             this.toastrService.error(error.message, 'Ошибка авторизации');
           }
         },
       });
     }
+  }
 
-    const errors = [];
-
-    if (this.emailControl.hasError('required')) {
-      errors.push('Поле "Почта" обязательно для заполнения.');
-    }
-    if (this.emailControl.hasError('email')) {
-      errors.push('Введите корректный email.');
-    }
-
-    if (this.passwordControl.hasError('required')) {
-      errors.push('Поле "Пароль" обязательно для заполнения.');
-    }
-
-    errors.forEach((error) => {
-      this.toastrService.error(error);
+  private listenForInputResetWrongCredentials() {
+    this.authForm.valueChanges.subscribe(() => {
+      if (this.emailControl.hasError('wrongEmailOrPassword') || this.passwordControl.hasError('wrongEmailOrPassword')) {
+        this.emailControl.setErrors(null);
+        this.passwordControl.setErrors(null);
+      }
     });
   }
 }
