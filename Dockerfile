@@ -15,10 +15,10 @@ COPY . .
 RUN printenv | grep NG_APP || echo "env-переменные не пришли!"
 
 # перед билдом экспортируем их вручную в процесс
-RUN export NG_APP_API=$NG_APP_API && \
-    export NG_APP_WEBSOCKET_API=$NG_APP_WEBSOCKET_API && \
-    echo "API=$NG_APP_API" && echo "WS=$NG_APP_WEBSOCKET_API" && \
-    npm run build
+RUN echo "NG_APP_API=$NG_APP_API" > .env && \
+    echo "NG_APP_WEBSOCKET_API=$NG_APP_WEBSOCKET_API" >> .env && \
+    export $(cat .env | xargs) && npm run build \
+    
 
 # Production nginx
 FROM nginx:alpine
