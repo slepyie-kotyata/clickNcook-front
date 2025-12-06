@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {NgOptimizedImage} from '@angular/common';
-import {PwaInstallService} from '../../../pwa-install.service';
+import {PwaService} from '../../lib/services/pwa.service';
 
 @Component({
   selector: 'app-login-layout',
@@ -11,6 +11,6 @@ import {PwaInstallService} from '../../../pwa-install.service';
   styleUrl: './login-layout.component.css',
 })
 export class LoginLayoutComponent {
-  constructor(public pwa: PwaInstallService) {
+  constructor(protected pwa: PwaService) {
   }
 }
