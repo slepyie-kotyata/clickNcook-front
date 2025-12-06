@@ -13,7 +13,7 @@ RUN npm run build
 # NGINX
 FROM nginx:alpine
 
-COPY --from=build /app/dist/click-ncook-front /usr/share/nginx/html
+COPY --from=build /app/dist/click-ncook-front/browser /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
