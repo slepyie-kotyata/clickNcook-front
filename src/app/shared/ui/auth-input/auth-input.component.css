@@ -11,3 +11,40 @@ select:-webkit-autofill:focus {
   -webkit-text-fill-color: white;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in .25s ease-out;
+}
+
+.shake-input {
+  animation: shake .3s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+.red-glow {
+  box-shadow: 0 0 10px rgba(255, 0, 0, .9),
+  0 0 18px rgba(255, 120, 120, .8);
+  transition: .2s;
+}

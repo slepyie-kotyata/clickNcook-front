@@ -6,7 +6,7 @@ export function passwordsMatch(group: FormGroup) {
   const repeatPassword = group.get('repeat_password')?.value;
   return password === repeatPassword
     ? null
-    : {passwordsMismatch: 'Пароли не совпадают.'};
+    : {passwordsMismatch: 'Пароли не совпадают'};
 }
 
 // Валидатор для проверки сложности пароля
@@ -14,27 +14,27 @@ export function password(control: FormControl) {
   const value: string = control.value || '';
 
   if (value.length < 8) {
-    return {invalidPassword: 'Пароль должен быть не менее 8 символов.'};
+    return {invalidPassword: 'Пароль должен быть не менее 8 символов'};
   }
 
   if (!/[A-Z]/.test(value)) {
     return {
-      invalidPassword: 'Пароль должен содержать хотя бы одну заглавную букву.',
+      invalidPassword: 'Пароль должен содержать хотя бы одну заглавную букву',
     };
   }
 
   if (!/[a-z]/.test(value)) {
     return {
-      invalidPassword: 'Пароль должен содержать хотя бы одну строчную букву.',
+      invalidPassword: 'Пароль должен содержать хотя бы одну строчную букву',
     };
   }
 
   if (!/\d/.test(value)) {
-    return {invalidPassword: 'Пароль должен содержать хотя бы одну цифру.'};
+    return {invalidPassword: 'Пароль должен содержать хотя бы одну цифру'};
   }
 
   if (/\s/.test(value)) {
-    return {invalidPassword: 'Пароль не должен содержать пробелов.'};
+    return {invalidPassword: 'Пароль не должен содержать пробелов'};
   }
 
   const simplePatterns = [
@@ -47,13 +47,13 @@ export function password(control: FormControl) {
   ];
   const lowerValue = value.toLowerCase();
   if (simplePatterns.some((pattern) => lowerValue.includes(pattern))) {
-    return {invalidPassword: 'Пароль слишком простой. Попробуйте другой.'};
+    return {invalidPassword: 'Пароль слишком простой'};
   }
 
   if (/(.)\1{3,}/.test(value)) {
     return {
       invalidPassword:
-        'Пароль не должен содержать более 3 одинаковых символов подряд.',
+        'Пароль не должен содержать более 3 одинаковых символов подряд',
     };
   }
 
@@ -65,5 +65,5 @@ export function email(control: FormControl) {
   const strictEmailRegex =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
   const valid = strictEmailRegex.test(control.value);
-  return valid ? null : {invalidEmail: 'Введите корректный email.'};
+  return valid ? null : {invalidEmail: 'Некорректная почта'};
 }
