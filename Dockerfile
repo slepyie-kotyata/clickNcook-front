@@ -1,23 +1,26 @@
 ﻿# Build Angular
 FROM node:20-alpine as build
 
-ARG NG_APP_API
-ARG NG_APP_WEBSOCKET_API
-
-ENV NG_APP_API=$NG_APP_API
-ENV NG_APP_WEBSOCKET_API=$NG_APP_WEBSOCKET_API
+# Забираем env переменные из Dokploy (они доступны как runtime env)
+ENV NG_APP_API=""
+ENV NG_APP_WEBSOCKET_API=""
 
 WORKDIR /app
+
 COPY package*.json ./
 RUN npm ci --legacy-peer-deps
 COPY . .
 
-# debug — важный момент!
-RUN echo "API=$NG_APP_API WS=$NG_APP_WEBSOCKET_API"
+# проверим что env реально пришли
+RUN printenv | grep NG_APP || echo "env-переменные не пришли!"
 
-RUN npm run build
+# перед билдом экспортируем их вручную в процесс
+RUN export NG_APP_API=$NG_APP_API && \
+    export NG_APP_WEBSOCKET_API=$NG_APP_WEBSOCKET_API && \
+    echo "API=$NG_APP_API" && echo "WS=$NG_APP_WEBSOCKET_API" && \
+    npm run build
 
-# NGINX
+# Production nginx
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
