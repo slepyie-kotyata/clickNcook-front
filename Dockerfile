@@ -1,18 +1,13 @@
-﻿# Angular
-FROM node:20-alpine AS build
+﻿FROM node:latest AS build
 
 WORKDIR /app
-
 COPY package*.json ./
-RUN npm ci --legacy-peer-deps
-
+RUN npm ci
 COPY . .
+RUN npm run build -- --configuration production
 
-RUN npm run build
 
-# NGINX
 FROM nginx:alpine
-
 COPY --from=build /app/dist/click-ncook-front/browser /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
