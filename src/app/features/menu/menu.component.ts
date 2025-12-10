@@ -24,17 +24,17 @@ export class MenuComponent {
     requiredRank: number;
     disabled?: boolean;
   }[] = [
-    {type: 'dish', icon: '/icons/fondue.svg', requiredRank: 0},
-    {type: 'equipment', icon: '/icons/table.svg', requiredRank: 3},
-    {type: 'global', icon: '/icons/upgrades.svg', requiredRank: 10},
-    {type: 'staff', icon: '/icons/person.svg', requiredRank: 20},
+    {type: 'dish', icon: '/icons/menu/grill.svg', requiredRank: 0},
+    {type: 'equipment', icon: '/icons/menu/table.svg', requiredRank: 3},
+    {type: 'global', icon: '/icons/menu/up.svg', requiredRank: 10},
+    {type: 'staff', icon: '/icons/menu/stuff.svg', requiredRank: 20},
     {
       type: 'recipe',
-      icon: '/icons/menu.svg',
+      icon: '/icons/menu/menu.svg',
       requiredRank: 999,
       disabled: true,
     },
-    {type: 'point', icon: '/icons/map.svg', requiredRank: 70},
+    {type: 'point', icon: '/icons/menu/map.svg', requiredRank: 70},
   ];
 
   constructor(protected store: GameStore, protected gameService: GameService) {

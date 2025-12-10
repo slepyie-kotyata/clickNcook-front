@@ -11,7 +11,7 @@
           class="z-max mt-4 flex w-full items-center justify-center gap-2 rounded-3xl border-2 border-black bg-secondary px-4 py-3 text-lg font-bold text-black shadow-[0_6px_0_rgba(0,0,0,0.15)] transition active:scale-95 xl:hidden"
           type="button"
         >
-          <img alt="" class="h-6 w-6" src="/icons/upgrades.svg"/>
+          <img alt="" class="h-6 w-6" src="/icons/menu/up.svg"/>
           Улучшения
         </button>
         <app-game-buttons (cook)="handleCook()" (sell)="handleSell()"
@@ -77,7 +77,7 @@
       type="button"
     >
       <img
-        [src]="sound.currentVolume > 0 ? '/icons/sound-on.svg' : '/icons/sound-off.svg'"
+        [src]="sound.currentVolume > 0 ? '/icons/game/sound-on.svg' : '/icons/game/sound-off.svg'"
         alt="Звук"
         class="w-7 h-7"
       />

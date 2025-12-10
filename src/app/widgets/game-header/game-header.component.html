@@ -10,11 +10,11 @@
     </button>
     <p class="text-lg sm:text-2xl font-semibold lg:text-xl xl:text-2xl xl:hidden">
       {{ session?.dishes ?? 0 }}
-      <img class="inline w-8 h-8" src="/icons/dishes.svg">
+      <img class="inline w-8 h-8" src="/icons/game/dishes.svg">
     </p>
     <p class="text-lg sm:text-2xl font-semibold lg:text-xl xl:text-2xl xl:hidden">
       {{ session?.money ?? 0 }}
-      <img class="inline w-8 h-8" src="/icons/money.svg">
+      <img class="inline w-8 h-8" src="/icons/game/money.svg">
     </p>
     <button
       (click)="openPrestige.emit()"
