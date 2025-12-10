@@ -4,7 +4,7 @@ import {SoundService} from './game/sound.service';
 import {ErrorService} from './game/error.service';
 import {IMessage} from '../../../entities/api';
 import {AuthService} from './auth.service';
-import {firstValueFrom} from 'rxjs';
+import {firstValueFrom, takeUntil} from 'rxjs';
 import {RequestType} from '../../../entities/types';
 import {GameStore} from '../stores/gameStore';
 
@@ -38,11 +38,13 @@ export class ApiService {
     try {
       if (this.ws.connected)
         this.ws.close();
-      await this.ws.connect().then(() => {
-        this.ws.message.subscribe((msg) => {
-          this.newMessage(msg);
-        });
-      })
+      await this.ws.connect()
+        .then(() => {
+          this.ws.message
+            .pipe(takeUntil(this.store.destroy$))
+            .subscribe(msg => this.newMessage(msg));
+        })
+        .then(() => this.level_check())
         .then(() => this.sound.load());
 
     } catch (error) {
@@ -57,7 +59,9 @@ export class ApiService {
   async newMessage(msg: IMessage) {
     switch (msg.request_type) {
       case "error":
-        await this.tryRefreshAndRetry(msg);
+        if (msg.data?.['message'] && (msg.data?.['message'] === "token invalid" || msg.data?.['message'] === "missing token")) {
+          await this.tryRefreshAndRetry(msg);
+        }
         break;
       case "session":
         if (msg.data?.['session']) {
@@ -68,16 +72,60 @@ export class ApiService {
         }
         break;
       case "cook":
-        this.sound.play('cook');
-        //TODO: увеличивать блюда
+        if (msg.data?.['message']) {
+          let session = this.store.session();
+          if (session) {
+            session.dishes = msg.data['message'].dishes;
+            session.level.xp = msg.data['message'].xp;
+            this.store.session.set(session);
+            this.sound.play('cook');
+          } else {
+            this.error.handle('No session data');
+          }
+        } else {
+          this.error.handle('No cook data');
+        }
         break;
       case "sell":
-        this.sound.play('sell');
-        //TODO: увеличивать монеты и уменьшать блюда
+        if (msg.data?.['message']) {
+          let session = this.store.session();
+          if (session) {
+            session.dishes = msg.data['message'].dishes;
+            session.money = msg.data['message'].money;
+            session.level.xp = msg.data['message'].xp;
+            this.store.session.set(session);
+            this.sound.play('sell');
+          } else {
+            this.error.handle('No session data');
+          }
+        } else {
+          this.error.handle('No sell data');
+        }
+        break;
+      case "level_check":
+        if (msg.data?.['message']) {
+          this.store.neededXp.set(msg.data['message'].needed_xp);
+          if (msg.data?.['message'].current_xp > msg.data?.['message'].needed_xp) {
+            this.level_up();
+          }
+        }
+        break;
+      case "level_up":
+        if (msg.data?.['message']) {
+          let session = this.store.session();
+          if (session) {
+            session.level.rank = msg.data['message'].current_rank;
+            session.level.xp = msg.data['message'].current_xp;
+            this.store.session.set(session);
+            this.sound.play('level-up');
+          } else {
+            this.error.handle('No session data');
+          }
+        } else {
+          this.error.handle('No level data');
+        }
         break;
       case "passive":
-      case "level_check":
-      case "level_up":
       case "session_reset":
       case "upgrade_buy":
       case "upgrade_list":
@@ -95,16 +143,16 @@ export class ApiService {
 
   cook() {
     let request = this.buildRequest("cook");
-    this.sendWithAuthRetry(request);
+    this.sendWithAuthRetry(request).then(() => this.level_check());
   }
 
   sell() {
     let request = this.buildRequest("sell");
-    this.sendWithAuthRetry(request);
+    this.sendWithAuthRetry(request).then(() => this.level_check());
   }
 
   upgrade_buy(id: number) {
-    let request = this.buildRequest("upgrade_buy", {upgrade_id: id});
+    let request = this.buildRequest("upgrade_buy", {id: id});
     this.sendWithAuthRetry(request);
   }
 

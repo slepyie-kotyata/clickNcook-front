@@ -63,7 +63,9 @@ export class WebSocketService {
 
       this.socket$.subscribe({
         next: msg => this.msg$.next(msg),
-        error: err => reject(err),
+        error: err => {
+          console.error("[WS ERROR EVENT]", err);
+        },
         complete: () => this.isConnected = false
       });
     });

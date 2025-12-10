@@ -10,7 +10,14 @@ import {ISession} from '../../entities/game';
 })
 export class GameHeaderComponent {
   @Input({required: true}) session: ISession | null;
+  @Input({required: true}) neededXp: number;
 
   @Output() openProfile = new EventEmitter<void>();
   @Output() openPrestige = new EventEmitter<void>();
+
+
+  protected getLevelPercentage(): number {
+    if (!this.session) return 100;
+    return Math.floor((this.session.level.xp / this.neededXp) * 100);
+  }
 }
