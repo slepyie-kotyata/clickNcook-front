@@ -17,7 +17,7 @@
       {{ upgrade.name }}
     </p>
     <span *ngIf="type === 'shop'" class="flex-1"></span>
-    <p *ngIf="type === 'shop'">{{ priceString() }} ⛁</p>
+    <p *ngIf="type === 'shop'" class="whitespace-nowrap">{{ priceString() }}⛁</p>
     <img *ngIf="type === 'shop'"
          [ngClass]="{
       'opacity-70': blocked,
