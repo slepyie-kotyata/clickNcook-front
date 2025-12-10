@@ -24,7 +24,6 @@ export class PwaService {
     this.deferredPrompt.prompt();
 
     const result = await this.deferredPrompt.userChoice;
-    console.log('Install result:', result.outcome);
 
     this.deferredPrompt = null;
     this.isInstallAvailable.set(false);
