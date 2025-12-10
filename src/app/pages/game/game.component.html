@@ -5,7 +5,7 @@
                      [session]="this.store.session()"></app-game-header>
     <div
       class="!z-max flex w-full flex-col gap-4 px-4 sm:px-6 xl:flex-1 xl:flex-row xl:items-end xl:justify-between xl:gap-0 xl:px-0">
-      <div class="fixed bottom-14 w-auto">
+      <div class="fixed bottom-20 w-auto">
         <button
           (click)="toggleMobileUpgrades(true)"
           class="z-max mt-4 flex w-full items-center justify-center gap-2 rounded-3xl border-2 border-black bg-secondary px-4 py-3 text-lg font-bold text-black shadow-[0_6px_0_rgba(0,0,0,0.15)] transition active:scale-95 xl:hidden"
@@ -51,15 +51,15 @@
              [closeOnBackdrop]="true"
              [show]="logoutWindowToggle">
     <div class="flex flex-col items-center font-tektur py-[3.5dvh] px-[8.5dvw] drop-shadow-md">
-      <h2 class="text-white text-center md:text-4xl drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,1)]">Вы уверены, <br>что
+      <h2 class="text-text text-center md:text-4xl">Вы уверены, <br>что
         хотите выйти?</h2>
-      <section class="flex flex-col gap-4 sm:flex-row sm:gap-5 w-full">
+      <section class="flex flex-row justify-center gap-4 w-full">
         <button (click)="logout()"
-                class="bg-green-600 border-2 border-black mt-[2.5dvh] rounded-2xl px-6 py-3 font-bold text-2xl text-white w-full sm:w-auto">
+                class="bg-brand border-2 border-black mt-[2.5dvh] rounded-2xl px-6 py-3 font-bold text-2xl text-text w-full sm:w-auto">
           Да
         </button>
         <button (click)="toggleModal('logout',false)"
-                class="bg-red border-2 border-black mt-[2.5dvh] rounded-2xl px-6 py-3 font-bold text-2xl text-white w-full sm:w-auto">
+                class="bg-brand border-2 border-black mt-[2.5dvh] rounded-2xl px-6 py-3 font-bold text-2xl text-text w-full sm:w-auto">
           Нет
         </button>
       </section>

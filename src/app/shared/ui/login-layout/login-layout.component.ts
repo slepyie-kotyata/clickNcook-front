@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {NgOptimizedImage} from '@angular/common';
+import {PwaService} from '../../lib/services/pwa.service';
 
 @Component({
   selector: 'app-login-layout',
@@ -9,4 +10,7 @@ import {NgOptimizedImage} from '@angular/common';
   templateUrl: './login-layout.component.html',
   styleUrl: './login-layout.component.css',
 })
-export class LoginLayoutComponent {}
+export class LoginLayoutComponent {
+  constructor(protected pwa: PwaService) {
+  }
+}
