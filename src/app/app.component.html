@@ -1,1 +1,10 @@
+@if (update.updateAvailable()) {
+  <button
+    (click)="update.applyUpdate()"
+    class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-green-500
+           text-white px-4 py-2 rounded-xl shadow active:scale-95 z-[9999]">
+    Доступно обновление — обновить
+  </button>
+}
+
 <router-outlet></router-outlet>
