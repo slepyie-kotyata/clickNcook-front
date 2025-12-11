@@ -20,6 +20,9 @@ export class WebSocketService {
   private readonly socketURL = import.meta.env.NG_APP_WEBSOCKET_API;
 
   constructor(private auth: AuthService, private error: ErrorService) {
+    this.auth.onLogout$.subscribe(() => {
+      this.shutdown();
+    });
   }
 
   get connected() {
@@ -32,6 +35,7 @@ export class WebSocketService {
 
   async connect(): Promise<void> {
     if (this.isConnected) return;
+    if (!this.auth.isAuthenticated) return;
 
     return new Promise((resolve, reject) => {
       this.socket$ = webSocket<IMessage>({
@@ -106,7 +110,6 @@ export class WebSocketService {
     });
   }
 
-
   /**
    Корректно закрывает текущее WebSocket соединение и очищает очередь сообщений
    */
@@ -129,17 +132,28 @@ export class WebSocketService {
   }
 
   reconnect() {
-    setTimeout(() => {
+    if (!this.auth.isAuthenticated) return;
+
+    let reconnectTimeout = setTimeout(() => {
       try {
         this.connect();
       } catch (err) {
         this.reconnectAttempts++;
         if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-          this.auth.logout("Сессия истекла");
+          if (this.auth.isAuthenticated) {
+            this.auth.logout("Сессия истекла");
+          }
+          clearTimeout(reconnectTimeout);
           return;
         }
       }
     }, 1000);
+  }
+
+  private shutdown() {
+    this.reconnectAttempts = this.maxReconnectAttempts;
+    this.pendingMap.clear();
+    this.close();
   }
 
 }

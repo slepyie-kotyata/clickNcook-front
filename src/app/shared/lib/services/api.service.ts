@@ -8,7 +8,6 @@ import {firstValueFrom, Subscription, takeUntil} from 'rxjs';
 import {RequestType} from '../../../entities/types';
 import {GameStore} from '../stores/gameStore';
 import {ISession} from '../../../entities/game';
-import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -23,8 +22,11 @@ export class ApiService {
     private sound: SoundService,
     private error: ErrorService,
     private store: GameStore,
-    private router: Router
   ) {
+    this.auth.onLogout$.subscribe(() => {
+      this.store.destroy$.next();
+      this.store.destroy$.complete();
+    });
   }
 
   /** Токен доступа из локального хранилища */
