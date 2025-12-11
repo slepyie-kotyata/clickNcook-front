@@ -74,9 +74,6 @@ export class ApiService {
           break;
         }
         this.store.session.set(msg.data['session']);
-        if (this.store.session()?.upgrades.current.find(x => x.boost.boost_type === 'dPs' || x.boost.boost_type === 'mPs')) {
-          this.passive();
-        }
         this.store.isLoaded.set(true);
         break;
       case "cook":
@@ -203,12 +200,7 @@ export class ApiService {
 
   upgrade_buy(id: number) {
     let request = this.buildRequest("upgrade_buy", {id: id});
-    this.sendWithAuthRetry(request).then(() => {
-      let upgrade = this.store.availableUpgrades().filter(x => x.id === id);
-      if (upgrade[0].boost.boost_type === 'mPs' || upgrade[0].boost.boost_type === 'dPs') {
-        this.passive();
-      }
-    });
+    this.sendWithAuthRetry(request);
   }
 
   upgrade_list() {
@@ -228,11 +220,6 @@ export class ApiService {
 
   session_reset() {
     let request = this.buildRequest("session_reset");
-    this.sendWithAuthRetry(request);
-  }
-
-  passive() {
-    let request = this.buildRequest("passive");
     this.sendWithAuthRetry(request);
   }
 
