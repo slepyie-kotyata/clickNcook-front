@@ -121,8 +121,8 @@ export class ErrorService {
     return error instanceof Event && error.type === "error";
   }
 
-  private isStringError(error: unknown): error is String {
-    return error instanceof String;
+  private isStringError(error: unknown): error is string {
+    return typeof error === 'string';
   }
 
 }

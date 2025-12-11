@@ -4,7 +4,7 @@ import {SoundService} from './game/sound.service';
 import {ErrorService} from './game/error.service';
 import {IMessage} from '../../../entities/api';
 import {AuthService} from './auth.service';
-import {firstValueFrom, takeUntil} from 'rxjs';
+import {firstValueFrom, Subscription, takeUntil} from 'rxjs';
 import {RequestType} from '../../../entities/types';
 import {GameStore} from '../stores/gameStore';
 import {ISession} from '../../../entities/game';
@@ -15,6 +15,8 @@ import {Router} from '@angular/router';
 })
 /** API сервис для общения с бэкендом */
 export class ApiService {
+  private wsSub?: Subscription;
+
   constructor(
     private ws: WebSocketService,
     private auth: AuthService,
@@ -39,16 +41,12 @@ export class ApiService {
     await new Promise(res => setTimeout(res, 30));
 
     try {
-      if (this.ws.connected)
-        this.ws.close();
-      await this.ws.connect()
-        .then(() => {
-          this.ws.message
-            .pipe(takeUntil(this.store.destroy$))
-            .subscribe(msg => this.newMessage(msg));
-        })
-        .then(() => this.level_check())
-        .then(() => this.sound.load());
+      if (this.ws.connected) this.ws.close();
+
+      this.subscribeToWS();
+
+      await this.ws.connect();
+      this.sound.load();
 
     } catch (error) {
       this.error.handle(error);
@@ -73,6 +71,7 @@ export class ApiService {
           this.error.handle('No session data');
           break;
         }
+        this.level_check();
         this.store.session.set(msg.data['session']);
         this.store.isLoaded.set(true);
         break;
@@ -110,8 +109,8 @@ export class ApiService {
         this.level_check();
         break;
       case "level_check":
-        if (!msg.data?.['current_xp']) {
-          this.error.handle('No xp data');
+        if (!msg.data?.['current_rank'] && !msg.data?.['current_xp'] && !msg.data?.['needed_xp']) {
+          this.error.handle('No level data');
           break;
         }
         this.store.neededXp.set(msg.data['needed_xp']);
@@ -134,7 +133,7 @@ export class ApiService {
         this.sound.play('level-up');
         break;
       case "upgrade_buy":
-        if (!msg.data?.['money']) {
+        if (!msg.data?.['money'] && !msg.data?.['xp']) {
           this.error.handle('No upgrade buy data');
           break;
         }
@@ -221,6 +220,14 @@ export class ApiService {
   session_reset() {
     let request = this.buildRequest("session_reset");
     this.sendWithAuthRetry(request);
+  }
+
+  private subscribeToWS() {
+    this.wsSub?.unsubscribe();
+
+    this.wsSub = this.ws.message
+      .pipe(takeUntil(this.store.destroy$))
+      .subscribe(msg => this.newMessage(msg));
   }
 
   private updateSession(
