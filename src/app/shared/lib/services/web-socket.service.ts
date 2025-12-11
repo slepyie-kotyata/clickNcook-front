@@ -3,6 +3,7 @@ import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {ReplaySubject} from 'rxjs';
 import {IMessage} from '../../../entities/api';
 import {AuthService} from './auth.service';
+import {ErrorService} from './game/error.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,7 @@ export class WebSocketService {
 
   private readonly socketURL = import.meta.env.NG_APP_WEBSOCKET_API;
 
-  constructor(private auth: AuthService) {
+  constructor(private auth: AuthService, private error: ErrorService) {
   }
 
   get connected() {
@@ -51,7 +52,7 @@ export class WebSocketService {
         },
         closeObserver: {
           next: (event) => {
-            console.warn("[WS CLOSED]", event.code, event.reason);
+            this.error.handle(event);
             this.isConnected = false;
 
             if (event.code !== 1000) {
@@ -64,7 +65,7 @@ export class WebSocketService {
       this.socket$.subscribe({
         next: msg => this.msg$.next(msg),
         error: err => {
-          console.error("[WS ERROR EVENT]", err);
+          this.error.handle(err);
         },
         complete: () => this.isConnected = false
       });
@@ -120,7 +121,7 @@ export class WebSocketService {
       this.socket$.complete();
       this.socket$.unsubscribe();
     } catch (e) {
-      console.error("[WS] Close error:", e);
+      this.error.handle(e);
     }
 
     this.isConnected = false;

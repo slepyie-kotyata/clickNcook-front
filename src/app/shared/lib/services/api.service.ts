@@ -38,8 +38,6 @@ export class ApiService {
   async loadData() {
     this.store.isLoaded.set(false);
 
-    await new Promise(res => setTimeout(res, 30));
-
     try {
       if (this.ws.connected) this.ws.close();
 
@@ -176,7 +174,7 @@ export class ApiService {
         break;
       case "passive":
       default:
-        console.log(msg.data);
+        console.warn('Unknown message data:\n', msg.data);
     }
   }
 

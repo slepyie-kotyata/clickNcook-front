@@ -48,6 +48,7 @@ export class ErrorService {
    * @remarks
    * Если ошибка является HTTP ошибкой, проверяет статус и при необходимости выполняет выход из системы.
    * Если ошибка является WebSocket ошибкой, проверяет код и при необходимости выполняет выход из системы.
+   * Если ошибка является строковой ошибкой, добавляет ее в очередь ошибок.
    * Если ошибка неизвестного типа, выполняет выход из системы с сообщением о непредвиденной ошибке.
    * */
   public handle(error: any) {
@@ -71,6 +72,10 @@ export class ErrorService {
       }
     } else if (this.isWebSocketError(error)) {
       switch (error.code) {
+        case 1001:
+        case 1006:
+          console.warn(`[WS ${error.code}]: closed by server`)
+          break;
         default:
           console.error(
             `[WS ERROR ${error.code}]:`,
@@ -80,11 +85,11 @@ export class ErrorService {
           return;
       }
     } else if (this.isWebSocketEvent(error)) {
-      console.warn("[WS BROWSER WS EVENT ERROR]");
+      console.warn("[WS BROWSER EVENT ERROR]");
       this.error$.next();
       return;
     } else if (this.isStringError(error)) {
-      console.error(error);
+      console.warn('[SERVER ERROR]', error);
       this.error$.next();
       return;
     } else {
