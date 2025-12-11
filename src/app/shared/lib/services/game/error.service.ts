@@ -83,6 +83,10 @@ export class ErrorService {
       console.warn("[WS BROWSER WS EVENT ERROR]");
       this.error$.next();
       return;
+    } else if (this.isStringError(error)) {
+      console.error(error);
+      this.error$.next();
+      return;
     } else {
       console.error('[UNKNOWN ERROR]: \n ', error);
       this.auth.logout('Непредвиденная ошибка');
@@ -115,6 +119,10 @@ export class ErrorService {
 
   private isWebSocketEvent(error: unknown): error is Event {
     return error instanceof Event && error.type === "error";
+  }
+
+  private isStringError(error: unknown): error is String {
+    return error instanceof String;
   }
 
 }

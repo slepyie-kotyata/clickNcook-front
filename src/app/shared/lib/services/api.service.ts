@@ -7,6 +7,7 @@ import {AuthService} from './auth.service';
 import {firstValueFrom, takeUntil} from 'rxjs';
 import {RequestType} from '../../../entities/types';
 import {GameStore} from '../stores/gameStore';
+import {ISession} from '../../../entities/game';
 
 @Injectable({
   providedIn: 'root',
@@ -61,74 +62,106 @@ export class ApiService {
       case "error":
         if (msg.data?.['message'] && (msg.data?.['message'] === "token invalid" || msg.data?.['message'] === "missing token")) {
           await this.tryRefreshAndRetry(msg);
+          break;
         }
+        this.error.handle(msg.data ? msg.data['message'] : 'Unknow error from server');
         break;
       case "session":
-        if (msg.data?.['session']) {
-          this.store.session.set(msg.data['session']);
+        if (!msg.data?.['session']) {
+          this.error.handle('No session data');
+          break;
         }
-        if (!this.store.isLoaded()) {
-          this.store.isLoaded.set(true);
-        }
+        this.store.session.set(msg.data['session']);
+        this.store.isLoaded.set(true);
         break;
       case "cook":
-        if (msg.data?.['message']) {
-          let session = this.store.session();
-          if (session) {
-            session.dishes = msg.data['message'].dishes;
-            session.level.xp = msg.data['message'].xp;
-            this.store.session.set(session);
-            this.sound.play('cook');
-          } else {
-            this.error.handle('No session data');
-          }
-        } else {
+        if (!msg.data?.['dishes'] && !msg.data?.['xp']) {
           this.error.handle('No cook data');
+          break;
         }
+        this.updateSession(session => ({
+          ...session,
+          dishes: msg.data['dishes'],
+          level: {
+            ...session.level,
+            xp: msg.data['xp'],
+          }
+        }));
+        this.sound.play('cook');
+        this.level_check();
         break;
       case "sell":
-        if (msg.data?.['message']) {
-          let session = this.store.session();
-          if (session) {
-            session.dishes = msg.data['message'].dishes;
-            session.money = msg.data['message'].money;
-            session.level.xp = msg.data['message'].xp;
-            this.store.session.set(session);
-            this.sound.play('sell');
-          } else {
-            this.error.handle('No session data');
-          }
-        } else {
+        if (!msg.data?.['dishes'] && !msg.data?.['money']) {
           this.error.handle('No sell data');
+          break;
         }
+        this.updateSession(session => ({
+          ...session,
+          dishes: msg.data['dishes'],
+          money: msg.data['money'],
+          level: {
+            ...session.level,
+            xp: msg.data['xp'],
+          }
+        }));
+        this.sound.play('sell');
+        this.level_check();
         break;
       case "level_check":
-        if (msg.data?.['message']) {
-          this.store.neededXp.set(msg.data['message'].needed_xp);
-          if (msg.data?.['message'].current_xp > msg.data?.['message'].needed_xp) {
-            this.level_up();
-          }
+        if (!msg.data?.['current_xp']) {
+          this.error.handle('No xp data');
+          break;
+        }
+        this.store.neededXp.set(msg.data['needed_xp']);
+        if (msg.data?.['current_xp'] > msg.data?.['needed_xp']) {
+          this.level_up();
         }
         break;
       case "level_up":
-        if (msg.data?.['message']) {
-          let session = this.store.session();
-          if (session) {
-            session.level.rank = msg.data['message'].current_rank;
-            session.level.xp = msg.data['message'].current_xp;
-            this.store.session.set(session);
-            this.sound.play('level-up');
-          } else {
-            this.error.handle('No session data');
-          }
-        } else {
+        if (!msg.data?.['current_rank']) {
           this.error.handle('No level data');
+          break;
         }
+        this.updateSession(session => ({
+          ...session,
+          level: {
+            rank: msg.data['current_rank'],
+            xp: msg.data['current_xp'],
+          }
+        }));
+        this.sound.play('level-up');
+        break;
+      case "upgrade_buy":
+        if (!msg.data?.['money']) {
+          this.error.handle('No upgrade buy data');
+          break;
+        }
+        this.updateSession(session => ({
+          ...session,
+          money: msg.data['money'],
+          level: {
+            ...session.level,
+            xp: msg.data['xp'],
+          }
+        }));
+        this.sound.play('buy');
+        this.upgrade_list();
+        break;
+      case "upgrade_list":
+        if (!msg.data?.['available']) {
+          this.error.handle('No upgrade list data');
+          break;
+        }
+        this.updateSession(session => ({
+          ...session,
+          upgrades: {
+            available: msg.data['available'],
+            current: msg.data['current'],
+          }
+        }));
         break;
       case "passive":
       case "session_reset":
-      case "upgrade_buy":
-      case "upgrade_list":
       default:
         console.log(msg.data);
     }
@@ -143,17 +176,22 @@ export class ApiService {
 
   cook() {
     let request = this.buildRequest("cook");
-    this.sendWithAuthRetry(request).then(() => this.level_check());
+    this.sendWithAuthRetry(request);
   }
 
   sell() {
     let request = this.buildRequest("sell");
-    this.sendWithAuthRetry(request).then(() => this.level_check());
+    this.sendWithAuthRetry(request);
   }
 
   upgrade_buy(id: number) {
     let request = this.buildRequest("upgrade_buy", {id: id});
-    this.sendWithAuthRetry(request);
+    this.sendWithAuthRetry(request).then(() => {
+      let upgrade = this.store.availableUpgrades().filter(x => x.id === id);
+      if (upgrade[0].boost.boost_type === 'mPs' || upgrade[0].boost.boost_type === 'dPs') {
+        this.passive();
+      }
+    });
   }
 
   upgrade_list() {
@@ -174,6 +212,23 @@ export class ApiService {
   session_reset() {
     let request = this.buildRequest("session_reset");
     this.sendWithAuthRetry(request);
+  }
+
+  passive() {
+    let request = this.buildRequest("passive");
+    this.sendWithAuthRetry(request);
+  }
+
+  private updateSession(
+    updater: (session: ISession) => ISession
+  ) {
+    const session = this.store.session();
+    if (!session) {
+      this.error.handle('No session data');
+      return;
+    }
+
+    this.store.session.set(updater(session));
   }
 
   private async tryRefreshAndRetry(msg: IMessage) {

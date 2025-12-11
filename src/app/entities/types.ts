@@ -9,22 +9,22 @@ export type Upgrade =
 
 /** Типы бустов, которые могут быть применены в игре */
 export type Boost =
-  | 'dPc'
-  | 'mPc'
-  | 'dPs'
-  | 'mPs'
-  | 'dM'
-  | 'mM'
-  | 'dpM'
-  | 'mpM'
-  | 'sPs';
+  | 'dPc' // dishes per click
+  | 'mPc' // money per click
+  | 'dPs' // dishes per second
+  | 'mPs' // money per second
+  | 'dM' // dishes multiplier
+  | 'mM' // money multiplier
+  | 'dpM' // dishes passive multiplier
+  | 'mpM' // money passive multiplier
+  | 'sPs'; // sold per sell
 
 /** Типы сообщений, используемых в коммуникации с API */
 export type MessageType = 'response' | 'request';
 
 /** Типы запросов, которые могут быть отправлены к API */
 export type RequestType =
-  'cook'
+  | 'cook'
   | 'sell'
   | 'upgrade_buy'
   | 'upgrade_list'
