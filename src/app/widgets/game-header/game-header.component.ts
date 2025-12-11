@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ISession} from '../../entities/game';
+import formatNumber from '../../shared/lib/formatNumber';
 
 @Component({
   selector: 'app-game-header',
@@ -14,7 +15,7 @@ export class GameHeaderComponent {
 
   @Output() openProfile = new EventEmitter<void>();
   @Output() openPrestige = new EventEmitter<void>();
-
+  protected readonly formatNumber = formatNumber;
 
   protected getLevelPercentage(): number {
     if (!this.session) return 100;
