@@ -144,6 +144,7 @@ export class ApiService {
           }
         }));
         this.sound.play('buy');
+        this.level_check();
         this.upgrade_list();
         break;
       case "upgrade_list":
