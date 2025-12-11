@@ -176,6 +176,24 @@ export class ApiService {
         this.error.handle('Reset error');
         break;
       case "passive":
+        if (!msg.data) {
+          this.error.handle('No passive data');
+        }
+        this.updateSession(session => ({
+          ...session,
+          dishes: msg.data['dishes'],
+          level: {
+            rank: msg.data['level_rank'],
+            xp: msg.data['level_xp'],
+          },
+          money: msg.data['money'],
+          prestige: {
+            ...session.prestige,
+            accumulated_value: msg.data['prestige_accumulated']
+          }
+        }))
+        this.level_check();
+        break;
       default:
         console.warn('Unknown message data:\n', msg.data);
     }
