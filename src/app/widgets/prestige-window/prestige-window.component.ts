@@ -1,14 +1,13 @@
 import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {ModalComponent} from '../../shared/ui/modal/modal.component';
 import formatNumber from '../../shared/lib/formatNumber';
-import {NgIf} from '@angular/common';
 import {GameStore} from '../../shared/lib/stores/gameStore';
 import {ApiService} from '../../shared/lib/services/api.service';
 
 @Component({
   selector: 'app-prestige-window',
   standalone: true,
-  imports: [ModalComponent, NgIf],
+  imports: [ModalComponent],
   templateUrl: './prestige-window.component.html',
   styleUrl: './prestige-window.component.css',
 })
@@ -19,20 +18,17 @@ export class PrestigeWindowComponent {
   protected store = inject(GameStore);
   protected api = inject(ApiService);
   protected isProcessing: boolean = false;
-  protected readonly parseFloat = parseFloat;
   protected readonly formatNumber = formatNumber;
 
   protected get accumulatedPrestigeMultiplier(): number {
     return parseFloat(
-      (1 + (this.store.session()?.prestige.accumulated_value ?? 0) * 0.5).toFixed(2),
+      ((this.store.session()?.prestige.current_boost_value ?? 1) + 1 +
+        (this.store.session()?.prestige.accumulated_value ?? 0) * 0.5).toFixed(2),
     );
   }
 
-  protected get currentPrestigeMultiplier(): number {
-    return parseFloat((1 + (this.store.session()?.prestige.current_boost_value ?? 0) * 0.5).toFixed(2));
-  }
-
   protected close() {
+    console.log(this.store.session()?.prestige.accumulated_value);
     this.closeEvent.emit(false);
   }
 

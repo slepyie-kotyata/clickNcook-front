@@ -8,6 +8,7 @@ import {firstValueFrom, takeUntil} from 'rxjs';
 import {RequestType} from '../../../entities/types';
 import {GameStore} from '../stores/gameStore';
 import {ISession} from '../../../entities/game';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,8 @@ export class ApiService {
     private auth: AuthService,
     private sound: SoundService,
     private error: ErrorService,
-    private store: GameStore
+    private store: GameStore,
+    private router: Router
   ) {
   }
 
@@ -72,6 +74,9 @@ export class ApiService {
           break;
         }
         this.store.session.set(msg.data['session']);
+        if (this.store.session()?.upgrades.current.find(x => x.boost.boost_type === 'dPs' || x.boost.boost_type === 'mPs')) {
+          this.passive();
+        }
         this.store.isLoaded.set(true);
         break;
       case "cook":
@@ -160,8 +165,20 @@ export class ApiService {
           }
         }));
         break;
-      case "passive":
       case "session_reset":
+        if (!msg.data?.['message']) {
+          this.error.handle('No reset data');
+          break;
+        }
+        if (msg.data['message'] === 'success') {
+          this.store.isLoaded.set(false);
+          this.ws.close();
+          window.location.reload();
+          break;
+        }
+        this.error.handle('Reset error');
+        break;
+      case "passive":
       default:
         console.log(msg.data);
     }
