@@ -24,7 +24,7 @@
   background: var(--thumb-color);
   border-top-right-radius: 16px;
   border-bottom-right-radius: 16px;
-  border-right: 20px solid #6F56FF;
+  border-right: 20px solid var(--brand);
   margin-block: 20px;
 }
 
