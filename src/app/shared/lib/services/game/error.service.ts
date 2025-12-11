@@ -26,7 +26,7 @@ export class ErrorService {
         }),
         tap(() => {
           if (this.errorCount >= this.limit) {
-            this.auth.logout('Непредвиденная ошибка');
+            this.auth.logout('Ошибка подключения к серверу');
           }
         }),
         tap(() => {
@@ -84,7 +84,7 @@ export class ErrorService {
             `[WS ERROR ${error.code}]:`,
             error.reason ?? 'Неизвестная причина',
           );
-          this.auth.logout('Ошибка подключения к серверу');
+          this.error$.next();
           return;
       }
     } else if (this.isWebSocketEvent(error)) {
