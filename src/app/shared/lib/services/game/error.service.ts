@@ -72,9 +72,12 @@ export class ErrorService {
       }
     } else if (this.isWebSocketError(error)) {
       switch (error.code) {
+        case 1000:
+          console.warn(`[WS ${error.code}: closed by client`);
+          break;
         case 1001:
         case 1006:
-          console.warn(`[WS ${error.code}]: closed by server`)
+          console.warn(`[WS ${error.code}]: closed by server`);
           break;
         default:
           console.error(
