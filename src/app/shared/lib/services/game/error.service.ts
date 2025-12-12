@@ -30,7 +30,7 @@ export class ErrorService {
           }
         }),
         tap(() => {
-          timer(5000)
+          timer(3000)
             .pipe(takeUntil(this.destroy$))
             .subscribe(() => {
               this.errorCount--;

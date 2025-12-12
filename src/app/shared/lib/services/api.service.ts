@@ -131,6 +131,7 @@ export class ApiService {
           }
         }));
         this.sound.play('level-up');
+        this.level_check();
         break;
       case "upgrade_buy":
         if (!msg.data?.['money'] && !msg.data?.['xp']) {
@@ -232,6 +233,9 @@ export class ApiService {
   }
 
   level_check() {
+    if (this.store.session()?.level.rank === 100) {
+      return;
+    }
     let request = this.buildRequest("level_check");
     this.sendWithAuthRetry(request);
   }

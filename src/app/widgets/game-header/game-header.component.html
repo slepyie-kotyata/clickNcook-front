@@ -30,9 +30,9 @@
   <div
     class="relative w-full max-w-xs sm:max-w-none sm:w-[330px] h-6 sm:h-[35px] lg:w-[200px] xl:w-[330px] lg:h-[35px]">
     <progress
-      [max]="neededXp"
-      [value]="session?.level?.xp ?? 0"
+      [value]="getLevelPercentage()"
       class="w-full h-full rounded-full overflow-hidden border border-black bg-secondary appearance-none"
+      max="100"
     >
     </progress>
     <p class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-black font-bold text-sm sm:text-xl">

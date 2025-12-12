@@ -19,6 +19,26 @@ export class GameHeaderComponent {
 
   protected getLevelPercentage(): number {
     if (!this.session) return 100;
-    return Math.floor((this.session.level.xp / this.neededXp) * 100);
+
+    const xp = this.session.level.xp;
+    const neededXp = this.neededXp;
+
+    if (
+      !Number.isFinite(xp) ||
+      !Number.isFinite(neededXp) ||
+      neededXp <= 0 ||
+      xp > Number.MAX_SAFE_INTEGER
+    ) {
+      return 100;
+    }
+
+    const percent = (xp / neededXp) * 100;
+
+    if (!Number.isFinite(percent)) {
+      return 100;
+    }
+
+    return Math.min(Math.floor(percent), 100);
   }
+
 }

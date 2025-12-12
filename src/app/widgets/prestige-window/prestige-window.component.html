@@ -23,7 +23,7 @@
           <img
             class="h-7 inline mb-2" src="/icons/star.svg"></span></p>
         <p class="text-white text-lg sm:text-xl">Бонус после сброса: ×<span
-          class="font-bold text-green-400">{{ accumulatedPrestigeMultiplier }}</span></p>
+          class="font-bold text-green-400">{{ formatNumber(accumulatedPrestigeMultiplier) }}</span></p>
       </section>
       <button (click)="handlePrestige()"
               [disabled]="(this.store.session()?.prestige?.accumulated_value ?? 0)<1 || isProcessing"
