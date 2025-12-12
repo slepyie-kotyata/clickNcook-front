@@ -1,4 +1,4 @@
-const CACHE_NAME = 'clickncook-cache-v1';
+const CACHE_NAME = 'clickncook-cache-v2';
 const APP_FILES = [
   '/',
   '/index.html',
