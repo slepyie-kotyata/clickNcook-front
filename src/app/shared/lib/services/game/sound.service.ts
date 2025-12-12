@@ -24,7 +24,7 @@ export class SoundService {
     if (this.isLoaded)
       return this.volume();
 
-    return localStorage.getItem('volume') ?? 100;
+    return parseInt(localStorage.getItem('volume') || '100', 10);
   }
 
   /**
