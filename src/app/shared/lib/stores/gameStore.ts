@@ -26,5 +26,6 @@ export class GameStore implements OnDestroy {
 
   ngOnDestroy() {
     this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -64,7 +64,7 @@ export class ApiService {
           await this.tryRefreshAndRetry(msg);
           break;
         }
-        this.error.handle(msg.data ? msg.data['message'] : 'Unknow error from server');
+        this.error.handle(msg.data ? msg.data['message'] : 'Unknown error from server');
         break;
       case "session":
         if (!msg.data?.['session']) {
@@ -192,7 +192,7 @@ export class ApiService {
             ...session.prestige,
             accumulated_value: msg.data['prestige_accumulated']
           }
-        }))
+        }));
         this.level_check();
         break;
       default:
