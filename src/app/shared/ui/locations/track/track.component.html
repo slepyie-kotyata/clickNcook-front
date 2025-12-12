@@ -1,19 +1,25 @@
-<div class="h-[100dvh] w-[100dvw] bg-sky fixed top-0 left-0">
+<div class="h-[100dvh] w-[100dvw] bg-sky fixed top-0 left-0 ">
   <div
     class="fixed top-0 left-0 w-full h-[100px] bg-repeat-x bg-contain bg-[url('/locations/track/sunblind.svg')]"></div>
-  <div class="fixed bottom-0 left-0 z-50 h-[35dvh] bg-repeat w-full bg-[url('/locations/track/desk.svg')]"></div>
+  <div class="fixed bottom-0 left-0 z-50 bg-cover bg-bottom h-[35vh] bg-no-repeat w-full bg-[url('/locations/track/desk.svg')]"></div>
   <div
     class="fixed top-1/2 -translate-y-[20%] z-10 h-[35dvh] bg-repeat-x w-full bg-[url('/locations/track/sea.svg')]"></div>
   <div class="fixed bottom-0 w-full h-[50dvh] z-20 bg-[#FFDF64]"></div>
   <div
-    class="fixed left-1/2 -translate-x-1/2 h-[20dvh] bg-repeat-x w-[80dvw] top-[15dvh] bg-contain bg-[url('/locations/track/clouds.svg')]"></div>
+    class="fixed left-1/2 -translate-x-1/2 h-[20dvh] bg-repeat-x w-[80dvw] top-[15%] bg-contain bg-[url('/locations/track/clouds.svg')]"></div>
 
   <div>
-    <img *ngIf="decorCount >=1" class="z-40 fixed left-[2dvw] bottom-1/2 translate-y-1/3 w-[326px] xl:w-[489px]"
-         src="/locations/track/table_red.svg">
-    <img *ngIf="decorCount >=2"
-         class="z-30 fixed right-1/2 bottom-1/2 -translate-x-[15%] translate-y-1/4 w-[163px] xl:w-[326px]"
-         src="/locations/track/table_blue.svg">
+    <img *ngIf="decorCount >=1"
+  class="z-40 fixed left-[2vw] bottom-1/2 translate-y-1/3 
+         w-[45vw] sm:w-[35vw] md:w-[25vw] xl:w-[489px]"
+  src="/locations/track/table_red.svg">
+
+<img *ngIf="decorCount >=2"
+  class="z-30 fixed right-1/2 bottom-1/2 
+         -translate-x-[15%] translate-y-1/4 
+         w-[30vw] sm:w-[25vw] md:w-[20vw] xl:w-[326px]"
+  src="/locations/track/table_blue.svg">
+
     <img *ngIf="decorCount >=3"
          class="z-30 fixed left-1/2 bottom-1/2 translate-x-[15%] translate-y-1/4 w-[163px] xl:w-[326px]"
          src="/locations/track/table_red.svg">
