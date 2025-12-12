@@ -17,14 +17,14 @@ import {Injectable, signal} from '@angular/core';
  Звуковые файлы должны находиться в папке /sounds и быть в формате .mp3
  */
 export class SoundService {
-  private volume = signal(50);
+  private volume = signal(100);
   private isLoaded = false;
 
   get currentVolume() {
     if (this.isLoaded)
       return this.volume();
 
-    return localStorage.getItem('volume');
+    return localStorage.getItem('volume') ?? 100;
   }
 
   /**
