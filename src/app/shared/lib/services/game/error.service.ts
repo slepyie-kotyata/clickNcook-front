@@ -13,7 +13,7 @@ export class ErrorService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly destroy$ = new Subject<void>();
   private readonly error$ = new Subject<void>();
-  private readonly limit = 5;
+  private readonly limit = 15;
   private errorCount: number = 0;
 
   constructor(private auth: AuthService) {
