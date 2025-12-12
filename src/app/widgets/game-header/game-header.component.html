@@ -23,7 +23,7 @@
       <img src="/icons/star.svg"/>
       <p
         class="absolute text-black font-bold text-xs sm:text-base leading-none overflow-hidden text-ellipsis whitespace-nowrap">
-        {{ session?.prestige?.current_value ?? 0 }}
+        {{ formatNumber(session?.prestige?.current_value ?? 0) }}
       </p>
     </button>
   </div>
