@@ -59,7 +59,7 @@ export class AuthComponent {
             this.authForm.get('email')?.setErrors({wrongEmailOrPassword: true});
             this.authForm.get('password')?.setErrors({wrongEmailOrPassword: true});
           } else {
-            this.toastrService.error(error.message, 'Ошибка авторизации');
+            this.toastrService.error(error.status, 'Ошибка авторизации');
           }
         },
       });

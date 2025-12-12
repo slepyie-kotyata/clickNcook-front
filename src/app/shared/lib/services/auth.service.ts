@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {ITokens} from '../../../entities/api';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
@@ -22,6 +22,9 @@ export class AuthService {
   private httpClient = inject(HttpClient);
   private router = inject(Router);
   private toastr = inject(ToastrService);
+  private readonly logout$ = new Subject<string | undefined>();
+
+  onLogout$ = this.logout$.asObservable();
 
   get isAuthenticated(): boolean {
     return !!localStorage.getItem('accessToken');
@@ -72,6 +75,7 @@ export class AuthService {
    @param reason - причина выхода (необязательно)
    */
   logout(reason?: string) {
+    this.logout$.next(reason);
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     this.router.navigate(['/auth']).then(

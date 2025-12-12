@@ -1,14 +1,15 @@
-import {computed, Injectable, signal} from '@angular/core';
+import {computed, Injectable, OnDestroy, signal} from '@angular/core';
 import {ISession, IUpgrade} from '../../../entities/game';
 import {GameService} from '../services/game/game.service';
+import {Subject} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
-export class GameStore {
+export class GameStore implements OnDestroy {
   session = signal<ISession | null>(null);
   isLoaded = signal(false);
+  destroy$ = new Subject<void>();
 
-  money = computed(() => this.session()?.money ?? 0);
-  level = computed(() => this.session()?.level.rank ?? 0);
+  neededXp = signal<number>(100);
 
   availableUpgrades = computed<IUpgrade[]>(() => {
     const s = this.session();
@@ -21,5 +22,10 @@ export class GameStore {
   });
 
   constructor(private game: GameService) {
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

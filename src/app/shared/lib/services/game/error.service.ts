@@ -13,7 +13,7 @@ export class ErrorService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly destroy$ = new Subject<void>();
   private readonly error$ = new Subject<void>();
-  private readonly limit = 5;
+  private readonly limit = 15;
   private errorCount: number = 0;
 
   constructor(private auth: AuthService) {
@@ -26,11 +26,11 @@ export class ErrorService {
         }),
         tap(() => {
           if (this.errorCount >= this.limit) {
-            this.auth.logout('Непредвиденная ошибка');
+            this.auth.logout('Ошибка подключения к серверу');
           }
         }),
         tap(() => {
-          timer(5000)
+          timer(3000)
             .pipe(takeUntil(this.destroy$))
             .subscribe(() => {
               this.errorCount--;
@@ -48,6 +48,7 @@ export class ErrorService {
    * @remarks
    * Если ошибка является HTTP ошибкой, проверяет статус и при необходимости выполняет выход из системы.
    * Если ошибка является WebSocket ошибкой, проверяет код и при необходимости выполняет выход из системы.
+   * Если ошибка является строковой ошибкой, добавляет ее в очередь ошибок.
    * Если ошибка неизвестного типа, выполняет выход из системы с сообщением о непредвиденной ошибке.
    * */
   public handle(error: any) {
@@ -71,14 +72,29 @@ export class ErrorService {
       }
     } else if (this.isWebSocketError(error)) {
       switch (error.code) {
+        case 1000:
+          console.warn(`[WS ${error.code}]: closed by client`);
+          break;
+        case 1001:
+        case 1006:
+          console.warn(`[WS ${error.code}]: closed by server`);
+          break;
         default:
           console.error(
             `[WS ERROR ${error.code}]:`,
             error.reason ?? 'Неизвестная причина',
           );
-          this.auth.logout('Ошибка подключения к серверу');
+          this.error$.next();
           return;
       }
+    } else if (this.isWebSocketEvent(error)) {
+      console.warn("[WS BROWSER EVENT ERROR]");
+      this.error$.next();
+      return;
+    } else if (this.isStringError(error)) {
+      console.warn('[SERVER ERROR]', error);
+      this.error$.next();
+      return;
     } else {
       console.error('[UNKNOWN ERROR]: \n ', error);
       this.auth.logout('Непредвиденная ошибка');
@@ -108,4 +124,13 @@ export class ErrorService {
       'reason' in error
     );
   }
+
+  private isWebSocketEvent(error: unknown): error is Event {
+    return error instanceof Event && error.type === "error";
+  }
+
+  private isStringError(error: unknown): error is string {
+    return typeof error === 'string';
+  }
+
 }

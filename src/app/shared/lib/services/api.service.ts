@@ -4,22 +4,29 @@ import {SoundService} from './game/sound.service';
 import {ErrorService} from './game/error.service';
 import {IMessage} from '../../../entities/api';
 import {AuthService} from './auth.service';
-import {firstValueFrom} from 'rxjs';
+import {firstValueFrom, Subscription, takeUntil} from 'rxjs';
 import {RequestType} from '../../../entities/types';
 import {GameStore} from '../stores/gameStore';
+import {ISession} from '../../../entities/game';
 
 @Injectable({
   providedIn: 'root',
 })
 /** API сервис для общения с бэкендом */
 export class ApiService {
+  private wsSub?: Subscription;
+
   constructor(
     private ws: WebSocketService,
     private auth: AuthService,
     private sound: SoundService,
     private error: ErrorService,
-    private store: GameStore
+    private store: GameStore,
   ) {
+    this.auth.onLogout$.subscribe(() => {
+      this.store.destroy$.next();
+      this.store.destroy$.complete();
+    });
   }
 
   /** Токен доступа из локального хранилища */
@@ -33,17 +40,13 @@ export class ApiService {
   async loadData() {
     this.store.isLoaded.set(false);
 
-    await new Promise(res => setTimeout(res, 30));
-
     try {
-      if (this.ws.connected)
-        this.ws.close();
-      await this.ws.connect().then(() => {
-        this.ws.message.subscribe((msg) => {
-          this.newMessage(msg);
-        });
-      })
-        .then(() => this.sound.load());
+      if (this.ws.connected) this.ws.close();
+
+      this.subscribeToWS();
+
+      await this.ws.connect();
+      this.sound.load();
 
     } catch (error) {
       this.error.handle(error);
@@ -57,32 +60,143 @@ export class ApiService {
   async newMessage(msg: IMessage) {
     switch (msg.request_type) {
       case "error":
-        await this.tryRefreshAndRetry(msg);
+        if (msg.data?.['message'] && (msg.data?.['message'] === "token invalid" || msg.data?.['message'] === "missing token")) {
+          await this.tryRefreshAndRetry(msg);
+          break;
+        }
+        this.error.handle(msg.data ? msg.data['message'] : 'Unknown error from server');
         break;
       case "session":
-        if (msg.data?.['session']) {
-          this.store.session.set(msg.data['session']);
+        if (!msg.data?.['session']) {
+          this.error.handle('No session data');
+          break;
         }
-        if (!this.store.isLoaded()) {
-          this.store.isLoaded.set(true);
-        }
+        this.level_check();
+        this.store.session.set(msg.data['session']);
+        this.store.isLoaded.set(true);
         break;
       case "cook":
+        if (!msg.data?.['dishes'] && !msg.data?.['xp']) {
+          this.error.handle('No cook data');
+          break;
+        }
+        this.updateSession(session => ({
+          ...session,
+          dishes: msg.data['dishes'],
+          level: {
+            ...session.level,
+            xp: msg.data['xp'],
+          }
+        }));
         this.sound.play('cook');
-        //TODO: увеличивать блюда
+        this.level_check();
         break;
       case "sell":
+        if (!msg.data?.['dishes'] && !msg.data?.['money']) {
+          this.error.handle('No sell data');
+          break;
+        }
+        this.updateSession(session => ({
+          ...session,
+          dishes: msg.data['dishes'],
+          money: msg.data['money'],
+          level: {
+            ...session.level,
+            xp: msg.data['xp'],
+          }
+        }));
         this.sound.play('sell');
-        //TODO: увеличивать монеты и уменьшать блюда
+        this.level_check();
+        break;
+      case "level_check":
+        if (!msg.data?.['current_rank'] && !msg.data?.['current_xp'] && !msg.data?.['needed_xp']) {
+          this.error.handle('No level data');
+          break;
+        }
+        this.store.neededXp.set(msg.data['needed_xp']);
+        if (msg.data?.['current_xp'] > msg.data?.['needed_xp']) {
+          this.level_up();
+        }
+        break;
+      case "level_up":
+        if (!msg.data?.['current_rank']) {
+          this.error.handle('No level data');
+          break;
+        }
+        this.updateSession(session => ({
+          ...session,
+          level: {
+            rank: msg.data['current_rank'],
+            xp: msg.data['current_xp'],
+          }
+        }));
+        this.sound.play('level-up');
+        this.level_check();
+        break;
+      case "upgrade_buy":
+        if (!msg.data?.['money'] && !msg.data?.['xp']) {
+          this.error.handle('No upgrade buy data');
+          break;
+        }
+        this.updateSession(session => ({
+          ...session,
+          money: msg.data['money'],
+          level: {
+            ...session.level,
+            xp: msg.data['xp'],
+          }
+        }));
+        this.sound.play('buy');
+        this.level_check();
+        this.upgrade_list();
+        break;
+      case "upgrade_list":
+        if (!msg.data?.['available']) {
+          this.error.handle('No upgrade list data');
+          break;
+        }
+        this.updateSession(session => ({
+          ...session,
+          upgrades: {
+            available: msg.data['available'],
+            current: msg.data['current'],
+          }
+        }));
+        break;
+      case "session_reset":
+        if (!msg.data?.['message']) {
+          this.error.handle('No reset data');
+          break;
+        }
+        if (msg.data['message'] === 'success') {
+          this.store.isLoaded.set(false);
+          this.ws.close();
+          window.location.reload();
+          break;
+        }
+        this.error.handle('Reset error');
         break;
       case "passive":
-      case "level_check":
-      case "level_up":
-      case "session_reset":
-      case "upgrade_buy":
-      case "upgrade_list":
+        if (!msg.data) {
+          this.error.handle('No passive data');
+        }
+        this.updateSession(session => ({
+          ...session,
+          dishes: msg.data['dishes'],
+          level: {
+            rank: msg.data['level_rank'],
+            xp: msg.data['level_xp'],
+          },
+          money: msg.data['money'],
+          prestige: {
+            ...session.prestige,
+            accumulated_value: msg.data['prestige_accumulated']
+          }
+        }));
+        this.level_check();
+        break;
       default:
-        console.log(msg.data);
+        console.warn('Unknown message data:\n', msg.data);
     }
   }
 
@@ -104,7 +218,7 @@ export class ApiService {
   }
 
   upgrade_buy(id: number) {
-    let request = this.buildRequest("upgrade_buy", {upgrade_id: id});
+    let request = this.buildRequest("upgrade_buy", {id: id});
     this.sendWithAuthRetry(request);
   }
 
@@ -119,6 +233,9 @@ export class ApiService {
   }
 
   level_check() {
+    if (this.store.session()?.level.rank === 100) {
+      return;
+    }
     let request = this.buildRequest("level_check");
     this.sendWithAuthRetry(request);
   }
@@ -126,6 +243,26 @@ export class ApiService {
   session_reset() {
     let request = this.buildRequest("session_reset");
     this.sendWithAuthRetry(request);
+  }
+
+  private subscribeToWS() {
+    this.wsSub?.unsubscribe();
+
+    this.wsSub = this.ws.message
+      .pipe(takeUntil(this.store.destroy$))
+      .subscribe(msg => this.newMessage(msg));
+  }
+
+  private updateSession(
+    updater: (session: ISession) => ISession
+  ) {
+    const session = this.store.session();
+    if (!session) {
+      this.error.handle('No session data');
+      return;
+    }
+
+    this.store.session.set(updater(session));
   }
 
   private async tryRefreshAndRetry(msg: IMessage) {

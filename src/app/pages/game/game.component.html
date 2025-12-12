@@ -2,7 +2,7 @@
   <div
     class="z-30 overscroll-none scrollbar-hide font-tektur flex min-h-[100dvh] flex-col gap-4 pb-24 pt-[env(safe-area-inset-top,0px)] sm:gap-6 sm:pb-12 xl:gap-0 xl:pb-0">
     <app-game-header (openPrestige)="toggleModal('prestige',true)" (openProfile)="toggleModal('profile', true)"
-                     [session]="this.store.session()"></app-game-header>
+                     [session]="this.store.session()" [neededXp]="this.store.neededXp()"></app-game-header>
     <div
       class="!z-max flex w-full flex-col gap-4 px-4 sm:px-6 xl:flex-1 xl:flex-row xl:items-end xl:justify-between xl:gap-0 xl:px-0">
       <div class="fixed bottom-20 w-auto">

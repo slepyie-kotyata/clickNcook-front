@@ -1,5 +1,6 @@
-import { Component, HostListener } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {Component, HostListener} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
+import {UpdateService} from './shared/lib/services/update.service';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,9 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   title = 'Click & Cook';
+
+  constructor(protected update: UpdateService) {
+  }
 
   @HostListener('document:contextmenu', ['$event'])
   onRightClick(event: MouseEvent) {

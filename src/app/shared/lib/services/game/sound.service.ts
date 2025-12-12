@@ -18,9 +18,13 @@ import {Injectable, signal} from '@angular/core';
  */
 export class SoundService {
   private volume = signal(100);
+  private isLoaded = false;
 
   get currentVolume() {
-    return this.volume();
+    if (this.isLoaded)
+      return this.volume();
+
+    return parseInt(localStorage.getItem('volume') || '100', 10);
   }
 
   /**
@@ -28,7 +32,8 @@ export class SoundService {
    */
   load() {
     if (localStorage.getItem('volume')) {
-      this.volume.set(parseInt(localStorage.getItem('volume') || '100', 10));
+      this.volume.set(parseInt(localStorage.getItem('volume') || '50', 10));
+      this.isLoaded = true;
     }
   }
 

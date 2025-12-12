@@ -3,6 +3,7 @@ import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {ReplaySubject} from 'rxjs';
 import {IMessage} from '../../../entities/api';
 import {AuthService} from './auth.service';
+import {ErrorService} from './game/error.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,10 @@ export class WebSocketService {
 
   private readonly socketURL = import.meta.env.NG_APP_WEBSOCKET_API;
 
-  constructor(private auth: AuthService) {
+  constructor(private auth: AuthService, private error: ErrorService) {
+    this.auth.onLogout$.subscribe(() => {
+      this.shutdown();
+    });
   }
 
   get connected() {
@@ -31,6 +35,7 @@ export class WebSocketService {
 
   async connect(): Promise<void> {
     if (this.isConnected) return;
+    if (!this.auth.isAuthenticated) return;
 
     return new Promise((resolve, reject) => {
       this.socket$ = webSocket<IMessage>({
@@ -51,7 +56,7 @@ export class WebSocketService {
         },
         closeObserver: {
           next: (event) => {
-            console.warn("[WS CLOSED]", event.code, event.reason);
+            this.error.handle(event);
             this.isConnected = false;
 
             if (event.code !== 1000) {
@@ -63,7 +68,9 @@ export class WebSocketService {
 
       this.socket$.subscribe({
         next: msg => this.msg$.next(msg),
-        error: err => reject(err),
+        error: err => {
+          this.error.handle(err);
+        },
         complete: () => this.isConnected = false
       });
     });
@@ -103,7 +110,6 @@ export class WebSocketService {
     });
   }
 
-
   /**
    Корректно закрывает текущее WebSocket соединение и очищает очередь сообщений
    */
@@ -118,7 +124,7 @@ export class WebSocketService {
       this.socket$.complete();
       this.socket$.unsubscribe();
     } catch (e) {
-      console.error("[WS] Close error:", e);
+      this.error.handle(e);
     }
 
     this.isConnected = false;
@@ -126,17 +132,28 @@ export class WebSocketService {
   }
 
   reconnect() {
-    setTimeout(() => {
+    if (!this.auth.isAuthenticated) return;
+
+    let reconnectTimeout = setTimeout(() => {
       try {
         this.connect();
       } catch (err) {
         this.reconnectAttempts++;
         if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-          this.auth.logout("Сессия истекла");
+          if (this.auth.isAuthenticated) {
+            this.auth.logout("Сессия истекла");
+          }
+          clearTimeout(reconnectTimeout);
           return;
         }
       }
     }, 1000);
+  }
+
+  private shutdown() {
+    this.reconnectAttempts = this.maxReconnectAttempts;
+    this.pendingMap.clear();
+    this.close();
   }
 
 }
