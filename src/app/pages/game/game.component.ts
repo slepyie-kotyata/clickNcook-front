@@ -1,6 +1,5 @@
-import {Component, computed, HostListener, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {MenuComponent} from '../../features/menu/menu.component';
-import formatNumber from '../../shared/lib/formatNumber';
 import {ModalComponent} from '../../shared/ui/modal/modal.component';
 import {TrackComponent} from '../../shared/ui/locations/track/track.component';
 import {NgClass, NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
@@ -46,19 +45,10 @@ export class GameComponent implements OnInit {
   protected showResolutionWarning: boolean = false;
   protected prestigeWindowToggle: boolean = false;
   protected profileWindowToggle: boolean = false;
-  protected showLevelUpNotification: boolean = false;
   protected showVolumeSlider = false;
   protected showMobileUpgrades = false;
   protected volumeHideTimeout: any = null;
   protected isClosingVolumeSlider = false;
-  protected readonly prestige = computed(() =>
-    formatNumber(this.store.session()?.prestige.current_value ?? 0),
-  );
-  protected readonly playerLvlPercentage = computed(() => {
-    const xp = this.store.session()?.level.xp ?? 0;
-    // const next = this.api.Session.nextLevelXp;
-    return +Math.max((xp / 100) * 100, 0).toFixed(1);
-  });
 
   constructor(
     protected sound: SoundService,
@@ -97,11 +87,7 @@ export class GameComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.api.loadData().then(() => {
-      this.onResize();
-
-      // TODO: showLevelUpNotification
-    });
+    this.api.loadData();
   }
 
   protected toggleModal(

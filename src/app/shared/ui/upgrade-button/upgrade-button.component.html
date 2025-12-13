@@ -1,4 +1,11 @@
 <div (mouseenter)="showTooltip = true" (mouseleave)="showTooltip = false" class="relative">
+  @if (gameStore.isNewUpgrade(upgrade)) {
+    <div
+      class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full
+      border-2 border-black z-max">
+      NEW
+    </div>
+  }
   <button
     (click)="handleBuy()"
     [disabled]="blocked || type === 'profile'"

@@ -5,8 +5,14 @@
     'bg-brand': !selected,
     'bg-secondary': selected
   }"
-  class="border-2 border-black disabled:bg-black/45 w-full flex justify-center rounded-2xl"
+  class="relative border-2 border-black disabled:bg-black/45 w-full flex justify-center rounded-2xl"
 >
   <img [alt]="type" [height]="90" [ngSrc]="iconSource" [width]="90"
        class="p-3 w-16 h-16 sm:w-[72px] sm:h-[72px] "/>
+  @if (gameStore.hasUpgradeToBuyWithType(type)) {
+    <span
+      class="absolute top-1 right-1 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-black">
+      !
+    </span>
+  }
 </button>

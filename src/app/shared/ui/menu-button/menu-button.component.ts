@@ -2,6 +2,7 @@ import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {NgClass, NgOptimizedImage} from '@angular/common';
 import {Upgrade} from '../../../entities/types';
 import {GameService} from '../../lib/services/game/game.service';
+import {GameStore} from '../../lib/stores/gameStore';
 
 @Component({
   selector: 'app-menu-button',
@@ -17,6 +18,7 @@ export class MenuButtonComponent {
   @Output() onClick: EventEmitter<Upgrade> = new EventEmitter<Upgrade>();
 
   gameService = inject(GameService);
+  gameStore = inject(GameStore);
 
   get selected() {
     return this.type === this.gameService.selectedMenuType();
