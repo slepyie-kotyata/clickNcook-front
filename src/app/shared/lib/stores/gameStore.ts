@@ -50,7 +50,7 @@ export class GameStore implements OnDestroy {
     const s = this.session();
     if (!s) return false;
     if (!upgrade) return false;
-    return upgrade.access_level <= (s.level.rank ?? 0) && upgrade.times_bought == 0;
+    return upgrade.access_level <= (s.level.rank ?? 0) && upgrade.times_bought === 0;
   }
 
   canBuyUpgrade(upgrade: IUpgrade) {
