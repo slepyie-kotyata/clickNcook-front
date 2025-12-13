@@ -33,7 +33,7 @@ export class GameStore implements OnDestroy {
     const s = this.session();
     if (!s) return false;
 
-    return s.upgrades.available.find(u => u.access_level <= (s.level.rank ?? 0) && this.canBuyUpgrade(u)) !== undefined;
+    return s.upgrades.available.find(u => this.canBuyUpgrade(u)) !== undefined;
   })
 
   constructor(private game: GameService) {
