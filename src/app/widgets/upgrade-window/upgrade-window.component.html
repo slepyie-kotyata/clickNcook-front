@@ -6,9 +6,7 @@
     <app-upgrade-button
       (buyEvent)="handleBuy($event)"
       *ngFor="let upgrade of upgrades"
-      [blocked]="(upgrade.times_bought > 0)
-                        ? upgrade.price * Math.pow(upgrade.price_factor, upgrade.times_bought) > (this.store.session()?.money ?? 0)
-                        : upgrade.price > (this.store.session()?.money ?? 0)"
+      [blocked]="!this.store.canBuyUpgrade(upgrade)"
       [type]="'shop'"
       [upgrade]="upgrade"
     ></app-upgrade-button>

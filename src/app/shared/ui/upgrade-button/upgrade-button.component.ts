@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgClass, NgIf } from '@angular/common';
+import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {NgClass, NgIf} from '@angular/common';
 import formatNumber from '../../lib/formatNumber';
 import getIcon from '../../lib/icons';
-import { boostTooltip } from '../../lib/boostTooltip';
-import { IUpgrade } from '../../../entities/game';
-import { Upgrade } from '../../../entities/types';
+import {boostTooltip} from '../../lib/boostTooltip';
+import {IUpgrade} from '../../../entities/game';
+import {Upgrade} from '../../../entities/types';
+import {GameStore} from '../../lib/stores/gameStore';
 
 @Component({
   selector: 'app-upgrade-button',
@@ -14,18 +15,19 @@ import { Upgrade } from '../../../entities/types';
   styleUrl: './upgrade-button.component.css',
 })
 export class UpgradeButtonComponent {
-  @Input({ required: true }) type: 'shop' | 'profile';
-  @Input({ required: true }) upgrade: IUpgrade;
-  @Input({ required: true }) blocked: boolean;
+  @Input({required: true}) type: 'shop' | 'profile';
+  @Input({required: true}) upgrade: IUpgrade;
+  @Input({required: true}) blocked: boolean;
   @Output() buyEvent: EventEmitter<number> = new EventEmitter();
 
   protected showTooltip = false;
+  protected gameStore = inject(GameStore);
 
   protected priceString(): string {
     return formatNumber(
       this.upgrade.times_bought > 0
         ? this.upgrade.price *
-            Math.pow(this.upgrade.price_factor, this.upgrade.times_bought)
+        Math.pow(this.upgrade.price_factor, this.upgrade.times_bought)
         : this.upgrade.price,
     );
   }

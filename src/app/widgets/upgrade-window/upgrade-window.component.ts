@@ -31,6 +31,7 @@ export class UpgradeWindowComponent implements AfterViewInit {
   handleBuy(id: number) {
     let upgrade = this.store.availableUpgrades().find((x: IUpgrade) => x.id == id);
     if (!upgrade) return;
+    if (!this.store.canBuyUpgrade(upgrade)) return;
 
     this.api.upgrade_buy(upgrade.id)
   }

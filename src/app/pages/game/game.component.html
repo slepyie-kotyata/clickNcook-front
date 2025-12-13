@@ -13,6 +13,18 @@
         >
           <img alt="" class="h-6 w-6" src="/icons/menu/up.svg"/>
           Улучшения
+          @if (store.hasUpgradeToBuy()) {
+            <span
+              class="bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-black inline-block animate-pulse leading-none">
+              !
+            </span>
+          }
+          @if (store.hasNewUpgrade()) {
+            <div
+              class="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full border-2 border-black z-max">
+              NEW
+            </div>
+          }
         </button>
         <app-game-buttons (cook)="handleCook()" (sell)="handleSell()"
                           [level]="this.store.session()?.level?.rank ?? 0"></app-game-buttons>
