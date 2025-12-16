@@ -1,5 +1,5 @@
-import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
-import {NgClass, NgIf} from '@angular/common';
+import {Component, EventEmitter, inject, Input, Output, signal} from '@angular/core';
+import {NgClass} from '@angular/common';
 import formatNumber from '../../lib/formatNumber';
 import getIcon from '../../lib/icons';
 import {boostTooltip} from '../../lib/boostTooltip';
@@ -10,7 +10,7 @@ import {GameStore} from '../../lib/stores/gameStore';
 @Component({
   selector: 'app-upgrade-button',
   standalone: true,
-  imports: [NgClass, NgIf],
+  imports: [NgClass],
   templateUrl: './upgrade-button.component.html',
   styleUrl: './upgrade-button.component.css',
 })
@@ -23,6 +23,8 @@ export class UpgradeButtonComponent {
   protected showTooltip = false;
   protected gameStore = inject(GameStore);
 
+  protected inProcess = signal(false);
+
   protected priceString(): string {
     return formatNumber(
       this.upgrade.times_bought > 0
@@ -34,6 +36,10 @@ export class UpgradeButtonComponent {
 
   protected handleBuy() {
     this.buyEvent.emit(this.upgrade.id);
+    this.inProcess.set(true);
+    setTimeout(() => {
+      this.inProcess.set(false);
+    }, 5000)
   }
 
   protected icon(): string {
