@@ -169,9 +169,7 @@ export class ApiService {
           break;
         }
         if (msg.data['message'] === 'success') {
-          this.store.isLoaded.set(false);
-          this.ws.close();
-          window.location.reload();
+          await this.loadData();
           break;
         }
         this.error.handle('Reset error');

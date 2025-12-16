@@ -35,6 +35,7 @@ export class PrestigeWindowComponent {
 
   protected handlePrestige() {
     this.isProcessing = true;
+    this.close();
     this.api.session_reset();
   }
 }
