@@ -18,26 +18,33 @@ export class MenuComponent {
   @Input() showCloseButton = false;
   @Output() close = new EventEmitter<void>();
 
-  protected menuButtons: {
+  menuButtons: {
     type: Upgrade;
     icon: string;
     requiredRank: number;
     disabled?: boolean;
   }[] = [
-    {type: 'dish', icon: '/icons/menu/grill.svg', requiredRank: 0},
-    {type: 'equipment', icon: '/icons/menu/table.svg', requiredRank: 3},
-    {type: 'global', icon: '/icons/menu/up.svg', requiredRank: 10},
-    {type: 'staff', icon: '/icons/menu/stuff.svg', requiredRank: 20},
+    {type: 'dish', icon: '/icons/menu/grill.svg', requiredRank: 999},
+    {type: 'equipment', icon: '/icons/menu/table.svg', requiredRank: 999},
+    {type: 'global', icon: '/icons/menu/up.svg', requiredRank: 999},
+    {type: 'staff', icon: '/icons/menu/stuff.svg', requiredRank: 999},
     {
       type: 'recipe',
       icon: '/icons/menu/menu.svg',
       requiredRank: 999,
       disabled: true,
     },
-    {type: 'point', icon: '/icons/menu/map.svg', requiredRank: 70},
-  ];
+    {type: 'point', icon: '/icons/menu/map.svg', requiredRank: 999}
+  ]
 
   constructor(protected store: GameStore, protected gameService: GameService) {
+    let s = this.store.session();
+    if (!s) return;
+    this.menuButtons.forEach(button => {
+      button.requiredRank = s.upgrades.available
+        .filter(u => u.upgrade_type === button.type)
+        .sort((a, b) => a.access_level - b.access_level)[0]?.access_level ?? 999;
+    });
   }
 
   get dishCount() {

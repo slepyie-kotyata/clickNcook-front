@@ -8,6 +8,7 @@ import {firstValueFrom, Subscription, takeUntil} from 'rxjs';
 import {RequestType} from '../../../entities/types';
 import {GameStore} from '../stores/gameStore';
 import {ISession} from '../../../entities/game';
+import {GameService} from './game/game.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +23,7 @@ export class ApiService {
     private sound: SoundService,
     private error: ErrorService,
     private store: GameStore,
+    private game: GameService,
   ) {
     this.auth.onLogout$.subscribe(() => {
       this.store.destroy$.next();
@@ -47,6 +49,7 @@ export class ApiService {
       }
       this.store.session.set(null);
       await this.sendWithAuthRetry(this.ws.sessionRequest);
+      this.game.selectMenuType('dish');
       this.sound.load();
     } catch (error) {
       this.error.handle(error);
