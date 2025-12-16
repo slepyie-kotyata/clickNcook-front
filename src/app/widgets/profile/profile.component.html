@@ -7,12 +7,16 @@
   </section>
   <section
     class="clickable bg-brand rounded-2xl border-2 border-black px-5 py-5 flex flex-col gap-5 h-[38dvh] w-full max-h-[45dvh] overflow-y-scroll custom-scroll">
-    <app-upgrade-button *ngFor="let upgrade of (store.session()?.upgrades?.current ?? [])"
-                        [blocked]="false"
-                        [type]="'profile'"
-                        [upgrade]="upgrade"></app-upgrade-button>
-    <p *ngIf="(store.session()?.upgrades?.current?.length ?? 0)===0" class="text-white text-2xl">
-      Нет купленных улучшений</p>
+    @for (upgrade of profileUpgrades; track upgrade.upgrade_type) {
+      <app-upgrade-button
+        [blocked]="false"
+        type="profile"
+        [upgrade]="upgrade">
+      </app-upgrade-button>
+    }
+    @if (profileUpgrades.length === 0) {
+      <p class="text-white text-center text-2xl">Нет купленных улучшений</p>
+    }
   </section>
   <button (click)="openLogoutWindow()"
           class="font-tektur text-white font-bold text-xl bg-brand px-10 py-3.5 text-center rounded-2xl border-black/85 border w-full sm:w-auto">
