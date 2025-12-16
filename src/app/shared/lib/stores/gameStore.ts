@@ -56,24 +56,6 @@ export class GameStore implements OnDestroy {
   constructor(private game: GameService) {
   }
 
-  startPending(key: string) {
-    this.pendingRequests.update(s => new Set(s).add(key));
-  }
-
-  stopPending(key: string) {
-    this.pendingRequests.update(s => {
-      const next = new Set(s);
-      next.delete(key);
-      return next;
-    });
-  }
-
-  isPending(key: string): boolean {
-    return (
-      [...this.pendingRequests().values()].includes(key)
-    );
-  }
-
   isUpgradeBlocked(id: number): boolean {
     return this.buyInFlight().has(id) || this.awaitingListSync().has(id);
   }
@@ -83,6 +65,13 @@ export class GameStore implements OnDestroy {
     if (!s) return false;
 
     return s.upgrades.available.find(u => u.upgrade_type === type && this.canBuyUpgrade(u)) !== undefined;
+  }
+
+  hasNewUpgradeWithType(type: Upgrade) {
+    const s = this.session();
+    if (!s) return false;
+
+    return s.upgrades.available.find(u => u.upgrade_type === type && this.isNewUpgrade(u)) !== undefined;
   }
 
   isNewUpgrade(upgrade: IUpgrade) {
@@ -102,6 +91,24 @@ export class GameStore implements OnDestroy {
         (upgrade.price <= s.money)
     );
 
+  }
+
+  startPending(key: string) {
+    this.pendingRequests.update(s => new Set(s).add(key));
+  }
+
+  stopPending(key: string) {
+    this.pendingRequests.update(s => {
+      const next = new Set(s);
+      next.delete(key);
+      return next;
+    });
+  }
+
+  isPending(key: string): boolean {
+    return (
+      [...this.pendingRequests().values()].includes(key)
+    );
   }
 
   ngOnDestroy() {

@@ -15,4 +15,10 @@
       !
     </span>
   }
+  @if (gameStore.hasNewUpgradeWithType(type)) {
+    <span
+      class="absolute bottom-1 right-1 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5 border-2 border-black">
+      NEW
+    </span>
+  }
 </button>
