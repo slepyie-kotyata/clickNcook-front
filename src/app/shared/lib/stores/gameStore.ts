@@ -36,6 +36,20 @@ export class GameStore implements OnDestroy {
     return s.upgrades.available.find(u => this.canBuyUpgrade(u)) !== undefined;
   })
 
+  canSell = computed<boolean>(() => {
+    const s = this.session();
+    if (!s) return false;
+
+    return s.dishes > 0;
+  })
+
+  canCook = computed<boolean>(() => {
+    const s = this.session();
+    if (!s) return false;
+
+    return s.upgrades.current.find(u => u.upgrade_type === 'dish') !== undefined;
+  })
+
   constructor(private game: GameService) {
   }
 

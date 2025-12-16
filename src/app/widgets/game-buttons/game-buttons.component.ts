@@ -10,6 +10,8 @@ import {NgIf} from '@angular/common';
 })
 export class GameButtonsComponent {
   @Input({required: true}) level: number;
+  @Input({required: true}) canCook: boolean;
+  @Input({required: true}) canSell: boolean;
 
   @Output() cook = new EventEmitter<void>();
   @Output() sell = new EventEmitter<void>();

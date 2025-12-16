@@ -9,7 +9,8 @@
       <img *ngIf="level < 70" class="w-48 hidden xl:block" src="/icons/upgrades/equipment/gas_burner.svg"/>
       <button
         (click)="cook.emit()"
-        class="active:scale-95 z-max bg-brand rounded-xxl border border-black w-full h-16 sm:h-20 md:h-24 lg:w-28 lg:h-24 flex justify-center items-center shadow-md disabled:opacity-60 transition-transform"
+        [disabled]="!canCook"
+        class="active:scale-95 disabled:scale-100 z-max bg-brand rounded-xxl border border-black w-full h-16 sm:h-20 md:h-24 lg:w-28 lg:h-24 flex justify-center items-center shadow-md disabled:opacity-60 transition-transform"
       >
         <img class="h-full max-h-16" src="/icons/game/cook.svg"/>
       </button>
@@ -19,7 +20,8 @@
       <img *ngIf="level < 70" class="w-48 hidden xl:block" src="/icons/upgrades/equipment/new_cashier.svg"/>
       <button
         (click)="sell.emit()"
-        class="active:scale-95 bg-brand rounded-xxl border border-black w-full h-16 sm:h-20 md:h-24 lg:w-28 lg:h-24 flex justify-center items-center shadow-md disabled:opacity-60 transition-transform"
+        [disabled]="!canSell"
+        class="active:scale-95 disabled:scale-100 bg-brand rounded-xxl border border-black w-full h-16 sm:h-20 md:h-24 lg:w-28 lg:h-24 flex justify-center items-center shadow-md disabled:opacity-60 transition-transform"
       >
         <img class="h-full max-h-16" src="/icons/game/sell.svg"/>
       </button>

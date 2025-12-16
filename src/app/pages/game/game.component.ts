@@ -109,14 +109,13 @@ export class GameComponent implements OnInit {
   }
 
   protected async handleCook() {
-    if (!this.store.session()?.upgrades.current.find((u) => u.upgrade_type === 'dish'))
-      return;
+    if (!this.store.canCook()) return;
 
     this.api.cook();
   }
 
   protected async handleSell() {
-    if ((this.store.session()?.dishes ?? 0) <= 0) return;
+    if (!this.store.canSell()) return;
 
     this.api.sell();
   }
