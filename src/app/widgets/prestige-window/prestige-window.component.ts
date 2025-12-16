@@ -17,7 +17,6 @@ export class PrestigeWindowComponent {
 
   protected store = inject(GameStore);
   protected api = inject(ApiService);
-  protected isProcessing: boolean = false;
   protected readonly formatNumber = formatNumber;
 
   protected get accumulatedPrestigeMultiplier(): number {
@@ -29,12 +28,15 @@ export class PrestigeWindowComponent {
     );
   }
 
+  protected get isProcessing() {
+    return this.store.isPending('session_reset');
+  }
+
   protected close() {
     this.closeEvent.emit(false);
   }
 
   protected handlePrestige() {
-    this.isProcessing = true;
     this.close();
     this.api.session_reset();
   }

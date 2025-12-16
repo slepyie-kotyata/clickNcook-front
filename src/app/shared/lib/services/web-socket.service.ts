@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
-import {ReplaySubject} from 'rxjs';
+import {filter, firstValueFrom, ReplaySubject} from 'rxjs';
 import {IMessage} from '../../../entities/api';
 import {AuthService} from './auth.service';
 import {ErrorService} from './game/error.service';
@@ -33,6 +33,14 @@ export class WebSocketService {
     return this.msg$.asObservable();
   }
 
+  get sessionRequest(): IMessage {
+    return {
+      message_type: "request",
+      request_type: "session",
+      data: {token: localStorage.getItem("accessToken") ?? ""}
+    }
+  }
+
   async connect(): Promise<void> {
     if (this.isConnected) return;
     if (!this.auth.isAuthenticated) return;
@@ -44,13 +52,6 @@ export class WebSocketService {
           next: () => {
             this.isConnected = true;
             this.reconnectAttempts = 0;
-
-            this.sendRequest({
-              message_type: "request",
-              request_type: "session",
-              data: {token: localStorage.getItem("accessToken") ?? ""}
-            });
-
             resolve();
           }
         },
@@ -82,30 +83,37 @@ export class WebSocketService {
    @returns Promise с ответными данными
    @template T - тип данных ответа
    */
-  sendRequest<T = any>(payload: any): Promise<T> {
+  sendRequest<T = any>(payload: any): Promise<{ response: T; requestId: string }> {
+    if (!this.isConnected) {
+      this.reconnect();
+    }
+
+    const requestId = crypto.randomUUID();
+    payload.request_id = requestId;
+
     return new Promise(async (resolve, reject) => {
-      if (!this.isConnected) await this.connect().catch(() => null);
-
-      const requestId = crypto.randomUUID();
-      payload.request_id = requestId;
-
       this.pendingMap.set(requestId, {payload, resolve, reject});
-
-      const sub = this.message.subscribe((msg: any) => {
-        if (msg.request_id !== requestId) return;
-        sub.unsubscribe();
-
-        if (msg.request_type === "error") return;
-
-        this.pendingMap.delete(requestId);
-        resolve(msg.data);
-      });
 
       try {
         this.socket$.next(payload);
-      } catch {
+
+        const msg = await firstValueFrom(
+          this.message.pipe(
+            filter(m => m.request_id === requestId)
+          )
+        );
+
         this.pendingMap.delete(requestId);
-        reject("Send failed");
+
+        if (msg.request_type === 'error') {
+          reject(msg.data?.['message']);
+          return;
+        }
+
+        resolve({response: msg as T, requestId});
+      } catch (e) {
+        this.pendingMap.delete(requestId);
+        reject(e);
       }
     });
   }
@@ -134,9 +142,11 @@ export class WebSocketService {
   reconnect() {
     if (!this.auth.isAuthenticated) return;
 
-    let reconnectTimeout = setTimeout(() => {
+    let reconnectTimeout = setTimeout(async () => {
       try {
-        this.connect();
+        await this.connect()
+          .then(() => this.sendRequest(this.sessionRequest))
+          .catch(() => null);
       } catch (err) {
         this.reconnectAttempts++;
         if (this.reconnectAttempts >= this.maxReconnectAttempts) {

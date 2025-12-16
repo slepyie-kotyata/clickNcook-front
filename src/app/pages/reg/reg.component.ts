@@ -1,20 +1,10 @@
-import { Component, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { AuthInputComponent } from '../../shared/ui/auth-input/auth-input.component';
-import { ToastrService } from 'ngx-toastr';
-import { AuthService } from '../../shared/lib/services/auth.service';
-import { Router } from '@angular/router';
-import {
-  email,
-  password,
-  passwordsMatch,
-} from '../../shared/lib/formValidators';
+import {Component, inject} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators,} from '@angular/forms';
+import {AuthInputComponent} from '../../shared/ui/auth-input/auth-input.component';
+import {ToastrService} from 'ngx-toastr';
+import {AuthService} from '../../shared/lib/services/auth.service';
+import {Router} from '@angular/router';
+import {email, password, passwordsMatch,} from '../../shared/lib/formValidators';
 
 @Component({
   selector: 'app-reg',
@@ -36,7 +26,7 @@ export class RegComponent {
         password: ['', [Validators.required, password]],
         repeat_password: ['', [Validators.required]],
       },
-      { validator: passwordsMatch },
+      {validator: passwordsMatch},
     );
   }
 
@@ -65,10 +55,9 @@ export class RegComponent {
         },
         error: (error) => {
           if (error.status === 409) {
-            this.regForm.get('email')?.setErrors({ alreadyExistsEmail: true });
+            this.regForm.get('email')?.setErrors({alreadyExistsEmail: true});
           } else {
             this.toastrService.error(error.message, 'Ошибка регистрации');
-            console.error(error);
           }
         },
       });
@@ -77,9 +66,9 @@ export class RegComponent {
 
     Object.values(this.regForm.controls).forEach(c => c.markAsTouched());
     const inputs = document.querySelectorAll('app-auth-input div');
-    inputs.forEach(el=>{
+    inputs.forEach(el => {
       el.classList.add('shake-input');
-      setTimeout(()=> el.classList.remove('shake-input'), 300);
+      setTimeout(() => el.classList.remove('shake-input'), 300);
     });
 
   }

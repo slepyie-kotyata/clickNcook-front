@@ -8,7 +8,7 @@
   }
   <button
     (click)="handleBuy()"
-    [disabled]="blocked || type === 'profile' || inProcess()"
+    [disabled]="blocked || type === 'profile'"
     [ngClass]="{
       group: !blocked,
       'disabled:bg-disabled':type ==='shop',

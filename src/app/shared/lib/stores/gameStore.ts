@@ -7,6 +7,7 @@ import {Upgrade} from '../../../entities/types';
 @Injectable({providedIn: 'root'})
 export class GameStore implements OnDestroy {
   session = signal<ISession | null>(null);
+  pendingRequests = signal<Set<string>>(new Set());
   isLoaded = signal(false);
   destroy$ = new Subject<void>();
 
@@ -49,8 +50,32 @@ export class GameStore implements OnDestroy {
 
     return s.upgrades.current.find(u => u.upgrade_type === 'dish') !== undefined;
   })
+  buyInFlight = signal<Set<number>>(new Set());
+  awaitingListSync = signal<Set<number>>(new Set());
 
   constructor(private game: GameService) {
+  }
+
+  startPending(key: string) {
+    this.pendingRequests.update(s => new Set(s).add(key));
+  }
+
+  stopPending(key: string) {
+    this.pendingRequests.update(s => {
+      const next = new Set(s);
+      next.delete(key);
+      return next;
+    });
+  }
+
+  isPending(key: string): boolean {
+    return (
+      [...this.pendingRequests().values()].includes(key)
+    );
+  }
+
+  isUpgradeBlocked(id: number): boolean {
+    return this.buyInFlight().has(id) || this.awaitingListSync().has(id);
   }
 
   hasUpgradeToBuyWithType(type: Upgrade) {

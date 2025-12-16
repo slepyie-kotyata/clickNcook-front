@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {
   HTTP_INTERCEPTORS,
   HttpErrorResponse,
@@ -8,9 +8,9 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 
-import { Observable, take, throwError } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
-import { AuthService } from './services/auth.service';
+import {Observable, take, throwError} from 'rxjs';
+import {catchError, switchMap} from 'rxjs/operators';
+import {AuthService} from './services/auth.service';
 
 @Injectable()
 export class HttpRequestInterceptor implements HttpInterceptor {
@@ -49,12 +49,12 @@ export class HttpRequestInterceptor implements HttpInterceptor {
           error.status >= 400 &&
           error.status < 500
         ) {
-          console.log('Client error occurred');
+          console.error('Client error occurred');
           return throwError(() => error);
         }
 
         if (error instanceof HttpErrorResponse && error.status >= 500) {
-          console.log('Server error occurred');
+          console.error('Server error occurred');
           return throwError(() => error);
         }
 
@@ -111,5 +111,5 @@ export class HttpRequestInterceptor implements HttpInterceptor {
 }
 
 export const httpInterceptorProviders = [
-  { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true },
+  {provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true},
 ];

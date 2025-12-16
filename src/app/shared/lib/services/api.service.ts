@@ -41,13 +41,13 @@ export class ApiService {
     this.store.isLoaded.set(false);
 
     try {
-      if (this.ws.connected) this.ws.close();
-
-      this.subscribeToWS();
-
-      await this.ws.connect();
+      if (!this.ws.connected) {
+        this.subscribeToWS();
+        await this.ws.connect();
+      }
+      this.store.session.set(null);
+      await this.sendWithAuthRetry(this.ws.sessionRequest);
       this.sound.load();
-
     } catch (error) {
       this.error.handle(error);
     }
@@ -60,20 +60,19 @@ export class ApiService {
   async newMessage(msg: IMessage) {
     switch (msg.request_type) {
       case "error":
-        if (msg.data?.['message'] && (msg.data?.['message'] === "token invalid" || msg.data?.['message'] === "missing token")) {
-          await this.tryRefreshAndRetry(msg);
-          break;
+        if (msg.data?.['message'] && (msg.data?.['message'] != "token invalid" || msg.data?.['message'] != "missing token")) {
+          this.error.handle(msg.data ? msg.data['message'] : 'Unknown error from server');
         }
-        this.error.handle(msg.data ? msg.data['message'] : 'Unknown error from server');
         break;
       case "session":
         if (!msg.data?.['session']) {
           this.error.handle('No session data');
           break;
         }
-        this.level_check();
         this.store.session.set(msg.data['session']);
-        this.store.isLoaded.set(true);
+        await this.level_check().then(() => {
+          this.store.isLoaded.set(true);
+        });
         break;
       case "cook":
         if (!msg.data?.['dishes'] && !msg.data?.['xp']) {
@@ -89,7 +88,7 @@ export class ApiService {
           }
         }));
         this.sound.play('cook');
-        this.level_check();
+        await this.level_check();
         break;
       case "sell":
         if (!msg.data?.['dishes'] && !msg.data?.['money']) {
@@ -106,7 +105,7 @@ export class ApiService {
           }
         }));
         this.sound.play('sell');
-        this.level_check();
+        await this.level_check();
         break;
       case "level_check":
         if (!msg.data?.['current_rank'] && !msg.data?.['current_xp'] && !msg.data?.['needed_xp']) {
@@ -131,7 +130,7 @@ export class ApiService {
           }
         }));
         this.sound.play('level-up');
-        this.level_check();
+        await this.level_check();
         break;
       case "upgrade_buy":
         if (!msg.data?.['money'] && !msg.data?.['xp']) {
@@ -147,7 +146,7 @@ export class ApiService {
           }
         }));
         this.sound.play('buy');
-        this.level_check();
+        await this.level_check();
         this.upgrade_list();
         break;
       case "upgrade_list":
@@ -162,6 +161,7 @@ export class ApiService {
             current: msg.data['current'],
           }
         }));
+        this.store.awaitingListSync.set(new Set());
         break;
       case "session_reset":
         if (!msg.data?.['message']) {
@@ -169,6 +169,8 @@ export class ApiService {
           break;
         }
         if (msg.data['message'] === 'success') {
+          setTimeout(() => {
+          }, 1000);
           await this.loadData();
           break;
         }
@@ -191,7 +193,7 @@ export class ApiService {
             accumulated_value: msg.data['prestige_accumulated']
           }
         }));
-        this.level_check();
+        await this.level_check();
         break;
       default:
         console.warn('Unknown message data:\n', msg.data);
@@ -199,48 +201,75 @@ export class ApiService {
   }
 
   /** Выход пользователя из системы */
-  logout() {
+  logout(reason?: string) {
     this.store.isLoaded.set(false);
     this.ws.close();
-    this.auth.logout();
+    this.auth.logout(reason);
   }
 
   cook() {
-    let request = this.buildRequest("cook");
+    const request = this.buildRequest("cook");
     this.sendWithAuthRetry(request);
   }
 
   sell() {
-    let request = this.buildRequest("sell");
+    const request = this.buildRequest("sell");
     this.sendWithAuthRetry(request);
   }
 
-  upgrade_buy(id: number) {
-    let request = this.buildRequest("upgrade_buy", {id: id});
-    this.sendWithAuthRetry(request);
+  async upgrade_buy(id: number) {
+    if (this.store.isUpgradeBlocked(id)) return;
+
+    this.store.buyInFlight.update(s => new Set(s).add(id));
+
+    try {
+      await this.sendWithAuthRetry(this.buildRequest("upgrade_buy", {id}));
+
+      this.store.buyInFlight.update(s => {
+        const next = new Set(s);
+        next.delete(id);
+        return next;
+      });
+
+      this.store.awaitingListSync.update(s => new Set(s).add(id));
+
+    } catch (e) {
+      this.store.buyInFlight.update(s => {
+        const next = new Set(s);
+        next.delete(id);
+        return next;
+      });
+      throw e;
+    }
   }
 
   upgrade_list() {
-    let request = this.buildRequest("upgrade_list");
+    const request = this.buildRequest("upgrade_list");
     this.sendWithAuthRetry(request);
   }
 
   level_up() {
-    let request = this.buildRequest("level_up");
+    const request = this.buildRequest("level_up");
     this.sendWithAuthRetry(request);
   }
 
-  level_check() {
+  async level_check() {
     if (this.store.session()?.level.rank === 100) {
+      console.warn("Max level reached, skipping level check");
       return;
     }
-    let request = this.buildRequest("level_check");
-    this.sendWithAuthRetry(request);
+    const request = this.buildRequest("level_check");
+    return await this.sendWithAuthRetry(request);
   }
 
-  session_reset() {
-    let request = this.buildRequest("session_reset");
-    this.sendWithAuthRetry(request);
+  async session_reset() {
+    const request = this.buildRequest("session_reset");
+    this.store.startPending("session_reset");
+    try {
+      await this.sendWithAuthRetry(request);
+    } finally {
+      this.store.stopPending("session_reset");
+    }
   }
 
   private subscribeToWS() {
@@ -263,29 +292,21 @@ export class ApiService {
     this.store.session.set(updater(session));
   }
 
-  private async tryRefreshAndRetry(msg: IMessage) {
-    const failedId = msg.request_id;
-    if (!failedId) return;
-
-    const pending = this.ws.pendingMap.get(failedId);
-    if (!pending) return;
-
+  private async tryRefreshAndRetry<T = any>(
+    request: IMessage
+  ): Promise<{ response: T; requestId: string }> {
     try {
       const data = await firstValueFrom(this.auth.refreshToken());
+
       localStorage.setItem("accessToken", data.tokens.access_token);
       localStorage.setItem("refreshToken", data.tokens.refresh_token);
 
-      pending.payload.data.token = data.tokens.access_token;
+      request.data.token = data.tokens.access_token;
 
-      const result = await this.ws.sendRequest(pending.payload);
-
-      pending.resolve(result);
+      return await this.ws.sendRequest<T>(request);
 
     } catch (err) {
-      pending.reject("Refresh failed");
-      this.logout();
-    } finally {
-      this.ws.pendingMap.delete(failedId);
+      throw err;
     }
   }
 
@@ -311,22 +332,20 @@ export class ApiService {
    @param request - запрос для отправки
    @returns ответ на запрос
    */
-  private async sendWithAuthRetry(request: IMessage): Promise<IMessage> {
+  private async sendWithAuthRetry(request: IMessage): Promise<{ response: IMessage; requestId: string }> {
     try {
       return await this.ws.sendRequest(request);
-    } catch (error) {
+
+    } catch (error: any) {
+      if (error !== 'token invalid' && error !== 'missing token') {
+        throw error;
+      }
+
       try {
-        const data = await firstValueFrom(this.auth.refreshToken());
-
-        localStorage.setItem("accessToken", data.tokens.access_token);
-        localStorage.setItem("refreshToken", data.tokens.refresh_token);
-
-        request.data.token = data.tokens.access_token;
-
-        return await this.ws.sendRequest(request);
+        return await this.tryRefreshAndRetry(request);
 
       } catch (refreshErr) {
-        this.logout();
+        this.logout("Время сессии истекло");
         throw refreshErr;
       }
     }

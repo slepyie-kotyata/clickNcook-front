@@ -27,7 +27,8 @@
           }
         </button>
         <app-game-buttons (cook)="handleCook()" (sell)="handleSell()"
-                          [canCook]="this.store.canCook()" [canSell]="this.store.canSell()"
+                          [canCook]="this.store.canCook()"
+                          [canSell]="this.store.canSell()"
                           [level]="this.store.session()?.level?.rank ?? 0"></app-game-buttons>
       </div>
       <div class="hidden w-full xl:block xl:w-auto">
