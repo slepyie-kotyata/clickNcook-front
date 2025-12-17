@@ -20,7 +20,7 @@
     @if ((this.store.session()?.prestige?.accumulated_value ?? 0) > 0) {
       <section class="flex flex-col w-full mt-2 gap-1">
         <p class="text-white text-lg sm:text-xl">Накоплено за сессию: <span
-          class="font-bold text-yellow-500">{{ formatNumber(this.store.session()?.prestige?.accumulated_value ?? 0) }}
+          class="font-bold text-yellow-500">{{ formatNumber(this.store.session()?.prestige?.accumulated_value ?? 0, 2) }}
           <img
             class="h-5 inline mb-2" src="/icons/star.svg"></span></p>
         <p class="text-white text-lg sm:text-xl">Бонус после сброса: ×<span

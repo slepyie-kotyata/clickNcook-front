@@ -1,7 +1,15 @@
-// Форматирует число, добавляя суффиксы для больших чисел (K, M, B и т.д.)
-export default function formatNumber(num: number): string {
+/** Форматирует число, добавляя суффиксы для больших чисел (K, M, B и т.д.)
+ * @param num - число для форматирования
+ * @param digits - количество знаков после запятой (по умолчанию 1)
+ * @returns отформатированная строка с числом и суффиксом
+ * @example
+ * formatNumber(123) // "123"
+ * formatNumber(1234) // "1.2K"
+ * formatNumber(1234567, 2) // "1.23M"
+ */
+export default function formatNumber(num: number, digits: number = 1): string {
   if (num === 0) return '0';
-  if (num < 1000) return Number.isInteger(num) ? `${num}` : num.toFixed(1);
+  if (num < 1000) return Number.isInteger(num) ? `${num}` : num.toFixed(digits);
 
   const suffixes = [
     '',
@@ -39,7 +47,7 @@ export default function formatNumber(num: number): string {
   const rounded = parseFloat(formattedNum.toFixed(1));
   const displayNum = Number.isInteger(rounded)
     ? rounded.toFixed(0)
-    : rounded.toFixed(1);
+    : rounded.toFixed(digits);
 
   return `${displayNum}${suffixes[i]}`;
 }
