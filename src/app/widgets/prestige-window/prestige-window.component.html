@@ -7,21 +7,22 @@
     <h2 class="text-white text-3xl sm:text-4xl mb-4 text-center">Кулинарные звезды</h2>
     <p class="text-white text-base text-center max-w-xl sm:max-w-[40dvw]">Увеличивайте пассивный доход чтобы получать
       больше
-      Кулинарных звезд. Чем больше Кулинарных звезд накоплено - тем выше бонус дохода монет после сброса!</p>
+      Кулинарных звезд. Чем больше Кулинарных звезд накоплено - тем выше бонус дохода монет после сброса! Сброс доступен
+      после накопления хотя бы 1 звезды</p>
     <section class="flex flex-col mt-4 w-full gap-1">
       <p class="text-white text-lg sm:text-xl">Накоплено всего: <span
         class="font-bold text-yellow-500">{{ formatNumber(this.store.session()?.prestige?.current_value ?? 0) }}<img
-        class="h-7 inline mb-2" src="/icons/star.svg"></span></p>
+        class="h-5 inline mb-2" src="/icons/star.svg"></span></p>
       <p class="text-white text-lg sm:text-xl">Текущий бонус: ×<span
         class="font-bold text-green-400">{{ formatNumber(this.store.session()?.prestige?.current_boost_value ?? 1) }}</span>
       </p>
     </section>
-    @if ((this.store.session()?.prestige?.accumulated_value ?? 0) > 1) {
+    @if ((this.store.session()?.prestige?.accumulated_value ?? 0) > 0) {
       <section class="flex flex-col w-full mt-2 gap-1">
         <p class="text-white text-lg sm:text-xl">Накоплено за сессию: <span
           class="font-bold text-yellow-500">{{ formatNumber(this.store.session()?.prestige?.accumulated_value ?? 0) }}
           <img
-            class="h-7 inline mb-2" src="/icons/star.svg"></span></p>
+            class="h-5 inline mb-2" src="/icons/star.svg"></span></p>
         <p class="text-white text-lg sm:text-xl">Бонус после сброса: ×<span
           class="font-bold text-green-400">{{ formatNumber(accumulatedPrestigeMultiplier) }}</span></p>
       </section>
