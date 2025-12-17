@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, inject, Injector, ViewChild,} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild,} from '@angular/core';
 import {UpgradeButtonComponent} from '../../shared/ui/upgrade-button/upgrade-button.component';
 import {IUpgrade} from '../../entities/game';
 import {NgForOf} from '@angular/common';
@@ -19,7 +19,6 @@ export class UpgradeWindowComponent implements AfterViewInit {
   protected scrollItemHeight = 115;
   protected disableAllScrollButtons = false;
   protected readonly Math = Math;
-  private injector = inject(Injector);
 
   constructor(protected store: GameStore, private api: ApiService) {
   }

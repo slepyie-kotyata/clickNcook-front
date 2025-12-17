@@ -41,9 +41,12 @@ export class MenuComponent {
     let s = this.store.session();
     if (!s) return;
     this.menuButtons.forEach(button => {
-      button.requiredRank = s.upgrades.available
-        .filter(u => u.upgrade_type === button.type)
-        .sort((a, b) => a.access_level - b.access_level)[0]?.access_level ?? 999;
+      let available = s.upgrades.available.find(u => u.upgrade_type === button.type);
+      let current = s.upgrades.current.find(u => u.upgrade_type === button.type);
+      let requiredRank = 999;
+      if (available) requiredRank = Math.min(requiredRank, available.access_level);
+      if (current) requiredRank = Math.min(requiredRank, current.access_level);
+      button.requiredRank = requiredRank;
     });
   }
 
