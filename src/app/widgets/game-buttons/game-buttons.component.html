@@ -1,38 +1,45 @@
 <section
-  class="z-10 w-full max-w-3xl px-4 py-4 sm:px-6 sm:py-6 lg:px-[5.5dvw] lg:py-[5.5dvh] lg:left-[7dvw] lg:absolute lg:bottom-0 lg:w-[65dvw] xl:max-w-none mx-auto"
+  class="z-10 w-full max-w-3xl px-4 py-4 sm:px-6 sm:py-6 lg:px-[5.5dvw] lg:py-[5.5dvh] 
+ lg:absolute lg:bottom-0 lg:left-[30dvw] lg:w-[65dvw] mx-auto"
 >
   <div
-    class="w-full flex flex-row flex-wrap items-stretch justify-center gap-4 sm:gap-6 sm:justify-between bg-brand/40 border border-black rounded-3xl shadow-[0_10px_25px_rgba(0,0,0,0.3)] p-4 lg:flex-row lg:gap-6 lg:justify-end lg:items-center lg:bg-transparent lg:border-none lg:shadow-none lg:p-0"
+    class="grid
+         grid-cols-[10rem_10rem]
+         grid-rows-2
+         gap-x-3 gap-y-3
+         justify-items-center
+         items-center
+         bg-brand/40 border border-black rounded-3xl
+         shadow-[0_10px_25px_rgba(0,0,0,0.3)] p-4
+         lg:bg-transparent lg:border-none lg:shadow-none lg:p-0"
   >
-    <div
-      class="flex flex-1 min-w-[140px] max-w-[180px] flex-col items-center justify-center gap-3 sm:max-w-[200px] lg:flex-none lg:min-w-0 lg:max-w-none">
+    
       <img *ngIf="level < 10" class="w-48 hidden xl:block" src="/icons/game/gas_stove.svg"/>
       <img *ngIf="level < 20 && level >=10" class="w-48 hidden xl:block" src="/icons/game/stove_cafe.svg"/>
       <img *ngIf="level < 40 && level >=20" class="w-48 hidden xl:block" src="/icons/game/stove_restaurant.svg"/>
       <img *ngIf="level < 70 && level >=40" class="w-48 hidden xl:block" src="/icons/game/stove_max.svg"/>
       <img *ngIf="level >= 70" class="w-48 hidden xl:block" src="/icons/game/laptop.svg"/>
-      <button
-        (click)="cook.emit()"
-        [disabled]="!canCook"
-        class="active:scale-95 disabled:scale-100 z-max bg-brand rounded-xxl border border-black w-full h-16 sm:h-20 md:h-24 lg:w-28 lg:h-24 flex justify-center items-center shadow-md disabled:opacity-60 transition-transform"
-      >
-        <img class="h-full max-h-16" src="/icons/game/cook.svg"/>
-      </button>
-    </div>
-    <div
-      class="flex flex-1 min-w-[140px] max-w-[180px] flex-col items-center justify-center gap-3 sm:max-w-[200px] lg:flex-none lg:min-w-0 lg:max-w-none">
       <img *ngIf="level < 10" class="w-48 hidden xl:block" src="/icons/game/cashier_old.svg"/>
       <img *ngIf="level < 20 && level >=10" class="w-48 hidden xl:block" src="/icons/game/cashier_modern.svg"/>
       <img *ngIf="level < 40 && level >=20" class="w-48 hidden xl:block" src="/icons/game/cashier_new.svg"/>
       <img *ngIf="level < 70 && level >=40" class="w-48 hidden xl:block" src="/icons/game/cashier_touchscreen.svg"/>
       <img *ngIf="level >= 70" class="w-48 hidden xl:block" src="/icons/game/paper.svg"/>
       <button
+        (click)="cook.emit()"
+        [disabled]="!canCook"
+        class="active:scale-95 disabled:scale-100 z-max bg-brand rounded-xxl border border-black w-28 sm:w-32 h-16 sm:h-20 md:h-24 lg:w-28 lg:h-24 flex justify-center items-center shadow-md disabled:opacity-60 transition-transform"
+      >
+        <img class="h-full max-h-16" src="/icons/game/cook.svg"/>
+      </button>
+
+    
+      <button
         (click)="sell.emit()"
         [disabled]="!canSell"
-        class="active:scale-95 disabled:scale-100 bg-brand rounded-xxl border border-black w-full h-16 sm:h-20 md:h-24 lg:w-28 lg:h-24 flex justify-center items-center shadow-md disabled:opacity-60 transition-transform"
+        class="active:scale-95 disabled:scale-100 bg-brand rounded-xxl border border-black w-28 sm:w-32 h-16 sm:h-20 md:h-24 lg:w-28 lg:h-24 flex justify-center items-center shadow-md disabled:opacity-60 transition-transform"
       >
         <img class="h-full max-h-16" src="/icons/game/sell.svg"/>
       </button>
-    </div>
+
   </div>
 </section>
