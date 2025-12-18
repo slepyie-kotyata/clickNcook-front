@@ -6,7 +6,11 @@
   >
     <div
       class="flex flex-1 min-w-[140px] max-w-[180px] flex-col items-center justify-center gap-3 sm:max-w-[200px] lg:flex-none lg:min-w-0 lg:max-w-none">
-      <img *ngIf="level < 70" class="w-48 hidden xl:block" src="/icons/upgrades/equipment/gas_burner.svg"/>
+      <img *ngIf="level < 10" class="w-48 hidden xl:block" src="/icons/game/gas_stove.svg"/>
+      <img *ngIf="level < 20 && level >=10" class="w-48 hidden xl:block" src="/icons/game/stove_cafe.svg"/>
+      <img *ngIf="level < 40 && level >=20" class="w-48 hidden xl:block" src="/icons/game/stove_restaurant.svg"/>
+      <img *ngIf="level < 70 && level >=40" class="w-48 hidden xl:block" src="/icons/game/stove_max.svg"/>
+      <img *ngIf="level >= 70" class="w-48 hidden xl:block" src="/icons/game/laptop.svg"/>
       <button
         (click)="cook.emit()"
         [disabled]="!canCook"
@@ -17,7 +21,11 @@
     </div>
     <div
       class="flex flex-1 min-w-[140px] max-w-[180px] flex-col items-center justify-center gap-3 sm:max-w-[200px] lg:flex-none lg:min-w-0 lg:max-w-none">
-      <img *ngIf="level < 70" class="w-48 hidden xl:block" src="/icons/upgrades/equipment/new_cashier.svg"/>
+      <img *ngIf="level < 10" class="w-48 hidden xl:block" src="/icons/game/cashier_old.svg"/>
+      <img *ngIf="level < 20 && level >=10" class="w-48 hidden xl:block" src="/icons/game/cashier_modern.svg"/>
+      <img *ngIf="level < 40 && level >=20" class="w-48 hidden xl:block" src="/icons/game/cashier_new.svg"/>
+      <img *ngIf="level < 70 && level >=40" class="w-48 hidden xl:block" src="/icons/game/cashier_touchscreen.svg"/>
+      <img *ngIf="level >= 70" class="w-48 hidden xl:block" src="/icons/game/paper.svg"/>
       <button
         (click)="sell.emit()"
         [disabled]="!canSell"
