@@ -2,9 +2,9 @@
   class="z-max sticky top-0 left-0 w-full flex flex-col sm:flex-row items-center gap-3 sm:gap-[1.5dvw] px-4 py-4 sm:py-[1.5dvh] sm:px-[1.5dvw] backdrop-blur-md bg-brand-light shadow-lg border border-black/25 rounded-b-3xl lg:fixed lg:flex-row lg:items-center lg:gap-[1.5dvw] lg:px-0 lg:py-0 lg:w-auto lg:backdrop-blur-0 lg:bg-transparent lg:shadow-none lg:border-none lg:rounded-none lg:top-[1.5dvh] lg:left-[1.5dvw]"
 >
   <div class="flex w-full sm:w-auto justify-between sm:justify-start items-center gap-3">
-    <button
-      (click)="openProfile.emit()"
-      class="size-12 sm:size-14 rounded-xxl border border-black flex items-center justify-center bg-brand-disabled p-2 lg:max-w-14 lg:max-h-14 lg:p-[0.75dvh]"
+    <button (click)="openProfile.emit()"
+            class="size-12 sm:size-14 rounded-xxl border border-black flex items-center justify-center bg-brand-disabled p-2 lg:max-w-14 lg:max-h-14 lg:p-[0.75dvh]"
+            tutorialAnchor="profile"
     >
       <img src="/icons/logout.svg"/>
     </button>
@@ -16,9 +16,9 @@
       {{ formatNumber(session?.money ?? 0) }}
       <img class="inline w-8 h-8" src="/icons/game/money.svg">
     </p>
-    <button
-      (click)="openPrestige.emit()"
-      class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary size-12 sm:size-14 lg:max-w-14 lg:max-h-14"
+    <button (click)="openPrestige.emit()"
+            class="relative flex items-center justify-center rounded-xxl border border-black bg-secondary size-12 sm:size-14 lg:max-w-14 lg:max-h-14"
+            tutorialAnchor="prestige"
     >
       <img src="/icons/star.svg"/>
       <p
@@ -27,8 +27,8 @@
       </p>
     </button>
   </div>
-  <div
-    class="relative w-full max-w-xs sm:max-w-none sm:w-[330px] h-6 sm:h-[35px] lg:w-[200px] xl:w-[330px] lg:h-[35px]">
+  <div class="relative w-full max-w-xs sm:max-w-none sm:w-[330px] h-6 sm:h-[35px] lg:w-[200px] xl:w-[330px] lg:h-[35px]"
+       tutorialAnchor="xp-bar">
     <progress
       [value]="getLevelPercentage()"
       class="w-full h-full rounded-full overflow-hidden border border-black bg-secondary appearance-none"

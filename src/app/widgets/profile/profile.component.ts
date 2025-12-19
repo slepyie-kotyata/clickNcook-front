@@ -1,11 +1,12 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {UpgradeButtonComponent} from '../../shared/ui/upgrade-button/upgrade-button.component';
 import {GameStore} from '../../shared/lib/stores/gameStore';
+import {TutorialAnchorDirective} from '../../shared/lib/tutorial-anchor.directive';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [UpgradeButtonComponent],
+  imports: [UpgradeButtonComponent, TutorialAnchorDirective],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })

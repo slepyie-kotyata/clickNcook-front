@@ -1,11 +1,14 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ISession} from '../../entities/game';
 import formatNumber from '../../shared/lib/formatNumber';
+import {TutorialAnchorDirective} from '../../shared/lib/tutorial-anchor.directive';
 
 @Component({
   selector: 'app-game-header',
   standalone: true,
-  imports: [],
+  imports: [
+    TutorialAnchorDirective
+  ],
   templateUrl: './game-header.component.html',
   styleUrl: './game-header.component.css',
 })
