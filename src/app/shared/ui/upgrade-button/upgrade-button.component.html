@@ -14,6 +14,7 @@
       'disabled:bg-disabled disabled:border-none':type ==='shop',
       'active:scale-95 hover:bg-secondary/50': type === 'shop' && !blocked,
     }"
+    [tutorialAnchor]="tutorialAnchorName"
     class="disabled:scale-100 bg-secondary/25 border-2 border-secondary/50 rounded-2xl flex flex-row gap-2.5
     w-full px-4 py-2.5 items-center justify-between !text-text">
     <img [alt]="upgrade.name" [src]="icon()"

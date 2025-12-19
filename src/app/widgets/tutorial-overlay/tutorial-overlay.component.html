@@ -1,0 +1,24 @@
+<div
+  *ngIf="highlightW > 0 && highlightH > 0 && darkenScreen"
+  [style.background]="'rgba(0,0,0,0.6)'"
+  [style.maskImage]="mask"
+  [style.webkitMaskImage]="mask"
+  class="fixed inset-0 z-max"
+  style="pointer-events: none"
+></div>
+
+<div
+  (click)="next.emit()"
+  *ngIf="!blockScreen"
+  class="fixed inset-0 z-max pointer-events-auto"
+></div>
+
+<div
+  [style.left.px]="x"
+  [style.top.px]="y"
+  class="fixed z-[100002] pointer-events-auto
+         bg-brand border-2 border-black rounded-2xl
+         p-4 text-white max-w-xs cursor-pointer"
+>
+  {{ text }}
+</div>

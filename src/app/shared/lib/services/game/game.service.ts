@@ -11,6 +11,9 @@ import {SoundService} from './sound.service';
 export class GameService {
   selectedMenuType = signal<Upgrade>('dish');
 
+  prestigeWindowOpen = signal<boolean>(false);
+  profileWindowOpen = signal<boolean>(false);
+
   constructor(
     private sound: SoundService,
   ) {
@@ -25,5 +28,17 @@ export class GameService {
 
     this.sound.play('click');
     this.selectedMenuType.set(type);
+  }
+
+  togglePrestigeWindow() {
+    const newState = !this.prestigeWindowOpen();
+    this.prestigeWindowOpen.set(newState);
+    this.sound.play('click');
+  }
+
+  toggleProfileWindow() {
+    const newState = !this.profileWindowOpen();
+    this.profileWindowOpen.set(newState);
+    this.sound.play('click');
   }
 }

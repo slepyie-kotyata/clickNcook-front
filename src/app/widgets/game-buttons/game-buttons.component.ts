@@ -1,10 +1,11 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {NgIf} from '@angular/common';
+import {TutorialAnchorDirective} from '../../shared/lib/tutorial-anchor.directive';
 
 @Component({
   selector: 'app-game-buttons',
   standalone: true,
-  imports: [NgIf],
+  imports: [NgIf, TutorialAnchorDirective],
   templateUrl: './game-buttons.component.html',
   styleUrl: './game-buttons.component.css',
 })

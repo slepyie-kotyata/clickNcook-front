@@ -6,11 +6,12 @@ import {GameService} from '../../shared/lib/services/game/game.service';
 import {Upgrade} from '../../entities/types';
 import {NgForOf, NgIf} from '@angular/common';
 import {GameStore} from '../../shared/lib/stores/gameStore';
+import {TutorialAnchorDirective} from '../../shared/lib/tutorial-anchor.directive';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [MenuButtonComponent, UpgradeWindowComponent, NgForOf, NgIf],
+  imports: [MenuButtonComponent, UpgradeWindowComponent, NgForOf, NgIf, TutorialAnchorDirective],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css',
 })

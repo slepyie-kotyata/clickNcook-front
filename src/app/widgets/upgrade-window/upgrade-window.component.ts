@@ -4,6 +4,7 @@ import {IUpgrade} from '../../entities/game';
 import {NgForOf} from '@angular/common';
 import {GameStore} from '../../shared/lib/stores/gameStore';
 import {ApiService} from '../../shared/lib/services/api.service';
+import {TutorialService} from '../../shared/lib/services/tutorial.service';
 
 @Component({
   selector: 'app-upgrade-window',
@@ -20,7 +21,11 @@ export class UpgradeWindowComponent implements AfterViewInit {
   protected disableAllScrollButtons = false;
   protected readonly Math = Math;
 
-  constructor(protected store: GameStore, private api: ApiService) {
+  constructor(
+    protected store: GameStore,
+    private api: ApiService,
+    private tutorial: TutorialService
+  ) {
   }
 
   get upgrades() {
@@ -32,7 +37,7 @@ export class UpgradeWindowComponent implements AfterViewInit {
     if (!upgrade) return;
     if (!this.store.canBuyUpgrade(upgrade)) return;
 
-    this.api.upgrade_buy(upgrade.id)
+    this.api.upgrade_buy(upgrade.id);
   }
 
   scrollUp(): void {
@@ -86,5 +91,10 @@ export class UpgradeWindowComponent implements AfterViewInit {
     });
 
     setTimeout(() => this.updateScrollButtons());
+
+    this.tutorial.registerScrollContainer(
+      'upgrade-list',
+      this.scrollContainer.nativeElement
+    );
   }
 }

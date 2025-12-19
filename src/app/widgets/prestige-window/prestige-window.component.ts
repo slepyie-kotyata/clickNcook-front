@@ -3,11 +3,12 @@ import {ModalComponent} from '../../shared/ui/modal/modal.component';
 import formatNumber from '../../shared/lib/formatNumber';
 import {GameStore} from '../../shared/lib/stores/gameStore';
 import {ApiService} from '../../shared/lib/services/api.service';
+import {TutorialAnchorDirective} from '../../shared/lib/tutorial-anchor.directive';
 
 @Component({
   selector: 'app-prestige-window',
   standalone: true,
-  imports: [ModalComponent],
+  imports: [ModalComponent, TutorialAnchorDirective],
   templateUrl: './prestige-window.component.html',
   styleUrl: './prestige-window.component.css',
 })

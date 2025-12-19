@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, effect, HostListener, OnInit} from '@angular/core';
 import {MenuComponent} from '../../features/menu/menu.component';
 import {ModalComponent} from '../../shared/ui/modal/modal.component';
 import {TrackComponent} from '../../shared/ui/locations/track/track.component';
@@ -15,6 +15,11 @@ import {GameButtonsComponent} from '../../widgets/game-buttons/game-buttons.comp
 import {ApiService} from '../../shared/lib/services/api.service';
 import {GameStore} from '../../shared/lib/stores/gameStore';
 import {LoadingComponent} from '../../shared/ui/loading/loading.component';
+import {TutorialAnchorDirective} from '../../shared/lib/tutorial-anchor.directive';
+import {TutorialService} from '../../shared/lib/services/tutorial.service';
+import {TutorialOverlayComponent} from '../../widgets/tutorial-overlay/tutorial-overlay.component';
+import {TutorialAnchorRegistry} from '../../shared/lib/tutorial-anchor.registry';
+import {GameService} from '../../shared/lib/services/game/game.service';
 
 @Component({
   selector: 'app-game',
@@ -36,6 +41,8 @@ import {LoadingComponent} from '../../shared/ui/loading/loading.component';
     GameHeaderComponent,
     GameButtonsComponent,
     LoadingComponent,
+    TutorialAnchorDirective,
+    TutorialOverlayComponent,
   ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css',
@@ -43,18 +50,93 @@ import {LoadingComponent} from '../../shared/ui/loading/loading.component';
 export class GameComponent implements OnInit {
   protected logoutWindowToggle: boolean = false;
   protected showResolutionWarning: boolean = false;
-  protected prestigeWindowToggle: boolean = false;
-  protected profileWindowToggle: boolean = false;
   protected showVolumeSlider = false;
   protected showMobileUpgrades = false;
   protected volumeHideTimeout: any = null;
   protected isClosingVolumeSlider = false;
 
+  protected tutorialOverlayX = 0;
+  protected tutorialOverlayY = 0;
+  protected highlightX = 0;
+  protected highlightY = 0
+  protected highlightW = 0;
+  protected highlightH = 0;
+  private lastStepId: string | null = null;
+
   constructor(
     protected sound: SoundService,
     protected api: ApiService,
+    protected gameService: GameService,
     protected store: GameStore,
+    protected tutorial: TutorialService,
+    private anchorRegistry: TutorialAnchorRegistry,
   ) {
+    effect(() => {
+      const step = this.tutorial.currentStep();
+      if (!step) return;
+
+      if (this.lastStepId !== step.id) {
+        this.lastStepId = step.id;
+
+        this.highlightX = 0;
+        this.highlightY = 0;
+        this.highlightW = 0;
+        this.highlightH = 0;
+
+        this.tutorialOverlayX = 0;
+        this.tutorialOverlayY = 0;
+      }
+
+      if (!step.anchor) return;
+
+      const anchor = this.anchorRegistry.get(step.anchor);
+      if (!anchor) {
+        setTimeout(() => this.tutorial.bump(), 50);
+        return;
+      }
+
+      const el = anchor.nativeElement as HTMLElement;
+
+      el.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const rect = el.getBoundingClientRect();
+
+          if (rect.width === 0 || rect.height === 0) {
+            setTimeout(() => this.tutorial.bump(), 50);
+            return;
+          }
+
+          this.highlightX = rect.left - 8;
+          this.highlightY = rect.top - 8;
+          this.highlightW = rect.width + 16;
+          this.highlightH = rect.height + 16;
+
+          const centerX = rect.left + rect.width / 2;
+
+          this.tutorialOverlayX = Math.min(
+            Math.max(16, centerX - 160),
+            window.innerWidth - 320
+          );
+
+          const PADDING = 12;
+          const overlayHeight = 64;
+
+          const above = rect.top - overlayHeight - PADDING;
+          const below = rect.bottom + PADDING;
+
+          this.tutorialOverlayY =
+            above > 16
+              ? above
+              : below;
+        });
+      });
+    });
+
   }
 
   protected get locationConfig(): {
@@ -88,6 +170,7 @@ export class GameComponent implements OnInit {
 
   ngOnInit(): void {
     this.api.loadData();
+    this.tutorial.init();
   }
 
   protected toggleModal(
@@ -100,10 +183,12 @@ export class GameComponent implements OnInit {
         this.logoutWindowToggle = value;
         break;
       case 'prestige':
-        this.prestigeWindowToggle = value;
+        this.gameService.prestigeWindowOpen.set(value);
+        this.tutorial.tryAdvance();
         break;
       case 'profile':
-        this.profileWindowToggle = value;
+        this.gameService.profileWindowOpen.set(value);
+        this.tutorial.tryAdvance();
         break;
     }
   }
@@ -111,13 +196,16 @@ export class GameComponent implements OnInit {
   protected async handleCook() {
     if (!this.store.canCook()) return;
 
-    this.api.cook();
+    this.api.cook()
+
+    this.tutorial.tryAdvance();
   }
 
   protected async handleSell() {
     if (!this.store.canSell()) return;
 
     this.api.sell();
+    this.tutorial.tryAdvance();
   }
 
   protected toggleVolumeSlider() {
@@ -157,6 +245,27 @@ export class GameComponent implements OnInit {
   protected toggleMobileUpgrades(value: boolean) {
     this.sound.play('click');
     this.showMobileUpgrades = value;
+
+    queueMicrotask(() => {
+      this.tutorial.tryAdvance();
+    });
+  }
+
+  protected nextTutorialStep() {
+    switch (this.tutorial.currentStep()?.id) {
+      case 'xp':
+        this.tutorial.tryAdvance();
+        break;
+      case 'profile-exit':
+        this.toggleModal('profile', false);
+        break;
+      case 'prestige-exit':
+        this.toggleModal('prestige', false);
+        break;
+      default:
+        this.tutorial.tryAdvance();
+        break;
+    }
   }
 
   protected logout() {

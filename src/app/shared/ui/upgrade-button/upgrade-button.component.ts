@@ -6,11 +6,12 @@ import {boostTooltip} from '../../lib/boostTooltip';
 import {IUpgrade} from '../../../entities/game';
 import {Upgrade} from '../../../entities/types';
 import {GameStore} from '../../lib/stores/gameStore';
+import {TutorialAnchorDirective} from '../../lib/tutorial-anchor.directive';
 
 @Component({
   selector: 'app-upgrade-button',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, TutorialAnchorDirective],
   templateUrl: './upgrade-button.component.html',
   styleUrl: './upgrade-button.component.css',
 })
@@ -22,6 +23,16 @@ export class UpgradeButtonComponent {
 
   protected showTooltip = false;
   protected gameStore = inject(GameStore);
+
+  protected get tutorialAnchorName(): string | null {
+    if (this.type !== 'shop') return null;
+
+    if (this.upgrade.id === 1) {
+      return 'upgrade-sandwich';
+    }
+
+    return null;
+  }
 
   protected priceString(): string {
     return formatNumber(
@@ -49,4 +60,5 @@ export class UpgradeButtonComponent {
       this.upgrade.boost.boost_type,
     );
   }
+
 }
