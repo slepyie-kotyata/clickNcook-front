@@ -4,6 +4,12 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
+
+ARG NG_APP_API
+ENV NG_APP_API=$NG_APP_API
+ARG NG_APP_WEBSOCKET_API
+ENV NG_APP_WEBSOCKET_API=$NG_APP_WEBSOCKET_API
+
 RUN npm run build -- --configuration production
 
 
