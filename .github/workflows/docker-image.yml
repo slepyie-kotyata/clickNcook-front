@@ -23,5 +23,5 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: |
-          son1kx/clicker_api:latest
+          son1kx/clicker_front:latest
         platforms: linux/amd64  
