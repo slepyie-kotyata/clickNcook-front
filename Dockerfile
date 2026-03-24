@@ -10,9 +10,6 @@ ENV NG_APP_API=$NG_APP_API
 ARG NG_APP_WEBSOCKET_API
 ENV NG_APP_WEBSOCKET_API=$NG_APP_WEBSOCKET_API
 
-RUN echo "NG_APP_API=$NG_APP_API" > .env && \
-    echo "NG_APP_WEBSOCKET_API=$NG_APP_WEBSOCKET_API" >> .env
-
 RUN npm run build -- --configuration production
 
 FROM nginx:alpine
