@@ -12,7 +12,6 @@ ENV NG_APP_WEBSOCKET_API=$NG_APP_WEBSOCKET_API
 
 RUN npm run build -- --configuration production
 
-
 FROM nginx:alpine
 COPY --from=build /app/dist/click-ncook-front/browser /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
